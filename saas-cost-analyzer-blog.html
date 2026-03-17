@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skill #002: The SaaS Cost Analyzer — Stop Guessing. Start Knowing. | AgentNXXT × Autonomyx</title>
+
+  <!-- OpenGraph / Social Share -->
+  <meta property="og:title" content="Skill #002: The SaaS Cost Analyzer — AgentNXXT × Autonomyx">
+  <meta property="og:description" content="We just open-sourced the SaaS Cost Analyzer — an AI skill that calculates the true total cost of ownership for any SaaS or open source tool. Built by Autonomyx's AgentNXXT department.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://agentnxxt.github.io/agentskills/saas-cost-analyzer-blog.html">
+  <meta property="og:image" content="https://agentnxxt.github.io/agentskills/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Skill #002: The SaaS Cost Analyzer — Stop Guessing. Start Knowing.">
+  <meta name="twitter:description" content="True TCO for any SaaS or open source tool. AWS & GCP Marketplace pricing. Compliance filtering. Ranked recommendations. Built by AgentNXXT, Autonomyx's dedicated agents department.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #080A10;
+      --surface: #0E1018;
+      --surface2: #13161F;
+      --border: rgba(255,255,255,0.07);
+      --border2: rgba(255,255,255,0.12);
+      --text: #E8E6DF;
+      --text-muted: rgba(232,230,223,0.45);
+      --text-faint: rgba(232,230,223,0.22);
+      --purple: #7B5CF0;
+      --purple-light: #9D82FF;
+      --green: #00D28C;
+      --amber: #F59E0B;
+      --purple-glow: rgba(123,92,240,0.15);
+      --green-glow: rgba(0,210,140,0.10);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 18px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 64px;
+      background: rgba(8,10,16,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .nav-logo {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--purple), var(--green));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: #fff;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-name { font-size: 14px; font-weight: 500; color: var(--text); letter-spacing: -0.2px; }
+    .nav-sep { width: 1px; height: 16px; background: var(--border2); }
+    .nav-dept { font-size: 12px; font-weight: 500; color: var(--purple-light); letter-spacing: 0.5px; }
+
+    .nav-right { display: flex; align-items: center; gap: 24px; }
+
+    .nav-link { font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    .nav-link:hover { color: var(--text); }
+
+    .nav-cta {
+      display: flex; align-items: center; gap: 7px;
+      background: rgba(123,92,240,0.15);
+      border: 1px solid rgba(123,92,240,0.3);
+      border-radius: 8px; padding: 7px 14px;
+      font-size: 13px; font-weight: 500; color: var(--purple-light);
+      text-decoration: none; transition: background 0.2s, border-color 0.2s;
+    }
+    .nav-cta:hover { background: rgba(123,92,240,0.25); border-color: rgba(123,92,240,0.5); }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative; width: 100%; min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding-top: 64px; overflow: hidden;
+    }
+
+    .hero-bg { position: absolute; inset: 0; background: var(--bg); }
+
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 72px 72px;
+    }
+
+    .hero-orb1 {
+      position: absolute; width: 800px; height: 800px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,210,140,0.14) 0%, transparent 65%);
+      top: -200px; right: -100px;
+    }
+    .hero-orb2 {
+      position: absolute; width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(99,60,255,0.12) 0%, transparent 65%);
+      bottom: 0; left: 100px;
+    }
+
+    .hero-content {
+      position: relative; z-index: 2;
+      max-width: 1200px; margin: 0 auto; width: 100%;
+      padding: 120px 48px 80px;
+      display: grid; grid-template-columns: 1fr 380px;
+      gap: 64px; align-items: end;
+    }
+
+    .hero-badges {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 40px; flex-wrap: wrap;
+    }
+
+    .badge {
+      display: flex; align-items: center; gap: 7px;
+      border-radius: 100px; padding: 5px 13px;
+      font-size: 11px; font-weight: 500;
+      letter-spacing: 0.8px; text-transform: uppercase;
+    }
+
+    .badge-brand {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-muted);
+    }
+    .badge-brand .bdot {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--purple), var(--green));
+      font-size: 8px; font-weight: 700; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      letter-spacing: -0.3px;
+    }
+
+    .badge-dept { background: rgba(123,92,240,0.12); border: 1px solid rgba(123,92,240,0.28); color: var(--purple-light); }
+    .badge-new  { background: rgba(0,210,140,0.1);  border: 1px solid rgba(0,210,140,0.28);  color: var(--green); }
+    .badge-sep  { width: 4px; height: 4px; border-radius: 50%; background: var(--border2); }
+
+    .hero-title {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(48px, 6vw, 80px);
+      font-weight: 600; line-height: 1.05;
+      letter-spacing: -2px; color: var(--text);
+      margin-bottom: 28px;
+    }
+
+    .hero-title .grad {
+      background: linear-gradient(90deg, #00D28C 0%, #9D82FF 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    .hero-lead {
+      font-size: 19px; color: var(--text-muted);
+      line-height: 1.6; max-width: 560px;
+      margin-bottom: 48px; font-weight: 300;
+    }
+
+    .hero-meta { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+
+    .meta-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-faint); }
+    .meta-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--border2); }
+
+    /* Hero right card */
+    .hero-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border2);
+      border-radius: 20px; padding: 32px;
+      backdrop-filter: blur(8px);
+    }
+
+    .hcard-header {
+      display: flex; align-items: center; gap: 14px;
+      padding-bottom: 20px; border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+
+    .hcard-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: linear-gradient(135deg, rgba(0,210,140,0.2), rgba(123,92,240,0.15));
+      border: 1px solid rgba(0,210,140,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+    }
+
+    .hcard-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+    .hcard-sub { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-faint); }
+
+    .cost-rows { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+
+    .cost-row {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 12px;
+    }
+
+    .cost-label { display: flex; align-items: center; gap: 8px; color: var(--text-muted); }
+    .cdot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .cdot.g { background: var(--green); }
+    .cdot.p { background: var(--purple); }
+    .cdot.a { background: var(--amber); }
+
+    .cost-val {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px; color: var(--text-muted);
+    }
+    .cost-val.winner { color: var(--green); }
+
+    .card-verdict {
+      padding: 12px 16px;
+      background: rgba(0,210,140,0.08);
+      border: 1px solid rgba(0,210,140,0.2);
+      border-radius: 10px;
+      font-size: 12px; color: var(--green);
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    /* Hero bottom strip */
+    .hero-strip {
+      position: relative; z-index: 2;
+      border-top: 1px solid var(--border);
+      background: rgba(8,10,16,0.6);
+      backdrop-filter: blur(8px);
+    }
+
+    .hero-strip-inner {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 48px;
+      display: flex; align-items: center; gap: 32px;
+      height: 56px; overflow: hidden;
+    }
+
+    .strip-label { font-size: 11px; font-weight: 500; color: var(--text-faint); text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
+    .strip-divider { width: 1px; height: 20px; background: var(--border); }
+    .strip-regs { display: flex; align-items: center; gap: 20px; }
+    .strip-reg { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--text-faint); white-space: nowrap; }
+
+    /* ─── ARTICLE ─── */
+    article { max-width: 720px; margin: 0 auto; padding: 96px 48px 48px; }
+
+    article p {
+      color: var(--text-muted); margin-bottom: 28px;
+      font-weight: 300; font-size: 18px; line-height: 1.8;
+    }
+
+    article p strong { color: var(--text); font-weight: 500; }
+    article p em { font-style: italic; color: rgba(232,230,223,0.6); }
+
+    article h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 34px; font-weight: 600;
+      color: var(--text); letter-spacing: -1px;
+      line-height: 1.2; margin-top: 72px; margin-bottom: 24px;
+    }
+
+    article h2::before {
+      content: '';
+      display: block; width: 32px; height: 2px;
+      background: linear-gradient(90deg, var(--green), var(--purple));
+      margin-bottom: 20px; border-radius: 2px;
+    }
+
+    .divider-rule { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+    /* Feature list */
+    .feature-list {
+      display: flex; flex-direction: column; gap: 0;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden; margin: 32px 0;
+    }
+
+    .feature-item {
+      display: flex; align-items: flex-start; gap: 16px;
+      padding: 20px 24px; border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+    .feature-item:last-child { border-bottom: none; }
+    .feature-item:hover { background: rgba(255,255,255,0.02); }
+
+    .fi-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; flex-shrink: 0; margin-top: 2px;
+    }
+    .fi-icon.purple { background: rgba(123,92,240,0.15); border: 1px solid rgba(123,92,240,0.2); }
+    .fi-icon.green  { background: rgba(0,210,140,0.12);  border: 1px solid rgba(0,210,140,0.2); }
+    .fi-icon.amber  { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.2); }
+
+    .fi-title { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+    .fi-desc  { font-size: 13px; color: var(--text-muted); line-height: 1.5; font-weight: 300; }
+
+    /* Highlight box */
+    .highlight-box {
+      background: linear-gradient(135deg, rgba(0,210,140,0.07), rgba(123,92,240,0.05));
+      border: 1px solid rgba(0,210,140,0.2);
+      border-radius: 16px; padding: 28px 32px; margin: 36px 0;
+    }
+    .highlight-box p { margin-bottom: 0; font-size: 17px; color: rgba(232,230,223,0.7); font-style: italic; }
+
+    /* GitHub CTA */
+    .github-cta {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 24px; background: var(--surface);
+      border: 1px solid var(--border2); border-radius: 16px;
+      padding: 28px 32px; margin: 48px 0;
+      text-decoration: none; transition: border-color 0.2s, background 0.2s;
+    }
+    .github-cta:hover { border-color: rgba(0,210,140,0.4); background: rgba(0,210,140,0.04); }
+
+    .gcta-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; color: var(--green); margin-bottom: 6px; }
+    .gcta-repo  { font-family: 'IBM Plex Mono', monospace; font-size: 16px; color: var(--text); font-weight: 500; }
+
+    .gcta-right {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(0,210,140,0.12);
+      border: 1px solid rgba(0,210,140,0.3);
+      border-radius: 10px; padding: 10px 18px;
+      font-size: 14px; font-weight: 500; color: var(--green);
+      white-space: nowrap; flex-shrink: 0;
+    }
+
+    /* Book CTA */
+    .book-cta {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 24px; background: var(--surface);
+      border: 1px solid rgba(123,92,240,0.25); border-radius: 16px;
+      padding: 28px 32px; margin: 32px 0;
+      text-decoration: none; transition: border-color 0.2s, background 0.2s;
+    }
+    .book-cta:hover { border-color: rgba(123,92,240,0.5); background: rgba(123,92,240,0.05); }
+
+    .bcta-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; color: var(--purple-light); margin-bottom: 6px; }
+    .bcta-title { font-size: 16px; font-weight: 500; color: var(--text); }
+
+    .bcta-right {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(123,92,240,0.15);
+      border: 1px solid rgba(123,92,240,0.3);
+      border-radius: 10px; padding: 10px 18px;
+      font-size: 14px; font-weight: 500; color: var(--purple-light);
+      white-space: nowrap; flex-shrink: 0;
+    }
+
+    /* Footer */
+    footer { border-top: 1px solid var(--border); margin-top: 96px; }
+
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      padding: 48px 48px 64px;
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 48px;
+    }
+
+    .footer-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .footer-logo-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--purple), var(--green));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: #fff;
+    }
+    .footer-logo-text { font-size: 15px; font-weight: 500; color: var(--text); }
+    .footer-logo-sub  { font-size: 11px; color: var(--purple-light); margin-top: 1px; }
+    .footer-desc { font-size: 13px; color: var(--text-faint); line-height: 1.6; font-weight: 300; max-width: 240px; }
+
+    .footer-section-title { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint); margin-bottom: 16px; }
+    .footer-links { display: flex; flex-direction: column; gap: 10px; }
+    .footer-link { font-size: 14px; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    .footer-link:hover { color: var(--text); }
+
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding: 24px 48px; max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-copy { font-size: 12px; color: var(--text-faint); }
+    .footer-disclaimer { font-size: 11px; color: var(--text-faint); max-width: 400px; text-align: right; line-height: 1.5; }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-badges { animation: fadeUp 0.6s ease both; animation-delay: 0.1s; }
+    .hero-title  { animation: fadeUp 0.7s ease both; animation-delay: 0.2s; }
+    .hero-lead   { animation: fadeUp 0.7s ease both; animation-delay: 0.3s; }
+    .hero-meta   { animation: fadeUp 0.7s ease both; animation-delay: 0.4s; }
+    .hero-card   { animation: fadeUp 0.8s ease both; animation-delay: 0.35s; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .hero-content { grid-template-columns: 1fr; gap: 48px; }
+      .hero-card { display: none; }
+      nav { padding: 0 24px; }
+      article { padding: 64px 24px 32px; }
+      .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+      .footer-disclaimer { text-align: center; }
+      .hero-content { padding: 80px 24px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="https://www.autonomyx.com" class="nav-brand">
+    <div class="nav-logo">AX</div>
+    <span class="nav-name">Autonomyx</span>
+    <div class="nav-sep"></div>
+    <span class="nav-dept">AgentNXXT</span>
+  </a>
+  <div class="nav-right">
+    <a href="https://www.autonomyx.com" class="nav-link">Website</a>
+    <a href="https://agnxxt.com" class="nav-link">AgentNXXT</a>
+    <a href="https://github.com/AgentNXXT/agentskills" class="nav-link">GitHub</a>
+    <a href="https://github.com/AgentNXXT/agentskills" class="nav-cta">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      View on GitHub
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-grid"></div>
+    <div class="hero-orb1"></div>
+    <div class="hero-orb2"></div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-left">
+      <div class="hero-badges">
+        <div class="badge badge-brand">
+          <div class="bdot">AX</div>
+          Autonomyx
+        </div>
+        <div class="badge-sep"></div>
+        <div class="badge badge-dept">AgentNXXT</div>
+        <div class="badge badge-new">Skill #002</div>
+      </div>
+
+      <h1 class="hero-title">
+        Stop Guessing<br>
+        What SaaS Actually<br>
+        <span class="grad">Costs You.</span>
+      </h1>
+
+      <p class="hero-lead">
+        The SaaS Cost Analyzer is our second open-source AI skill — and it calculates the true total cost of ownership for any software tool, before you sign anything.
+      </p>
+
+      <div class="hero-meta">
+        <span class="meta-item">March 17, 2026</span>
+        <div class="meta-dot"></div>
+        <span class="meta-item">AgentNXXT Team</span>
+        <div class="meta-dot"></div>
+        <span class="meta-item">6 min read</span>
+      </div>
+    </div>
+
+    <div class="hero-card">
+      <div class="hcard-header">
+        <div class="hcard-icon">💰</div>
+        <div>
+          <div class="hcard-title">SaaS Cost Analyzer</div>
+          <div class="hcard-sub">saas-cost-analyzer</div>
+        </div>
+      </div>
+      <div class="cost-rows">
+        <div class="cost-row">
+          <div class="cost-label"><div class="cdot g"></div>Tool A — 50 seats</div>
+          <div class="cost-val winner">$1,200/mo</div>
+        </div>
+        <div class="cost-row">
+          <div class="cost-label"><div class="cdot p"></div>Tool B — 50 seats</div>
+          <div class="cost-val">$1,750/mo</div>
+        </div>
+        <div class="cost-row">
+          <div class="cost-label"><div class="cdot a"></div>Open Source (MSP)</div>
+          <div class="cost-val">$890/mo</div>
+        </div>
+        <div class="cost-row" style="margin-top:4px; padding-top:12px; border-top: 1px solid var(--border);">
+          <div class="cost-label" style="font-size:11px; color: var(--text-faint);">3-year TCO incl. hidden costs</div>
+          <div class="cost-val" style="font-size:11px; color: var(--text-faint);">calculated</div>
+        </div>
+      </div>
+      <div class="card-verdict">
+        🥇 Recommended: Tool A &nbsp;·&nbsp; saves $19,800 over 3 yrs
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-strip">
+    <div class="hero-strip-inner">
+      <span class="strip-label">Checks</span>
+      <div class="strip-divider"></div>
+      <div class="strip-regs">
+        <span class="strip-reg">AWS Marketplace</span>
+        <span class="strip-reg">GCP Marketplace</span>
+        <span class="strip-reg">FedRAMP</span>
+        <span class="strip-reg">GDPR / EU Hosting</span>
+        <span class="strip-reg">GovCloud</span>
+        <span class="strip-reg">HIPAA</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARTICLE -->
+<article>
+
+  <p>Every quarter, procurement teams, CTOs, and founders make the same mistake.</p>
+
+  <p>They see a pricing page. They multiply the seat cost by the number of users. They call it a budget. Then, six months later, the invoice looks nothing like what they expected — and they can't quite explain why.</p>
+
+  <p>Overage fees. Implementation costs. Premium support add-ons. Renewal price bumps. The hidden cost of being locked in to a vendor you can't easily leave. The cost of <em>not</em> choosing the open source option because no one priced it properly.</p>
+
+  <p>This is the problem the <strong>SaaS Cost Analyzer</strong> was built to solve.</p>
+
+  <hr class="divider-rule">
+
+  <h2>What It Does</h2>
+
+  <p>The SaaS Cost Analyzer is an AI skill for Claude that turns any software evaluation into a structured, objective total cost of ownership analysis. Give it a pricing page URL, a list of tools you're comparing, your expected usage, and your growth projections — and it builds the full picture.</p>
+
+  <div class="highlight-box">
+    <p>It doesn't just tell you what something costs today. It tells you what it costs at scale, what you're risking by choosing it, and which option wins — with the maths to back it up.</p>
+  </div>
+
+  <p>And it does this across SaaS tools, open source software, AWS and Google Cloud Marketplace listings, and everything in between.</p>
+
+  <hr class="divider-rule">
+
+  <h2>What's Under the Hood</h2>
+
+  <div class="feature-list">
+    <div class="feature-item">
+      <div class="fi-icon green">💸</div>
+      <div class="fi-content">
+        <div class="fi-title">True TCO — not just seat cost</div>
+        <div class="fi-desc">Extracts base subscription, per-seat charges, usage-based fees, overages, onboarding, training, premium support, and renewal escalation — then models all of it across small, medium, and large scale scenarios</div>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="fi-icon purple">🛒</div>
+      <div class="fi-content">
+        <div class="fi-title">AWS & Google Cloud Marketplace pricing</div>
+        <div class="fi-desc">Fetches listings from both marketplaces before falling back to vendor pages. Surfaces committed spend credits (EDP/CUD), private offers, and marketplace-specific contract terms that most buyers miss</div>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="fi-icon green">📦</div>
+      <div class="fi-content">
+        <div class="fi-title">Open source is never listed as free</div>
+        <div class="fi-desc">Identifies 2–3 managed service providers for any open source tool and uses their published pricing as the cost baseline. Also models self-hosting costs — compute, storage, DevOps time, maintenance — side by side</div>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="fi-icon amber">🔒</div>
+      <div class="fi-content">
+        <div class="fi-title">Compliance as a hard filter</div>
+        <div class="fi-desc">Collects governance requirements upfront — EU data residency, AWS GovCloud, FedRAMP, HIPAA, GDPR, PCI-DSS — and eliminates non-compliant options before any pricing work begins. Produces a Compliance Elimination Log for audit trails</div>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="fi-icon purple">🏆</div>
+      <div class="fi-content">
+        <div class="fi-title">Ranked recommendation with rationale</div>
+        <div class="fi-desc">Closes every analysis with a ranked 🥇🥈🥉 table — 3-year TCO, key strength, key risk, and a concrete next step. For single-tool evaluations: a clear Go / No-Go / Conditional Go verdict</div>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="fi-icon green">👁️</div>
+      <div class="fi-content">
+        <div class="fi-title">Hidden cost surfacing</div>
+        <div class="fi-desc">Flags vendor lock-in risk, migration effort, integration complexity, infrastructure overhead, and operational burden — specific to each tool, not generic warnings</div>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="fi-icon amber">📊</div>
+      <div class="fi-content">
+        <div class="fi-title">Built-in metrics dashboard + webhook</div>
+        <div class="fi-desc">Tracks usage, feedback ratings, accuracy corrections, and meeting booking intent — per user via persistent storage and centrally via webhook for team-wide visibility</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider-rule">
+
+  <h2>The Detail That Changes Everything</h2>
+
+  <p>Most cost comparison tools treat open source as free. They shouldn't. And they treat compliance as a footnote. It isn't.</p>
+
+  <p>The SaaS Cost Analyzer starts from a different assumption: <strong>every option has a real cost, and some options aren't available to you at all</strong>.</p>
+
+  <p>If your organisation requires EU data residency, a vendor with US-only hosting isn't a cheaper option — it's not an option. The skill eliminates it before the first number is calculated. What's left is a clean, honest comparison of what's actually available to you.</p>
+
+  <p>And for open source? Whether you're evaluating PostgreSQL, n8n, Elasticsearch, or anything else — it finds the managed service providers, pulls their pricing, models your usage, and compares it fairly against commercial alternatives. No more "it's free" handwaving in budget conversations.</p>
+
+  <hr class="divider-rule">
+
+  <h2>When to Use It</h2>
+
+  <p>The skill triggers automatically when you're having a software cost conversation — you don't need to name it explicitly. But here are the moments it's most valuable:</p>
+
+  <div class="feature-list">
+    <div class="feature-item">
+      <div class="fi-icon green">🔄</div>
+      <div class="fi-content">
+        <div class="fi-title">Vendor renewals</div>
+        <div class="fi-desc">Before you auto-renew, understand what the market looks like now — and what negotiation levers you have</div>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="fi-icon purple">🏗️</div>
+      <div class="fi-content">
+        <div class="fi-title">New tool evaluations</div>
+        <div class="fi-desc">Shortlist 2–5 options and get a structured comparison before you run a single demo or sign an NDA</div>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="fi-icon amber">📈</div>
+      <div class="fi-content">
+        <div class="fi-title">Scaling decisions</div>
+        <div class="fi-desc">Understand exactly where your current tool's pricing breaks — and whether a switch makes sense at 2× or 3× your current size</div>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="fi-icon green">⚖️</div>
+      <div class="fi-content">
+        <div class="fi-title">Build vs buy</div>
+        <div class="fi-desc">Compare open source self-hosting against commercial SaaS with full operational overhead factored in — not just licence cost</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider-rule">
+
+  <h2>This Is Skill #002</h2>
+
+  <p>When we shipped the Website Policy Drafting Skill, we said it was only the beginning. We meant it.</p>
+
+  <p>AgentNXXT is Autonomyx's dedicated agents department — and our mission is to build a library of AI skills that make Claude dramatically more useful for the specific, high-friction workflows that teams deal with every day. Not general-purpose chat. Specialist agents that do real work.</p>
+
+  <p>The SaaS Cost Analyzer is Skill #002. It's open source, free to install, and built to be extended. If you have a use case it doesn't cover — a compliance framework it should know about, a marketplace it should check — open an issue or submit a pull request.</p>
+
+  <p>More skills are coming. If you want to know when they drop, follow AgentNXXT on LinkedIn.</p>
+
+  <a href="https://github.com/AgentNXXT/agentskills" class="github-cta">
+    <div class="gcta-left">
+      <div class="gcta-label">Open Source · AgentNXXT</div>
+      <div class="gcta-repo">github.com/AgentNXXT/agentskills</div>
+    </div>
+    <div class="gcta-right">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      Install the Skill
+    </div>
+  </a>
+
+  <p style="font-size:15px; color: var(--text-faint); text-align:center; margin-top: -24px;">Need help with implementation, vendor negotiation, or migration?</p>
+
+  <a href="https://cal.unboxd.cloud/chinmay" class="book-cta">
+    <div>
+      <div class="bcta-label">Free Consultation · Autonomyx</div>
+      <div class="bcta-title">Book a 30-minute call with our team →</div>
+    </div>
+    <div class="bcta-right">📅 Book Now</div>
+  </a>
+
+</article>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <div class="footer-logo-icon">AX</div>
+        <div>
+          <div class="footer-logo-text">Autonomyx</div>
+          <div class="footer-logo-sub">AgentNXXT Department</div>
+        </div>
+      </div>
+      <p class="footer-desc">Your trusted advisor and implementation partner in all things AI. Building the future of intelligent agents — openly.</p>
+    </div>
+
+    <div>
+      <div class="footer-section-title">Links</div>
+      <div class="footer-links">
+        <a href="https://www.autonomyx.com" class="footer-link">autonomyx.com</a>
+        <a href="https://agnxxt.com" class="footer-link">agnxxt.com</a>
+        <a href="https://github.com/AgentNXXT/agentskills" class="footer-link">AgentNXXT on GitHub</a>
+        <a href="https://cal.unboxd.cloud/chinmay" class="footer-link">Book a Consultation</a>
+      </div>
+    </div>
+
+    <div>
+      <div class="footer-section-title">Follow Us</div>
+      <div class="footer-links">
+        <a href="https://www.linkedin.com/company/openautonomyx1" class="footer-link">Autonomyx on LinkedIn</a>
+        <a href="https://www.linkedin.com/showcase/agentnxxt/" class="footer-link">AgentNXXT on LinkedIn</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 OpenAutonomyx (OPC) Private Limited. Built by AgentNXXT.</span>
+    <span class="footer-disclaimer">⚠️ AI-generated cost estimates are for decision support only. Always verify pricing directly with vendors before procurement.</span>
+  </div>
+</footer>
+
+</body>
+</html>
