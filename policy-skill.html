@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Introducing the Website Policy Drafting Skill | AgentNXXT × Autonomyx</title>
+
+  <meta property="og:title" content="Introducing the Website Policy Drafting Skill — AgentNXXT × Autonomyx">
+  <meta property="og:description" content="Automated, regulation-aware compliance documentation for digital products. Draft privacy policies, terms of service, AI usage policies and more — in minutes.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://agentnxxt.github.io/agentskills/policy-skill.html">
+  <meta property="og:image" content="https://agentnxxt.github.io/agentskills/og-policy-skill.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Introducing the Website Policy Drafting Skill — AgentNXXT × Autonomyx">
+  <meta name="twitter:description" content="Automated, regulation-aware compliance documentation for digital products.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #F8F7F4;
+      --bg2: #F0EEE9;
+      --surface: #FFFFFF;
+      --border: #E4E2DC;
+      --border2: #D0CEC8;
+      --text: #111110;
+      --text-2: #444440;
+      --text-3: #888882;
+      --text-4: #AAAAА4;
+      --accent: #3D2FC4;
+      --accent-light: #EEF0FF;
+      --accent-border: #C7CAFF;
+      --green: #00865A;
+      --green-light: #E6F5F0;
+      --amber: #9A6000;
+      --amber-light: #FDF3E0;
+      --dark: #0E0F14;
+      --dark2: #161820;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 17px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 60px;
+      background: rgba(248,247,244,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+    }
+
+    .nav-left {
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none;
+    }
+
+    .nav-logo {
+      width: 30px; height: 30px; border-radius: 7px;
+      background: linear-gradient(135deg, #4F3CC9, #00A36C);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-size: 11px; font-weight: 800; color: #fff;
+    }
+
+    .nav-brand { font-size: 14px; font-weight: 600; color: var(--text); }
+    .nav-sep { width: 1px; height: 16px; background: var(--border2); }
+    .nav-dept { font-size: 12px; font-weight: 500; color: var(--accent); }
+
+    .nav-right { display: flex; align-items: center; gap: 24px; }
+
+    .nav-link {
+      font-size: 13px; color: var(--text-3);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-link:hover { color: var(--text); }
+
+    .nav-cta {
+      display: flex; align-items: center; gap: 7px;
+      background: var(--dark);
+      border-radius: 7px; padding: 7px 14px;
+      font-size: 13px; font-weight: 500; color: #fff;
+      text-decoration: none; transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* ── HERO ── */
+    .hero {
+      padding-top: 60px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-inner {
+      max-width: 1200px; margin: 0 auto;
+      padding: 80px 48px 0;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 80px;
+      align-items: end;
+    }
+
+    .hero-left { padding-bottom: 80px; }
+
+    .breadcrumb {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 32px;
+      font-size: 12px; color: var(--text-3);
+    }
+    .breadcrumb a { color: var(--text-3); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--accent); }
+    .breadcrumb-sep { color: var(--border2); }
+    .breadcrumb-current { color: var(--accent); font-weight: 500; }
+
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--accent-light);
+      border: 1px solid var(--accent-border);
+      border-radius: 5px;
+      padding: 5px 12px;
+      font-size: 11px; font-weight: 600; color: var(--accent);
+      letter-spacing: 0.8px; text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .hero-tag-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%; background: var(--accent);
+    }
+
+    .hero-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(40px, 5vw, 60px);
+      font-weight: 700;
+      line-height: 1.05; letter-spacing: -2px;
+      color: var(--text);
+      margin-bottom: 24px;
+    }
+
+    .hero-title .accent { color: var(--accent); }
+
+    .hero-lead {
+      font-size: 18px; font-weight: 300;
+      color: var(--text-2); line-height: 1.7;
+      max-width: 580px;
+      margin-bottom: 40px;
+    }
+
+    .hero-meta {
+      display: flex; align-items: center; gap: 16px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+    }
+
+    .meta-label { font-size: 12px; color: var(--text-3); }
+    .meta-val { font-size: 12px; font-weight: 500; color: var(--text-2); }
+    .meta-sep { width: 1px; height: 14px; background: var(--border2); }
+
+    /* Hero right */
+    .hero-right {
+      border-left: 1px solid var(--border);
+      padding: 0 0 80px 48px;
+    }
+
+    .spec-card {
+      background: var(--dark);
+      border-radius: 16px;
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .spec-card-glow {
+      position: absolute;
+      width: 300px; height: 300px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(99,60,255,0.15) 0%, transparent 65%);
+      top: -100px; right: -60px;
+      pointer-events: none;
+    }
+
+    .sc-header {
+      display: flex; align-items: center; gap: 12px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      margin-bottom: 18px;
+    }
+
+    .sc-icon {
+      width: 38px; height: 38px; border-radius: 9px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+
+    .sc-title { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.7); }
+    .sc-sub {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px; color: rgba(255,255,255,0.25);
+      margin-top: 2px;
+    }
+
+    .sc-rows { display: flex; flex-direction: column; gap: 0; margin-bottom: 18px; }
+    .sc-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-size: 12px; color: rgba(255,255,255,0.42);
+    }
+    .sc-row:last-child { border-bottom: none; }
+
+    .sc-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+    .sc-dot.g { background: #00A36C; }
+    .sc-dot.p { background: #7B5CF0; }
+    .sc-dot.a { background: #E09A2B; }
+
+    .sc-regs {
+      padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .sc-reg-label {
+      font-size: 10px; font-weight: 500;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 1.2px; text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .sc-reg-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .sc-reg-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px; color: rgba(255,255,255,0.28);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 3px; padding: 3px 7px;
+    }
+
+    /* ── ARTICLE ── */
+    .article-wrap {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 48px;
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 80px;
+    }
+
+    article {
+      padding: 72px 0 80px;
+      border-right: 1px solid var(--border);
+      padding-right: 80px;
+    }
+
+    article p {
+      color: var(--text-2);
+      margin-bottom: 24px;
+      font-weight: 300;
+      line-height: 1.8;
+    }
+
+    article p strong { color: var(--text); font-weight: 500; }
+    article p em { font-style: italic; }
+
+    article h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 28px; font-weight: 700;
+      color: var(--text); letter-spacing: -0.8px;
+      line-height: 1.2;
+      margin-top: 64px; margin-bottom: 20px;
+    }
+
+    article h2::before {
+      content: '';
+      display: block;
+      width: 24px; height: 2px;
+      background: var(--accent);
+      margin-bottom: 16px;
+      border-radius: 2px;
+    }
+
+    .rule { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+    /* Feature grid */
+    .feature-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 32px 0;
+    }
+
+    .feat {
+      background: var(--surface);
+      padding: 24px;
+      transition: background 0.15s;
+    }
+    .feat:hover { background: var(--bg2); }
+
+    .feat-icon {
+      width: 36px; height: 36px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; margin-bottom: 12px;
+    }
+    .feat-icon.blue { background: var(--accent-light); }
+    .feat-icon.green { background: var(--green-light); }
+    .feat-icon.amber { background: var(--amber-light); }
+
+    .feat-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .feat-desc { font-size: 13px; color: var(--text-3); line-height: 1.55; font-weight: 300; }
+
+    /* Policy table */
+    .policy-table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 28px 0;
+      font-size: 13px;
+    }
+
+    .policy-table thead tr {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .policy-table th {
+      padding: 11px 16px;
+      text-align: left; font-weight: 600;
+      color: var(--text-2); font-size: 11px;
+      letter-spacing: 0.5px; text-transform: uppercase;
+    }
+
+    .policy-table td {
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-2); font-weight: 300;
+    }
+
+    .policy-table tr:last-child td { border-bottom: none; }
+    .policy-table tr:hover td { background: var(--bg2); }
+
+    .type-badge {
+      display: inline-block;
+      border-radius: 4px; padding: 2px 8px;
+      font-size: 10px; font-weight: 500;
+      letter-spacing: 0.3px;
+    }
+    .type-badge.legal { background: var(--accent-light); color: var(--accent); }
+    .type-badge.ai    { background: #F0F9F5; color: var(--green); }
+    .type-badge.ops   { background: var(--amber-light); color: var(--amber); }
+
+    /* Callout */
+    .callout {
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 10px 10px 0;
+      padding: 20px 24px;
+      margin: 28px 0;
+    }
+    .callout p { margin: 0; font-size: 15px; color: var(--text-2); }
+    .callout p strong { color: var(--text); }
+
+    /* GitHub CTA */
+    .gh-cta {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 20px;
+      background: var(--dark);
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin: 40px 0;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .gh-cta:hover { opacity: 0.9; }
+
+    .gh-cta-left {}
+    .gh-label {
+      font-size: 10px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: rgba(255,255,255,0.3); margin-bottom: 5px;
+    }
+    .gh-repo {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 14px; color: rgba(255,255,255,0.8); font-weight: 500;
+    }
+
+    .gh-btn {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 7px; padding: 9px 16px;
+      font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.7);
+      white-space: nowrap; flex-shrink: 0;
+    }
+
+    /* Sidebar */
+    .sidebar { padding: 72px 0 80px; }
+
+    .sidebar-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .sidebar-title {
+      font-size: 11px; font-weight: 600;
+      color: var(--text-3); letter-spacing: 1px;
+      text-transform: uppercase; margin-bottom: 16px;
+    }
+
+    .sb-list { display: flex; flex-direction: column; gap: 10px; }
+    .sb-item {
+      display: flex; align-items: flex-start; gap: 9px;
+      font-size: 13px; color: var(--text-2); font-weight: 300;
+    }
+    .sb-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+    .sb-dot.g { background: var(--green); }
+    .sb-dot.p { background: var(--accent); }
+    .sb-dot.a { background: var(--amber); }
+
+    .reg-list { display: flex; flex-direction: column; gap: 8px; }
+    .reg-item {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 12px;
+    }
+    .reg-name { font-family: 'IBM Plex Mono', monospace; color: var(--text-2); font-weight: 500; }
+    .reg-scope { font-size: 11px; color: var(--text-3); }
+
+    .sidebar-link-block {
+      background: var(--accent);
+      border-radius: 12px;
+      padding: 20px 24px;
+      text-decoration: none;
+      display: block;
+      transition: opacity 0.2s;
+    }
+    .sidebar-link-block:hover { opacity: 0.9; }
+
+    .slb-label { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 6px; }
+    .slb-title { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 12px; }
+    .slb-arrow { font-size: 13px; color: rgba(255,255,255,0.6); }
+
+    /* Footer */
+    footer {
+      background: var(--dark);
+      border-top: 1px solid var(--border);
+      margin-top: 0;
+    }
+
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      padding: 48px 48px 40px;
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 48px;
+    }
+
+    .footer-logo-row {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+    }
+
+    .footer-logo-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, #4F3CC9, #00A36C);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 800; color: #fff;
+    }
+
+    .footer-brand-name { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.7); }
+    .footer-brand-dept { font-size: 11px; color: rgba(255,255,255,0.3); margin-top: 1px; }
+    .footer-desc { font-size: 13px; color: rgba(255,255,255,0.28); line-height: 1.6; font-weight: 300; max-width: 220px; }
+
+    .footer-sec-title { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.2); margin-bottom: 14px; }
+    .footer-links { display: flex; flex-direction: column; gap: 9px; }
+    .footer-link { font-size: 13px; color: rgba(255,255,255,0.35); text-decoration: none; transition: color 0.2s; }
+    .footer-link:hover { color: rgba(255,255,255,0.7); }
+
+    .footer-bottom {
+      max-width: 1200px; margin: 0 auto;
+      padding: 20px 48px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .footer-copy { font-size: 12px; color: rgba(255,255,255,0.2); }
+    .footer-disclaimer { font-size: 11px; color: rgba(255,255,255,0.15); max-width: 420px; text-align: right; line-height: 1.5; }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-tag   { animation: fadeUp 0.5s ease both 0.1s; }
+    .hero-title { animation: fadeUp 0.6s ease both 0.15s; }
+    .hero-lead  { animation: fadeUp 0.6s ease both 0.22s; }
+    .hero-meta  { animation: fadeUp 0.6s ease both 0.28s; }
+    .spec-card  { animation: fadeUp 0.7s ease both 0.3s; }
+
+    /* Responsive */
+    @media (max-width: 960px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+      .hero-right { border-left: none; border-top: 1px solid var(--border); padding: 40px 0 60px; }
+      .article-wrap { grid-template-columns: 1fr; }
+      article { border-right: none; padding-right: 0; }
+      .sidebar { padding-top: 0; }
+      nav { padding: 0 20px; }
+      .hero-inner { padding: 60px 20px 0; }
+      .article-wrap { padding: 0 20px; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr; gap: 28px; }
+      .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
+      .footer-disclaimer { text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="https://openautonomyx.com" class="nav-left">
+    <div class="nav-logo">AX</div>
+    <span class="nav-brand">Autonomyx</span>
+    <div class="nav-sep"></div>
+    <span class="nav-dept">AgentNXXT</span>
+  </a>
+  <div class="nav-right">
+    <a href="https://openautonomyx.com" class="nav-link">Website</a>
+    <a href="https://github.com/AgentNXXT/agentskills" class="nav-link">GitHub</a>
+    <a href="https://github.com/AgentNXXT/agentskills" class="nav-cta">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      GitHub
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="breadcrumb">
+        <a href="#">AgentNXXT</a>
+        <span class="breadcrumb-sep">›</span>
+        <a href="#">Skills</a>
+        <span class="breadcrumb-sep">›</span>
+        <span class="breadcrumb-current">Policy Drafting</span>
+      </div>
+
+      <div class="hero-tag">
+        <div class="hero-tag-dot"></div>
+        New Release — Skill #001
+      </div>
+
+      <h1 class="hero-title">
+        Introducing the<br>
+        <span class="accent">Website Policy</span><br>
+        Drafting Skill
+      </h1>
+
+      <p class="hero-lead">
+        Automated, regulation-aware compliance documentation for digital products. Draft privacy policies, terms of service, AI usage policies, and more — directly within your Claude workflow, in minutes.
+      </p>
+
+      <div class="hero-meta">
+        <span class="meta-label">Published</span>
+        <span class="meta-val">March 17, 2026</span>
+        <div class="meta-sep"></div>
+        <span class="meta-label">By</span>
+        <span class="meta-val">AgentNXXT, Autonomyx</span>
+        <div class="meta-sep"></div>
+        <span class="meta-label">Category</span>
+        <span class="meta-val">Compliance · Legal Tech</span>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="spec-card">
+        <div class="spec-card-glow"></div>
+        <div class="sc-header">
+          <div class="sc-icon">⚖️</div>
+          <div>
+            <div class="sc-title">Policy Drafting Skill</div>
+            <div class="sc-sub">website-policy-drafting-skill</div>
+          </div>
+        </div>
+        <div class="sc-rows">
+          <div class="sc-row"><div class="sc-dot g"></div>Privacy Policy</div>
+          <div class="sc-row"><div class="sc-dot g"></div>Terms of Service</div>
+          <div class="sc-row"><div class="sc-dot p"></div>AI Usage / Responsible AI Policy</div>
+          <div class="sc-row"><div class="sc-dot p"></div>Data Processing Agreement</div>
+          <div class="sc-row"><div class="sc-dot a"></div>Cookie Policy</div>
+          <div class="sc-row"><div class="sc-dot a"></div>Acceptable Use Policy</div>
+          <div class="sc-row" style="color:rgba(255,255,255,0.2);font-size:11px;padding-left:15px">+ API, Marketplace, Community, Accessibility</div>
+        </div>
+        <div class="sc-regs">
+          <div class="sc-reg-label">Regulation Coverage</div>
+          <div class="sc-reg-tags">
+            <span class="sc-reg-tag">GDPR</span>
+            <span class="sc-reg-tag">UK GDPR</span>
+            <span class="sc-reg-tag">CCPA/CPRA</span>
+            <span class="sc-reg-tag">India DPDP</span>
+            <span class="sc-reg-tag">EU AI Act</span>
+            <span class="sc-reg-tag">WCAG/ADA</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARTICLE + SIDEBAR -->
+<div class="article-wrap">
+  <article>
+
+    <p>Compliance documentation is a foundational requirement for any digital product operating at scale. Yet for the majority of product and engineering teams, it remains a manual, time-consuming process — reliant on generic templates, fragmented regulatory knowledge, or costly external counsel.</p>
+
+    <p>The <strong>Website Policy Drafting Skill</strong> addresses this directly. Built by AgentNXXT — the agents division within Autonomyx — it extends Claude with structured, domain-specific compliance expertise, enabling teams to produce publication-ready legal documentation as part of their existing workflow.</p>
+
+    <hr class="rule">
+
+    <h2>What the Skill Does</h2>
+
+    <p>At its core, the Website Policy Drafting Skill functions as a contextual compliance advisor. Given a description of a digital product — its type, integrations, user geography, and data practices — the skill determines which regulatory frameworks apply, constructs a prioritised policy roadmap, and drafts documentation accordingly.</p>
+
+    <div class="callout">
+      <p>The skill operates across three primary modes: <strong>One-Prompt Generation</strong> for fully autonomous drafting from product context alone; <strong>Interactive Mode</strong> for guided, step-by-step policy creation; and <strong>Policy Review Mode</strong> for auditing and improving existing documentation.</p>
+    </div>
+
+    <p>All output is structured for direct publication — formatted in Markdown or plain text, with correct regulatory language, current effective dates, and appropriate disclaimers included by default.</p>
+
+    <hr class="rule">
+
+    <h2>Supported Policy Types</h2>
+
+    <p>The skill covers ten distinct policy categories, spanning foundational legal agreements, AI governance documentation, platform-specific policies, and accessibility compliance.</p>
+
+    <table class="policy-table">
+      <thead>
+        <tr>
+          <th>Policy</th>
+          <th>Type</th>
+          <th>Primary Use Case</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Privacy Policy</td>
+          <td><span class="type-badge legal">Legal</span></td>
+          <td>Data collection, user rights, GDPR / CCPA obligations</td>
+        </tr>
+        <tr>
+          <td>Terms of Service</td>
+          <td><span class="type-badge legal">Legal</span></td>
+          <td>User agreements, liability, intellectual property</td>
+        </tr>
+        <tr>
+          <td>Cookie Policy</td>
+          <td><span class="type-badge legal">Legal</span></td>
+          <td>Tracker disclosure, consent management</td>
+        </tr>
+        <tr>
+          <td>AI Usage / Responsible AI</td>
+          <td><span class="type-badge ai">AI Governance</span></td>
+          <td>LLM outputs, model providers, EU AI Act alignment</td>
+        </tr>
+        <tr>
+          <td>Data Processing Agreement</td>
+          <td><span class="type-badge ai">AI Governance</span></td>
+          <td>B2B data processing, sub-processor disclosure</td>
+        </tr>
+        <tr>
+          <td>Acceptable Use Policy</td>
+          <td><span class="type-badge ops">Operational</span></td>
+          <td>Prohibited conduct, abuse prevention</td>
+        </tr>
+        <tr>
+          <td>API Usage Policy</td>
+          <td><span class="type-badge ops">Operational</span></td>
+          <td>Developer access, rate limits, API terms</td>
+        </tr>
+        <tr>
+          <td>Marketplace Policy</td>
+          <td><span class="type-badge ops">Operational</span></td>
+          <td>Seller/buyer obligations, listing rules</td>
+        </tr>
+        <tr>
+          <td>Community Guidelines</td>
+          <td><span class="type-badge ops">Operational</span></td>
+          <td>User-generated content, moderation standards</td>
+        </tr>
+        <tr>
+          <td>Accessibility Policy</td>
+          <td><span class="type-badge legal">Legal</span></td>
+          <td>WCAG 2.1 / ADA compliance commitments</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <hr class="rule">
+
+    <h2>Regulatory Framework Coverage</h2>
+
+    <p>A key capability of the skill is automatic regulatory identification. Rather than requiring teams to specify which laws apply to their product, the skill infers applicable frameworks from the product's user geography, data practices, and feature set.</p>
+
+    <div class="feature-grid">
+      <div class="feat">
+        <div class="feat-icon blue">🇪🇺</div>
+        <div class="feat-title">GDPR / UK GDPR</div>
+        <div class="feat-desc">Applied when users are located in the EU or United Kingdom. Covers data subject rights, lawful basis, and controller obligations.</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon green">🇺🇸</div>
+        <div class="feat-title">CCPA / CPRA</div>
+        <div class="feat-desc">Applied for products serving California residents. Includes opt-out rights, data sale disclosure, and consumer request handling.</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon amber">🇮🇳</div>
+        <div class="feat-title">India DPDP Act</div>
+        <div class="feat-desc">Applied for products with Indian user bases, covering data fiduciary obligations under India's Digital Personal Data Protection Act.</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon blue">🤖</div>
+        <div class="feat-title">EU AI Act</div>
+        <div class="feat-desc">Applied when AI features are present and EU users are served. Covers risk classification and transparency obligations.</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon green">♿</div>
+        <div class="feat-title">WCAG 2.1 / ADA</div>
+        <div class="feat-desc">Applied when an accessibility policy is requested, covering Level AA conformance commitments and reasonable accommodation statements.</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon amber">📋</div>
+        <div class="feat-title">Compliance Roadmap</div>
+        <div class="feat-desc">After regulation detection, the skill produces a prioritised roadmap — required immediately, recommended before launch, and deferred as you scale.</div>
+      </div>
+    </div>
+
+    <hr class="rule">
+
+    <h2>Session Continuity and Memory</h2>
+
+    <p>For teams managing compliance documentation across multiple sessions, the skill maintains a persistent product profile. Once a product's characteristics — type, tech stack, geography, applicable regulations — have been established in a session, they are stored and recalled automatically in subsequent interactions.</p>
+
+    <p>This eliminates the need to re-enter context on each use. Returning users are greeted with their current compliance dashboard, showing completed policies, in-progress work, and outstanding items on their roadmap.</p>
+
+    <hr class="rule">
+
+    <h2>Open Source Release</h2>
+
+    <p>The Website Policy Drafting Skill is published as an open-source Claude skill under the AgentNXXT GitHub organisation. It can be installed directly into any Claude environment that supports the skills framework.</p>
+
+    <p>This release represents the first contribution from AgentNXXT's public skill library. Subsequent releases will address high-friction workflows across additional domains including finance, product operations, engineering, and go-to-market functions.</p>
+
+    <div class="callout">
+      <p><strong>Note:</strong> All output from this skill is intended as a starting point for legal documentation. Policies should be reviewed by a qualified legal professional before official or commercial use.</p>
+    </div>
+
+    <a href="https://github.com/AgentNXXT/agentskills" class="gh-cta">
+      <div class="gh-cta-left">
+        <div class="gh-label">Open Source · AgentNXXT</div>
+        <div class="gh-repo">github.com/AgentNXXT/agentskills</div>
+      </div>
+      <div class="gh-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        View Repository
+      </div>
+    </a>
+
+  </article>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <div class="sidebar-block">
+      <div class="sidebar-title">Policy Types</div>
+      <div class="sb-list">
+        <div class="sb-item"><div class="sb-dot g"></div>Privacy Policy</div>
+        <div class="sb-item"><div class="sb-dot g"></div>Terms of Service</div>
+        <div class="sb-item"><div class="sb-dot g"></div>Cookie Policy</div>
+        <div class="sb-item"><div class="sb-dot p"></div>AI Usage Policy</div>
+        <div class="sb-item"><div class="sb-dot p"></div>Data Processing Agreement</div>
+        <div class="sb-item"><div class="sb-dot a"></div>Acceptable Use Policy</div>
+        <div class="sb-item"><div class="sb-dot a"></div>API Usage Policy</div>
+        <div class="sb-item"><div class="sb-dot a"></div>Marketplace Policy</div>
+        <div class="sb-item"><div class="sb-dot a"></div>Community Guidelines</div>
+        <div class="sb-item"><div class="sb-dot a"></div>Accessibility Policy</div>
+      </div>
+    </div>
+
+    <div class="sidebar-block">
+      <div class="sidebar-title">Regulations</div>
+      <div class="reg-list">
+        <div class="reg-item">
+          <span class="reg-name">GDPR</span>
+          <span class="reg-scope">EU / EEA</span>
+        </div>
+        <div class="reg-item">
+          <span class="reg-name">UK GDPR</span>
+          <span class="reg-scope">United Kingdom</span>
+        </div>
+        <div class="reg-item">
+          <span class="reg-name">CCPA/CPRA</span>
+          <span class="reg-scope">California, US</span>
+        </div>
+        <div class="reg-item">
+          <span class="reg-name">DPDP Act</span>
+          <span class="reg-scope">India</span>
+        </div>
+        <div class="reg-item">
+          <span class="reg-name">EU AI Act</span>
+          <span class="reg-scope">EU · AI Products</span>
+        </div>
+        <div class="reg-item">
+          <span class="reg-name">WCAG/ADA</span>
+          <span class="reg-scope">Accessibility</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-block">
+      <div class="sidebar-title">About AgentNXXT</div>
+      <p style="font-size:13px;color:var(--text-3);line-height:1.6;font-weight:300;">AgentNXXT is the agents department within Autonomyx (OpenAutonomyx OPC Pvt Ltd), focused on building and publishing production-grade AI skills for Claude.</p>
+    </div>
+
+    <a href="https://github.com/AgentNXXT/agentskills" class="sidebar-link-block">
+      <div class="slb-label">Open Source</div>
+      <div class="slb-title">View on GitHub →</div>
+      <div class="slb-arrow">github.com/AgentNXXT/agentskills</div>
+    </a>
+
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo-row">
+        <div class="footer-logo-icon">AX</div>
+        <div>
+          <div class="footer-brand-name">Autonomyx</div>
+          <div class="footer-brand-dept">AgentNXXT Department</div>
+        </div>
+      </div>
+      <p class="footer-desc">Your trusted advisor and implementation partner in all things AI. Building production-grade agent skills — openly.</p>
+    </div>
+    <div>
+      <div class="footer-sec-title">Resources</div>
+      <div class="footer-links">
+        <a href="https://openautonomyx.com" class="footer-link">openautonomyx.com</a>
+        <a href="https://github.com/AgentNXXT/agentskills" class="footer-link">AgentNXXT on GitHub</a>
+        <a href="https://openautonomyx.com/support" class="footer-link">Support</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-sec-title">Follow</div>
+      <div class="footer-links">
+        <a href="https://linkedin.com/openautonomyx1" class="footer-link">LinkedIn</a>
+        <a href="https://www.facebook.com/openautonomyx" class="footer-link">Facebook</a>
+        <a href="https://www.youtube.com/@openautonomyx" class="footer-link">YouTube</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 OpenAutonomyx (OPC) Private Limited. Built by AgentNXXT.</span>
+    <span class="footer-disclaimer">All policy documentation produced by this skill should be reviewed by a qualified legal professional before official or commercial use.</span>
+  </div>
+</footer>
+
+</body>
+</html>
