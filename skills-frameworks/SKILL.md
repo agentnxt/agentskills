@@ -514,7 +514,8 @@ These platforms reach employers and job seekers directly.
 1. **Immediate (Month 1–2):**
    - Open-source on GitHub with RFC process and contribution guidelines
    - Publish JSON-LD vocabulary at persistent URI
-   - Submit arXiv preprint
+   - Submit **arXiv preprint** (self-publish, live in 24 hours, no review gate)
+   - Submit **IEEE Access paper** (open-access journal, fast peer review ~4–8 weeks)
    - Reach out to SFIA Foundation for partnership discussion
 
 2. **Short-term (Month 3–6):**
@@ -523,19 +524,31 @@ These platforms reach employers and job seekers directly.
    - Submit cross-walks to ESCO and O*NET
    - Present at 1–2 industry conferences (EC-TEL, SkillsX)
    - Engage WEF Future of Jobs initiative
+   - Submit to **ACM Computing Surveys** (longer review cycle but high-impact)
 
 3. **Medium-term (Month 6–12):**
-   - Submit CEN Workshop Agreement proposal
-   - Submit IEEE-SA new standard proposal
+   - Submit **CEN Workshop Agreement** proposal (fast-track European norm)
+   - Submit **IEEE-SA new standard proposal** (begins the formal standards process —
+     this is the multi-year standardization track, distinct from IEEE Access journal
+     publication which is already done in Step 1)
    - Engage professional associations (SFIA, PMI, ISACA) for endorsement
-   - Publish journal paper (IEEE Access or ACM Computing Surveys)
    - Partner with 1–2 credentialing platforms (Credly, Open Badges)
 
 4. **Long-term (Year 1–3):**
-   - ISO/IEC JTC 1 SC 36 standard submission
+   - **IEEE-SA standard ratification** (working group ballots, public comment, revision)
+   - **ISO/IEC JTC 1 SC 36** standard submission (builds on IEEE-SA and CEN groundwork)
    - Government submissions (EU, US DOL, UK DfE, Singapore, India, Australia)
    - Enterprise HRIS integrations (Workday, SAP)
    - Job board integrations (LinkedIn, Indeed)
+
+**Note on IEEE — two distinct tracks:**
+- **IEEE Access (journal)** = publish a peer-reviewed paper. Fast (~2 months). Done in Step 1.
+- **IEEE-SA (standards body)** = get the framework adopted as a formal IEEE standard (like
+  IEEE 802.11 for WiFi). Requires working group formation, drafting, balloting, and public
+  comment. Takes 1–3 years. Starts in Step 3, ratified in Step 4.
+
+Both are IEEE, but journal publication is academic visibility while standards adoption is
+industry-binding authority.
 
 ---
 
