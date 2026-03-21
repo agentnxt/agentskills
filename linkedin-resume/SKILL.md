@@ -36,12 +36,14 @@ The user must provide **at least one** of the following:
 - **Multiple profile URLs** from different platforms (combined into one resume)
 
 **Supplementary sources (for enriching the resume):**
+- **Verifiable Credentials (VCs)** — JSON-LD, JWT, or SD-JWT files; VC wallet URL; Open Badges v3 (highest trust source)
 - **Chat/message exports** — Slack archives, WhatsApp exports, Teams data, email `.mbox`/`.eml` files
 - **Authored documents** — whitepapers, research papers, blog posts, presentations, proposals, PRDs
 - **Patent numbers or inventor name** — for patent lookup
 - **Blog or personal website URL** — for publication extraction
 - **Certification URLs or badge links** — Credly, Google Cloud, AWS, Microsoft Learn
 - **Screenshots** of profiles, dashboards, or achievement pages from any platform
+- **Self-reported data** — user describes roles, projects, achievements from memory (structured Q&A)
 
 The skill combines all provided sources into a single comprehensive resume. If the input
 is ambiguous, ask the user to clarify before proceeding.
@@ -175,6 +177,154 @@ to extract:
 - Email (if publicly visible)
 - Portfolio items or activity
 - Certification badges or achievements
+
+---
+
+## Data Accessibility Reality
+
+**Critical constraint:** Users typically lose access to corporate accounts and data after
+leaving a company. The skill must acknowledge this and guide users toward **currently
+accessible sources** rather than asking for data they can no longer reach.
+
+### What users typically lose access to after leaving a company
+
+| Lost source | Why | Alternative |
+|---|---|---|
+| Corporate email (Outlook, Gmail workspace) | Account deactivated on exit | Personal email archives (if forwarded before leaving), personal Gmail/Outlook with work-related threads |
+| Slack workspace | Removed from org on exit | Personal Slack exports (if downloaded before leaving), screenshots of key conversations |
+| Microsoft Teams | Tied to corporate M365 license | Personal copies of documents shared via Teams |
+| Jira / Confluence / internal wikis | Corporate SSO revoked | Screenshots, exported PDFs, personal notes about projects |
+| Internal Git repos (GitHub Enterprise, GitLab self-hosted) | Access revoked | Personal GitHub/GitLab with open-source contributions; forked repos; commit history in public mirrors |
+| Google Drive / SharePoint | Corporate account disabled | Personal copies of authored documents saved before leaving |
+| CRM data (Salesforce, HubSpot) | Account deactivated | Personal notes, deal summaries, client lists (non-confidential) |
+| Internal dashboards / analytics | SSO revoked | Screenshots taken during employment, exported reports |
+
+### What users typically retain after leaving
+
+| Retained source | Accessibility | Value for resume |
+|---|---|---|
+| **LinkedIn profile** | Always accessible (personal account) | Primary identity + work history |
+| **GitHub personal account** | Always accessible | Open-source contributions, personal projects, languages |
+| **Personal blog / website** | Always accessible | Authored content, thought leadership |
+| **Stack Overflow** | Always accessible (personal account) | Community reputation, expertise areas |
+| **Published papers / patents** | Publicly indexed | Academic and innovation credentials |
+| **Certification badges (Credly, etc.)** | Always accessible (personal account) | Verified credentials |
+| **npm / PyPI packages** | Always accessible (personal account) | Published open-source work |
+| **Docker Hub** | Always accessible (personal account) | Published container images |
+| **Dev.to / Medium articles** | Always accessible (personal account) | Published writing |
+| **Behance / Dribbble** | Always accessible (personal account) | Design portfolio |
+| **Personal copies of documents** | If saved before leaving | Authored work evidence |
+| **Personal chat exports** | If exported before leaving | Skill inference |
+| **Screenshots** | If captured during employment | Visual evidence of achievements, dashboards |
+| **Personal email archives** | Personal email accounts retained | Work-related correspondence (if any was via personal email) |
+| **Award / recognition emails** | If forwarded to personal email | Achievement evidence |
+| **Performance review excerpts** | If personally saved | Self-assessment content, manager feedback |
+| **Recommendation letters / references** | If personally saved | Third-party endorsements |
+
+### Guidance for the skill
+
+1. **Never ask for data the user likely cannot access.** If the user mentions they have left
+   a company or are job-seeking, do NOT ask for corporate Slack exports, work email archives,
+   or internal documents. Instead, focus on currently accessible sources.
+
+2. **Prioritize persistent personal accounts.** LinkedIn, GitHub, Stack Overflow, personal
+   blogs, published work, and certifications survive job transitions. Lead with these.
+
+3. **Ask about pre-departure exports.** Some users export data before leaving. It's OK to ask:
+   "Did you happen to save any documents, chat exports, or screenshots from your previous
+   role?" — but frame it as optional, not expected.
+
+4. **Leverage Explorium as the backbone.** Explorium's `enrich-prospects-profiles` provides
+   work history and education regardless of whether the user still has corporate access.
+   This is the primary source for the Experience section.
+
+5. **Self-reported data is valid.** If the user describes their responsibilities, projects,
+   or achievements from memory, incorporate this data clearly marked as "self-reported."
+   Ask structured questions to help them recall:
+   - "What were your 3 biggest projects or accomplishments at [company]?"
+   - "What tools and technologies did you use daily?"
+   - "Did you manage a team? How large?"
+   - "What metrics or outcomes can you quantify?"
+
+6. **Present tense vs. past tense.** Detect whether the user is currently employed or
+   job-seeking (from context or by asking). Tailor the resume accordingly:
+   - **Currently employed:** Focus on present-role data; corporate sources may be accessible
+   - **Job-seeking / between roles:** Focus on persistent personal accounts + self-reported data
+
+### The Verifiable Credentials Solution
+
+The data accessibility gap described above is being solved by **Verifiable Credentials (VCs)**.
+With VCs, professional data becomes portable, tamper-proof, and owned by the individual —
+not locked inside corporate systems.
+
+**How VCs change resume generation:**
+
+| Traditional problem | VC solution |
+|---|---|
+| Work history locked in corporate HR systems | Employer issues a VC for each role (title, dates, responsibilities) — employee owns it forever |
+| Skills claimed but unverified | Skills endorsed via VCs by employers, peers, or assessment platforms |
+| Certifications expire or verification links break | Certification VCs are cryptographically signed and permanently verifiable |
+| Education credentials require manual verification | Universities issue degree VCs directly to graduates |
+| Project contributions lost when leaving | Project VCs issued during employment capture deliverables and impact |
+| Performance data inaccessible after exit | Achievement VCs (awards, promotions, metrics) portable with the employee |
+| Chat/email evidence of skills disappears | Skill attestation VCs replace the need to mine raw communications |
+
+**VC-aware resume generation workflow:**
+
+If the user provides Verifiable Credentials (as JSON-LD, JWT, or via a VC wallet URL):
+
+1. **Parse the VC payload** — extract claims (issuer, subject, credential type, issuance date,
+   expiration, evidence)
+2. **Verify the credential** — check the cryptographic signature against the issuer's DID
+   (Decentralized Identifier) or public key. If verification fails, mark the credential as
+   "unverified" and inform the user.
+3. **Map VC types to resume sections:**
+
+| VC credential type | Resume section | Data extracted |
+|---|---|---|
+| `EmploymentCredential` | Experience | Job title, company, dates, responsibilities, department |
+| `EducationCredential` | Education | Degree, institution, field, dates, honors |
+| `CertificationCredential` | Certifications | Cert name, issuer, date, expiry, verification |
+| `SkillCredential` / `EndorsementCredential` | Skills | Skill name, proficiency level, endorser |
+| `AchievementCredential` | Experience (bullets) | Award name, description, date, issuer |
+| `ProjectCredential` | Experience (bullets) or Projects section | Project name, role, outcomes, technologies |
+| `PatentCredential` | Patents | Patent number, title, dates, co-inventors |
+| `PublicationCredential` | Publications | Title, venue, date, co-authors |
+| `MembershipCredential` | Professional Affiliations | Organization, role, dates |
+| `VolunteerCredential` | Volunteer Experience | Organization, role, dates, impact |
+
+4. **Trust tiers for VCs:**
+   - **Tier A (cryptographically verified):** Signature validates against known issuer DID.
+     Mark in resume as "Verified" with issuer name.
+   - **Tier B (issued but unverified):** VC structure is valid but signature cannot be
+     independently verified (e.g., issuer DID not resolvable). Mark as "Issued by [issuer]."
+   - **Tier C (self-attested):** User-created VCs without third-party issuer. Treat same as
+     self-reported data.
+
+5. **VC data takes priority** over inferred/self-reported data. When a VC confirms a skill
+   or role, it supersedes and replaces any "(inferred)" tag on that item.
+
+6. **Display verification status** in the resume:
+   - Skills from VCs: `Python (verified by Acme Corp)` instead of `Python (inferred)`
+   - Roles from VCs: show a small "Verified" indicator next to the role
+   - Certs from VCs: include "Cryptographically verified" note
+
+**Supported VC formats:**
+- W3C Verifiable Credentials (JSON-LD with `@context: "https://www.w3.org/2018/credentials/v1"`)
+- JWT-encoded VCs (decoded and parsed)
+- SD-JWT (Selective Disclosure JWT) — respect holder's disclosure choices
+- VC wallet URLs (fetch VCs from the user's digital wallet if they provide access)
+- Open Badges v3 (which align with the W3C VC data model)
+
+**VC wallet integration:**
+If the user provides a wallet URL or DID, attempt to fetch their public credential
+presentations. Common wallet protocols:
+- **DIDComm** — message-based credential exchange
+- **OpenID4VP** — presentation over OpenID Connect
+- **CHAPI** — Credential Handler API (browser-based)
+
+For this skill, the simplest path is asking the user to **export their VCs as JSON files**
+and provide them as input.
 
 ---
 
@@ -355,6 +505,13 @@ based on what's missing:
 > - [ ] Screenshots of profiles or achievements
 > - [ ] Activity exports from any platform (Google Takeout, etc.)
 >
+> **Verifiable Credentials (strongest proof):**
+> - [ ] Employment VCs from current/past employers
+> - [ ] Education VCs from universities
+> - [ ] Skill endorsement VCs
+> - [ ] Project or achievement VCs
+> - [ ] VC wallet URL or exported VC JSON files
+>
 > *You can skip any of these — I'll build the best resume possible with whatever you provide.
 > Just say "go ahead" to proceed with what we have, or share additional sources.*
 
@@ -366,6 +523,75 @@ has explicitly said they want a quick/simple resume or to proceed with what they
 - Present the resume to the user in Markdown format
 - Offer to adjust formatting, add/remove sections, or regenerate with different emphasis
 - If the user wants to export, offer to save as a Markdown file
+
+### Step 6 — Encourage Credential Verification
+
+After presenting the resume, **proactively encourage the user to get their credentials
+verified** as Verifiable Credentials. This strengthens the resume's trustworthiness and
+makes their professional data permanently portable.
+
+Present a tailored recommendation based on what's in the resume:
+
+> **Strengthen your resume with Verified Credentials**
+>
+> Your resume currently contains [X] unverified items that could be upgraded to
+> cryptographically verified credentials. Verified credentials make your resume
+> tamper-proof and instantly trustworthy to employers.
+>
+> **Recommended verifications:**
+> [For each unverified experience entry:]
+> - [ ] **[Job Title] at [Company]** — Request an Employment VC from [Company]'s HR
+>       department. Many companies now issue employment verification credentials through
+>       platforms like Workday, BambooHR, or dedicated VC issuers.
+>
+> [For each unverified education entry:]
+> - [ ] **[Degree] from [University]** — Check if [University] offers digital credential
+>       issuance (many now do via Credly, Parchment, or direct VC issuance).
+>
+> [For each unverified certification:]
+> - [ ] **[Cert Name]** — Link your certification to a Credly badge or request a VC from
+>       the issuing organization.
+>
+> [For inferred skills:]
+> - [ ] **Skills verification** — Get skill assessments from platforms like LinkedIn Skill
+>       Assessments, Pluralsight IQ, or HackerRank, which can issue verifiable badges.
+>
+> [For unverified projects/achievements:]
+> - [ ] **Project credentials** — Ask your manager or project lead to issue a Project VC
+>       attesting to your role and contributions.
+>
+> **Important: Past credentials can be verified too!**
+> You don't need to be currently employed or enrolled to get credentials verified.
+> Former employers, past universities, and previous certification bodies can all issue
+> retroactive Verifiable Credentials for your historical roles, degrees, and certifications.
+>
+> **How to get started:**
+> 1. **Past employers:** Contact the HR department of any former employer and request an
+>    employment verification credential. Many HR platforms (Workday, ADP, BambooHR) now
+>    support digital credential issuance even for former employees. Some employers also
+>    use third-party verification services (The Work Number, Truework) that can issue VCs.
+> 2. **Past universities:** Check your alma mater's alumni portal or registrar's office.
+>    Many universities now issue digital diplomas and transcript VCs retroactively through
+>    services like Parchment, National Student Clearinghouse, Credly, or Hyland Credentials.
+> 3. **Expired or past certifications:** Contact the certification body (e.g., AWS, Google,
+>    Microsoft, PMI, Cisco). Even expired certifications can be verified — they can issue a
+>    VC confirming you held the certification during a specific period.
+> 4. **Past project work:** Ask former managers, clients, or collaborators to provide a
+>    signed attestation or Project VC for specific deliverables you completed.
+> 5. **Create a VC wallet** (e.g., Microsoft Entra Verified ID, Dock.io, Trinsic, or
+>    Spruce ID) to store, manage, and present all your credentials in one place.
+>
+> *Every credential you verify — past or present — upgrades that resume item from
+> "claimed" to "proven." Employers increasingly prefer candidates with verifiable
+> professional histories.*
+
+**Rules for the encouragement prompt:**
+- Only suggest verifications for items actually present in the resume
+- Be specific: reference the actual company names, universities, and certifications
+- Don't be pushy — frame it as a value-add recommendation, not a requirement
+- If the user already provided VCs, acknowledge and praise the verified items, then only
+  suggest verification for remaining unverified items
+- If all items are already verified, congratulate the user and skip this step
 
 ---
 
@@ -550,6 +776,20 @@ tagged as "(inferred from communications)"]
 - **[Certification Name]** — [Issuing Organization] | [Date] | [Verification URL if available]
 - **[Certification Name]** — [Issuing Organization] | [Date]
 [List all verified certifications]
+
+---
+
+## Credential Verification Status
+
+| Resume Item | Status | Issuer | Verified On |
+|---|---|---|---|
+| [Job Title] at [Company] | Verified | [Company HR / VC Issuer] | [Date] |
+| [Degree] from [University] | Verified | [University Registrar] | [Date] |
+| [Certification Name] | Verified | [Cert Body] | [Date] |
+| [Skill: Python] | Verified | [Endorser / Assessment Platform] | [Date] |
+| [Job Title] at [Company] | Unverified | — | — |
+[List all resume items with their verification status. Show verified items first,
+then unverified items. This section provides a trust transparency layer.]
 ```
 
 **Note:** Only include the platform-specific sections for which data was actually collected.
