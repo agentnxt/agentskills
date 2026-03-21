@@ -425,4 +425,118 @@ to assess skill levels.
 
 ---
 
+## Section 14 — Public Review & Global Acceptance Roadmap
+
+To gain global recognition and adoption, the Autonomyx Skills Framework mapping should be
+published for public review across multiple channels — standards bodies, open-source
+communities, professional associations, and academic/government institutions.
+
+### Tier 1 — Standards Bodies & Formal Standardization
+
+These organizations can formally adopt or endorse the framework as a standard.
+
+| Organization | What to submit | URL | Why |
+|---|---|---|---|
+| **IEEE Standards Association** | Propose as an IEEE standard for cross-framework skill interoperability (IEEE-SA New Standards) | https://standards.ieee.org/develop/ | IEEE standards carry global weight in technology; path to ISO adoption |
+| **ISO / IEC JTC 1 SC 36** (IT for Learning, Education, and Training) | Submit as a Technical Report or International Standard draft under SC 36 WG | https://www.iso.org/committee/45392.html | ISO standards are the gold standard for global acceptance; SC 36 covers competency frameworks |
+| **W3C Credentials Community Group** | Propose as a companion spec to W3C Verifiable Credentials for skill representation | https://www.w3.org/community/credentials/ | Aligns with the VC-based resume approach; W3C specs become web standards |
+| **IMS Global / 1EdTech** | Submit as an extension to Open Badges 3.0 / Comprehensive Learner Record (CLR) | https://www.1edtech.org/standards | 1EdTech standards are widely adopted in education and credentialing |
+| **HR Open Standards Consortium** | Propose as a skill classification extension to HR-XML / HR Open | https://www.hropenstandards.org/ | HR Open standards are used by ATS systems, HRIS platforms, and job boards globally |
+| **European Committee for Standardization (CEN)** | Submit as a European Norm (EN) via CEN Workshop Agreement (CWA) | https://www.cen.eu/ | Fast-track to EU-wide adoption; aligns with e-CF which is already a CEN standard |
+
+### Tier 2 — Open Source & Developer Community
+
+These platforms reach practitioners, tool builders, and the open-source community.
+
+| Platform | What to publish | URL | Why |
+|---|---|---|---|
+| **GitHub (public repo)** | Open-source the full framework as a versioned specification with JSON-LD schema, contribution guidelines, and RFC process | https://github.com | De facto standard for open-source collaboration; enables community PRs, issues, and forks |
+| **Schema.org** | Propose extensions to `schema.org/Occupation`, `schema.org/EducationalOccupationalCredential` for framework-mapped skills | https://schema.org/docs/extension.html | Schema.org markup is used by Google, LinkedIn, and job platforms for structured data |
+| **JSON-LD / Linked Open Data** | Publish the framework as a linked data vocabulary (JSON-LD context file) at a persistent URI | https://json-ld.org | Makes the framework machine-readable and linkable; enables semantic web interoperability |
+| **ESCO (European Skills, Competences, Qualifications, and Occupations)** | Submit cross-walk mappings between Autonomyx framework codes and ESCO skills taxonomy | https://esco.ec.europa.eu/ | ESCO is the EU's multilingual skills classification; mapping to it enables EU-wide adoption |
+| **O*NET (US Department of Labor)** | Submit cross-walk mappings to O*NET-SOC occupations and skills | https://www.onetonline.org/ | O*NET is the US standard for occupational information; used by job boards and government |
+
+### Tier 3 — Professional Associations & Industry Bodies
+
+These organizations represent the professions whose frameworks we reference. Engagement
+ensures accuracy and endorsement.
+
+| Organization | Action | URL |
+|---|---|---|
+| **SFIA Foundation** | Request formal partnership/endorsement; contribute cross-framework mapping back to SFIA ecosystem | https://sfia-online.org/en/about-sfia/sfia-foundation |
+| **PMI (Project Management Institute)** | Submit framework mapping for PMI Talent Triangle alignment review | https://www.pmi.org |
+| **ISACA** | Align with COBIT/CISA/CRISC competency models; submit for ISACA review | https://www.isaca.org |
+| **CFA Institute** | Request review of CFA BoK mapping accuracy | https://www.cfainstitute.org |
+| **SHRM** | Submit for SHRM competency model alignment review | https://www.shrm.org |
+| **CIPD** | Submit for Profession Map alignment review | https://www.cipd.org |
+| **CNCF / Linux Foundation** | Propose as a skills taxonomy for cloud-native certifications | https://www.cncf.io |
+| **World Economic Forum (WEF)** | Submit for inclusion in WEF's "Future of Jobs" skills taxonomy and reskilling initiatives | https://www.weforum.org/communities/future-of-jobs/ |
+
+### Tier 4 — Academic & Research Community
+
+Peer-reviewed publication establishes academic credibility.
+
+| Venue | What to submit | Why |
+|---|---|---|
+| **arXiv (cs.CY / cs.SE)** | Preprint paper describing the framework, cross-walk methodology, and validation | Immediate open-access visibility in the CS research community |
+| **ACM Computing Surveys** | Survey paper on professional skills framework interoperability | High-impact journal; positions the work as a scholarly contribution |
+| **IEEE Access** | Open-access journal paper on cross-framework skill mapping with VC integration | IEEE journal with global reach; fast review process |
+| **European Conference on Technology Enhanced Learning (EC-TEL)** | Conference paper on competency framework harmonization | Leading European conference on education technology |
+| **OECD Skills Studies** | Policy brief on standardized skills classification for international labor mobility | OECD publications influence national education and employment policies |
+
+### Tier 5 — Government & Policy
+
+Government adoption drives legal weight and institutional use.
+
+| Body | Action | Why |
+|---|---|---|
+| **European Commission (DG EMPL)** | Submit as input to Europass Digital Credentials framework and European Digital Identity Wallet | EU policy mandates interoperable digital credentials by 2026; framework mapping is directly relevant |
+| **US Department of Labor (ETA)** | Submit as companion to O*NET and Registered Apprenticeship skills standards | DOL adoption would embed the framework in US workforce development |
+| **UK Government (Department for Education)** | Submit as alignment resource for UK's Skills Framework for the Digital Economy | UK actively developing digital skills standards post-SFIA |
+| **Singapore SkillsFuture** | Submit cross-walk to Singapore's Skills Framework | Singapore is a global leader in national skills frameworks |
+| **India NSQF (National Skills Qualifications Framework)** | Submit mapping to NSQF levels | India's massive workforce development programs need interoperable frameworks |
+| **Australia AQF (Australian Qualifications Framework)** | Submit mapping to AQF levels | Aligns with Australia's vocational and higher education system |
+
+### Tier 6 — Industry Platforms & Job Boards
+
+These platforms reach employers and job seekers directly.
+
+| Platform | Integration opportunity | Why |
+|---|---|---|
+| **LinkedIn** | Propose as skills taxonomy partner; integrate framework codes into LinkedIn Skills endorsements | 900M+ users; LinkedIn skill endorsements could map to framework levels |
+| **Indeed / Glassdoor** | Submit framework for structured job posting skill requirements | Largest job boards; structured skills improve matching |
+| **Workday / SAP SuccessFactors** | Partner for HRIS skills module integration | Enterprise HR platforms define how skills are managed at scale |
+| **Credly / Acclaim** | Map Credly badges to framework codes and levels | Credly is the leading digital credentialing platform |
+| **Coursera / edX / Udacity** | Map course completions to framework skill codes and levels | Learning platforms can issue framework-aligned credentials |
+
+### Recommended Adoption Sequence
+
+1. **Immediate (Month 1–2):**
+   - Open-source on GitHub with RFC process and contribution guidelines
+   - Publish JSON-LD vocabulary at persistent URI
+   - Submit arXiv preprint
+   - Reach out to SFIA Foundation for partnership discussion
+
+2. **Short-term (Month 3–6):**
+   - Submit Schema.org extension proposal
+   - Engage W3C Credentials Community Group
+   - Submit cross-walks to ESCO and O*NET
+   - Present at 1–2 industry conferences (EC-TEL, SkillsX)
+   - Engage WEF Future of Jobs initiative
+
+3. **Medium-term (Month 6–12):**
+   - Submit CEN Workshop Agreement proposal
+   - Submit IEEE-SA new standard proposal
+   - Engage professional associations (SFIA, PMI, ISACA) for endorsement
+   - Publish journal paper (IEEE Access or ACM Computing Surveys)
+   - Partner with 1–2 credentialing platforms (Credly, Open Badges)
+
+4. **Long-term (Year 1–3):**
+   - ISO/IEC JTC 1 SC 36 standard submission
+   - Government submissions (EU, US DOL, UK DfE, Singapore, India, Australia)
+   - Enterprise HRIS integrations (Workday, SAP)
+   - Job board integrations (LinkedIn, Indeed)
+
+---
+
 Maintained by Autonomyx. Last updated: March 2026.

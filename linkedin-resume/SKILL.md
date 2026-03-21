@@ -760,16 +760,100 @@ Common behavioral skills to look for and include:
 | **Innovation & Creativity** | Ideation, design thinking, experimentation, prototyping |
 | **Ethics & Integrity** | Professional ethics, compliance awareness, responsible AI, data privacy |
 
+**The soft skills evidence challenge:**
+
+Unlike technical skills (which have clear proof: repos, certs, packages), soft/behavioral
+skills are inherently difficult to prove. They live primarily in **interpersonal interactions**
+— chats, emails, phone calls, meetings, and day-to-day collaboration. This data is:
+- Often locked in corporate systems (Slack, Teams, email) — inaccessible after leaving
+- Inherently personal and privacy-sensitive
+- Rarely captured in structured, verifiable formats
+
+**Solution: Anonymized communication analysis.**
+
+When users provide communication data (chat exports, emails, call transcripts), the skill
+MUST **anonymize all non-personal content** before analysis. This means:
+
+1. **Strip all PII** from the communication data before processing:
+   - Replace names of other people with anonymized labels (`[Colleague-1]`, `[Client-A]`)
+   - Remove email addresses, phone numbers, and identifying details of third parties
+   - Redact company-confidential information (revenue figures, unreleased product names, etc.)
+   - Preserve ONLY the behavioral patterns, language style, and professional signals
+
+2. **What to analyze (anonymized behavioral signals):**
+   - **Leadership language**: "I'll take ownership of...", "Let me coordinate with...",
+     "I've decided we should..." → Leadership, Decision-Making
+   - **Mentoring patterns**: "Here's how this works...", "Let me walk you through...",
+     code review feedback → Mentoring, Knowledge Sharing
+   - **Conflict resolution**: "I understand your concern...", "Let's find a middle ground...",
+     mediation in disagreements → Conflict Resolution, Negotiation
+   - **Collaboration signals**: Cross-channel/cross-team participation, tagging patterns,
+     response time, helping behavior → Collaboration, Teamwork
+   - **Communication quality**: Clarity, structure, empathy in messages → Communication skills
+   - **Problem-solving patterns**: Root cause analysis discussions, debugging conversations,
+     "Here's what I found..." → Analytical Thinking, Problem Solving
+   - **Client management**: Professional tone, expectation setting, status updates →
+     Client Relations, Stakeholder Management
+   - **Initiative signals**: Proactively raising issues, volunteering for tasks, suggesting
+     improvements → Initiative, Ownership
+
+3. **What NOT to retain or include in the resume:**
+   - Specific conversation content or quotes (even anonymized)
+   - Names or identifying details of colleagues, clients, or partners
+   - Proprietary business information
+   - Any content the user asks to exclude
+
+4. **Proof labels for communication-derived skills:**
+   Use the label: `Evidenced from [X] anonymized [platform] interactions ([date range])`
+   - Example: `Evidenced from 500+ anonymized Slack messages (Jan 2024 – Dec 2025)`
+   - Never cite specific messages or conversations
+
+**Primary sources for soft skill evidence (ranked by reliability):**
+
+| Source | Reliability | What it proves | Privacy handling |
+|---|---|---|---|
+| **Verifiable Credentials (behavioral endorsements)** | Highest | Third-party attested soft skills | No anonymization needed — already structured |
+| **360-degree review exports** | High | Multi-perspective behavioral assessment | Anonymize reviewer names; retain scores and themes |
+| **Chat/messaging exports (Slack, Teams, WhatsApp)** | Medium-High | Real-world behavioral patterns at scale | Full PII anonymization required; analyze patterns only |
+| **Email archives** | Medium-High | Professional communication, client relations, project coordination | Full PII anonymization required; analyze patterns only |
+| **Phone call transcripts** | Medium | Verbal communication, negotiation, client rapport | Full PII anonymization required; analyze patterns only |
+| **Meeting notes / transcripts** | Medium | Facilitation, presentation, collaboration | Full PII anonymization required; analyze patterns only |
+| **Performance review excerpts** | Medium | Manager-assessed behavioral competencies | Anonymize manager name; retain assessment content |
+| **Code review comments (GitHub PRs)** | Medium | Mentoring, collaboration, communication quality | Partially public already; anonymize if requested |
+| **Recommendation letters** | Medium | Third-party character and competency endorsement | Include with user permission |
+| **Role titles and tenure** | Low-Medium | Implies leadership, management, progression | No anonymization needed — public data |
+| **Self-reported** | Low | User's own perception of soft skills | No anonymization needed; mark as self-reported |
+
+**Proactively ask for soft skill evidence:**
+Since soft skills are the hardest to prove but among the most valued by employers, the skill
+should explicitly ask users:
+
+> "Soft skills like leadership, communication, and collaboration are highly valued but hard
+> to prove from public profiles alone. To strengthen your behavioral skills section, consider
+> providing any of the following (all content will be anonymized — no personal details of
+> others will appear in your resume):
+>
+> - [ ] Slack/Teams/Discord chat exports (I'll analyze communication patterns, not content)
+> - [ ] Email samples or archives (anonymized analysis only)
+> - [ ] Phone call transcripts or meeting notes
+> - [ ] Performance review excerpts or 360-feedback summaries
+> - [ ] Recommendation letters or peer endorsements
+> - [ ] Any behavioral assessment results (DISC, MBTI, StrengthsFinder, etc.)
+>
+> You can also simply describe your soft skills and I'll include them as self-reported."
+
 **How to extract behavioral skills from available data:**
 - **Role titles**: "Manager" / "Director" / "Lead" → Leadership, People Management, Decision-Making
 - **Team size managed**: Infer leadership and delegation scope
 - **Career transitions**: Multiple industries or role types → Adaptability, Learning Agility
-- **Chat/email data**: Language patterns reveal collaboration, mentoring, conflict resolution
+- **Chat/email data (anonymized)**: Language patterns reveal collaboration, mentoring, conflict resolution
 - **Published writing**: Articles/talks → Communication (Written), Thought Leadership
 - **Code reviews (GitHub)**: PR reviews → Mentoring, Code Quality Advocacy
 - **Stack Overflow answers**: → Knowledge Sharing, Communication (Written), Problem Solving
 - **Cross-team projects**: → Cross-functional Collaboration, Stakeholder Management
 - **Client-facing roles**: → Client Relations, Negotiation, Presentation Skills
+- **360/performance reviews**: Direct assessment of behavioral competencies
+- **Behavioral assessments**: DISC, MBTI, StrengthsFinder, Hogan → personality-aligned skill framing
 - **Self-reported**: Ask the user about soft skills directly — these are often under-represented
   in platform data but highly valued by employers
 
