@@ -40,3 +40,8 @@ odoo.agnxxt.com {
 n8n.agnxxt.com {
 	reverse_proxy n8n:5678
 }
+
+# WuzAPI — WhatsApp API
+wuzapi.agnxxt.com {
+	reverse_proxy wuzapi:8080
+}

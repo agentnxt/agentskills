@@ -15,6 +15,7 @@
 #   erp.agnxxt.com         — ERPNext
 #   odoo.agnxxt.com        — Odoo ERP/CRM
 #   n8n.agnxxt.com         — Workflow Automation
+#   wuzapi.agnxxt.com      — WhatsApp API
 
 name: openatonomyx
 
@@ -172,6 +173,19 @@ services:
       service: n8n-db
     networks: [openatonomyx]
 
+  # ─── WhatsApp API ────────────────────────────────────────────
+  wuzapi:
+    extends:
+      file: wuzapi/docker-compose.yml
+      service: wuzapi
+    networks: [openatonomyx]
+
+  wuzapi-db:
+    extends:
+      file: wuzapi/docker-compose.yml
+      service: wuzapi-db
+    networks: [openatonomyx]
+
 networks:
   openatonomyx:
     driver: bridge
@@ -191,3 +205,4 @@ volumes:
   odoo-db-data:
   n8n-data:
   n8n-db-data:
+  wuzapi-db-data:
