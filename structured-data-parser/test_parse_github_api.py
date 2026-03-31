@@ -279,8 +279,105 @@ class TestSerialisation:
 
 import os
 
-@pytest.mark.skipif(not os.environ.get("GITHUB_TOKEN"), reason="GITHUB_TOKEN not set")
-class TestLive:
+# ---------------------------------------------------------------------------
+# fetch_file / fetch_file_as_csv
+# ---------------------------------------------------------------------------
+
+class TestFetchFile:
+    """Unit tests using mocked HTTP responses."""
+
+    def _mock_response(self, content_str: str, name: str = "data.tsv") -> MagicMock:
+        import base64
+        encoded = base64.b64encode(content_str.encode()).decode() + "\n"
+        mock = MagicMock()
+        mock.json.return_value = {
+            "name": name, "path": f"dir/{name}", "sha": "abc",
+            "size": len(content_str), "html_url": "https://github.com/...",
+            "download_url": f"https://raw.githubusercontent.com/.../{name}",
+            "content": encoded, "encoding": "base64", "type": "file",
+        }
+        mock.raise_for_status = MagicMock()
+        return mock
+
+    @patch("parse_github_api._get")
+    def test_fetch_file_returns_content(self, mock_get):
+        mock_get.return_value = self._mock_response("col1\tcol2\nval1\tval2")
+        from parse_github_api import fetch_file
+        result = fetch_file("owner", "repo", "dir/data.tsv")
+        assert "col1" in result["content"]
+        assert result["name"] == "data.tsv"
+        assert result["size"] > 0
+
+    @patch("parse_github_api._get")
+    def test_fetch_file_as_csv_tsv(self, mock_get):
+        tsv = "id\tname\n1\tAlpha\n2\tBeta\n"
+        mock_get.return_value = self._mock_response(tsv, "data.tsv")
+        from parse_github_api import fetch_file_as_csv
+        rows = fetch_file_as_csv("owner", "repo", "dir/data.tsv")
+        assert len(rows) == 2
+        assert rows[0]["id"] == "1"
+        assert rows[0]["name"] == "Alpha"
+
+    @patch("parse_github_api._get")
+    def test_fetch_file_as_csv_csv(self, mock_get):
+        csv_content = "id,name\n1,Alpha\n2,Beta\n"
+        mock_get.return_value = self._mock_response(csv_content, "data.csv")
+        from parse_github_api import fetch_file_as_csv
+        rows = fetch_file_as_csv("owner", "repo", "dir/data.csv")
+        assert len(rows) == 2
+        assert rows[1]["name"] == "Beta"
+
+    @patch("parse_github_api._get")
+    def test_fetch_file_directory_raises(self, mock_get):
+        mock = MagicMock()
+        mock.json.return_value = [{"name": "file1.tsv"}, {"name": "file2.tsv"}]
+        mock.raise_for_status = MagicMock()
+        mock_get.return_value = mock
+        from parse_github_api import fetch_file
+        with pytest.raises(ValueError, match="is a directory"):
+            fetch_file("owner", "repo", "some/dir")
+
+    @patch("parse_github_api._get")
+    def test_blank_rows_skipped(self, mock_get):
+        tsv = "id\tname\n1\tAlpha\n\t\n2\tBeta\n"
+        mock_get.return_value = self._mock_response(tsv, "data.tsv")
+        from parse_github_api import fetch_file_as_csv
+        rows = fetch_file_as_csv("owner", "repo", "dir/data.tsv")
+        assert len(rows) == 2
+
+
+@pytest.mark.skipif(not os.environ.get("GITHUB_TOKEN") and False,
+                    reason="Public repo — always runs")
+class TestLiveIAB:
+    """Live test against the public IAB Taxonomies repo — no token needed."""
+
+    def test_fetch_iab_content_taxonomy(self):
+        from parse_github_api import fetch_file_as_csv
+        rows = fetch_file_as_csv(
+            "InteractiveAdvertisingBureau",
+            "Taxonomies",
+            "Content Taxonomies/Content Taxonomy 3.1.tsv",
+            ref="develop",
+        )
+        assert len(rows) > 700
+        # header row becomes dict keys
+        first = rows[0]
+        assert any("ID" in k or "Tier" in k or "Name" in k for k in first.keys())
+
+    def test_fetch_iab_content_raw(self):
+        from parse_github_api import fetch_file
+        result = fetch_file(
+            "InteractiveAdvertisingBureau",
+            "Taxonomies",
+            "Content Taxonomies/Content Taxonomy 3.1.tsv",
+            ref="develop",
+        )
+        assert result["name"].endswith(".tsv")
+        assert result["size"] > 0
+        assert "\t" in result["content"]
+
+
+
     def test_fetch_repo(self):
         from parse_github_api import fetch_repo
         repo = fetch_repo("agentnxxt", "agentskills")
