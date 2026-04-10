@@ -19,7 +19,7 @@ COPY integrations/ ../integrations/
 RUN useradd -m -u 1001 fabric
 USER fabric
 
-EXPOSE 8080
+EXPOSE 8080 8090
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
   CMD curl -f http://localhost:8080/health || exit 1

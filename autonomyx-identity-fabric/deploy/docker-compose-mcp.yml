@@ -1,0 +1,49 @@
+services:
+  identity-fabric-mcp:
+    image: identity-fabric:latest      # same image as the HTTP API
+    container_name: identity_fabric_mcp
+    restart: unless-stopped
+    command: ["python", "mcp_server.py"]
+    ports:
+      - "127.0.0.1:8090:8090"          # SSE — nginx proxies to mcp.identity.openautonomyx.com
+    environment:
+      MCP_TRANSPORT:      sse
+      MCP_HOST:           "0.0.0.0"
+      MCP_PORT:           "8090"
+      DEFAULT_TENANT_ID:  autonomyx
+
+      # Inherit same secrets as HTTP API — mount same .env file
+      SURREAL_URL:                    ${SURREAL_URL}
+      SURREAL_USER:                   ${SURREAL_USER}
+      SURREAL_PASS:                   ${SURREAL_PASS}
+      IDENTITY_FABRIC_ENC_KEY:        ${IDENTITY_FABRIC_ENC_KEY}
+      IDENTITY_FABRIC_HMAC_KEY:       ${IDENTITY_FABRIC_HMAC_KEY}
+      AUTONOMYX_AGENT_SECRET:         ${AUTONOMYX_AGENT_SECRET}
+      LOGTO_DOMAIN:                   ${LOGTO_DOMAIN}
+      LOGTO_M2M_APP_ID:               ${LOGTO_M2M_APP_ID}
+      LOGTO_M2M_APP_SECRET:           ${LOGTO_M2M_APP_SECRET}
+      OKTA_DOMAIN:                    ${OKTA_DOMAIN:-}
+      OKTA_CLIENT_ID:                 ${OKTA_CLIENT_ID:-}
+      OKTA_CLIENT_SECRET:             ${OKTA_CLIENT_SECRET:-}
+      AUTH0_DOMAIN:                   ${AUTH0_DOMAIN:-}
+      AUTH0_M2M_CLIENT_ID:            ${AUTH0_M2M_CLIENT_ID:-}
+      AUTH0_M2M_CLIENT_SECRET:        ${AUTH0_M2M_CLIENT_SECRET:-}
+      PING_ENV_ID:                    ${PING_ENV_ID:-}
+      PING_CLIENT_ID:                 ${PING_CLIENT_ID:-}
+      PING_CLIENT_SECRET:             ${PING_CLIENT_SECRET:-}
+      KEYCLOAK_BASE_URL:              ${KEYCLOAK_BASE_URL:-}
+      KEYCLOAK_REALM:                 ${KEYCLOAK_REALM:-master}
+      KEYCLOAK_ADMIN_CLIENT_ID:       ${KEYCLOAK_ADMIN_CLIENT_ID:-}
+      KEYCLOAK_ADMIN_CLIENT_SECRET:   ${KEYCLOAK_ADMIN_CLIENT_SECRET:-}
+
+    networks:
+      - shared-infra_default
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  shared-infra_default:
+    external: true
