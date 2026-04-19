@@ -1,0 +1,68 @@
+# Odoo — Open-Source Business Apps (ERP/CRM)
+# Upstream: https://github.com/odoo/odoo (LGPL-3.0)
+
+services:
+  odoo:
+    image: odoo:17.0
+    container_name: openatonomyx-odoo
+    restart: unless-stopped
+    environment:
+      HOST: ${ODOO_DB_HOST:-odoo-db}
+      PORT: 5432
+      USER: ${ODOO_DB_USER:-odoo}
+      PASSWORD: ${ODOO_DB_PASSWORD:-odoo}
+      ADMIN_PASSWD: ${ODOO_ADMIN_PASSWORD:-admin}
+      # OIDC / Logto SSO — via auth_oauth module (auto-installed)
+      ODOO_LOAD: "base,web,auth_oauth"
+      ODOO_OIDC_CLIENT_ID: ${ODOO_OIDC_CLIENT_ID:-}
+      ODOO_OIDC_CLIENT_SECRET: ${ODOO_OIDC_CLIENT_SECRET:-}
+      LOGTO_ENDPOINT: ${LOGTO_ENDPOINT:-http://logto:3001}
+      # OAuth provider must be configured in UI on first boot:
+      #   Settings → OAuth Providers → Create
+      #   Auth URL:  ${LOGTO_ENDPOINT}/oidc/auth
+      #   Token URL: ${LOGTO_ENDPOINT}/oidc/token
+      #   JWKS URL:  ${LOGTO_ENDPOINT}/oidc/jwks
+      #   Scope:     openid profile email
+    expose:
+      - "8069"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8069/web/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - odoo-data:/var/lib/odoo
+      - odoo-addons:/mnt/extra-addons
+    depends_on:
+      odoo-db:
+        condition: service_healthy
+    networks: [default]
+
+  odoo-db:
+    image: postgres:16-alpine
+    container_name: openatonomyx-odoo-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: ${ODOO_DB_USER:-odoo}
+      POSTGRES_PASSWORD: ${ODOO_DB_PASSWORD:-odoo}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${ODOO_DB_USER:-odoo}"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks: [default]
+
+volumes:
+  odoo-data:
+  odoo-db-data:
+  odoo-addons:
+
+networks:
+  default:
+    name: openatonomyx
+    external: true

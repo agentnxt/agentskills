@@ -1,0 +1,32 @@
+# Caddy — Automatic HTTPS Reverse Proxy
+# Handles TLS termination and subdomain routing for all services
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    container_name: openatonomyx-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "--quiet", "http://127.0.0.1:80"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks: [default]
+
+volumes:
+  caddy-data:
+  caddy-config:
+
+networks:
+  default:
+    name: openatonomyx
+    external: true

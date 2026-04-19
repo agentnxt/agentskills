@@ -1,0 +1,248 @@
+# OpenAtonomyx — Full Stack Deployment for agnxxt.com
+# All services on a shared Docker network with Logto as the central IdP.
+# Caddy handles HTTPS termination and subdomain routing.
+#
+# Usage:
+#   cp .env.example .env   # fill in secrets
+#   ./deploy.sh            # or: docker compose up -d
+#
+# Subdomains:
+#   logto.agnxxt.com       — Identity Provider
+#   authadmin.openautonomyx.com — Logto Admin Console
+#   liferay.agnxxt.com     — Portal / CMS
+#   lago.agnxxt.com        — Billing UI
+#   lago-api.agnxxt.com    — Billing API
+#   erp.agnxxt.com         — ERPNext
+#   odoo.agnxxt.com        — Odoo ERP/CRM
+#   n8n.agnxxt.com         — Workflow Automation
+#   wuzapi.agnxxt.com      — WhatsApp API
+#   matrix.agnxxt.com      — Matrix Homeserver (Conduit)
+#   sim.agnxxt.com         — Sim Studio (AI Workflows)
+#   sim-ws.agnxxt.com      — Sim Studio WebSocket
+
+name: openatonomyx
+
+services:
+  # ─── Reverse Proxy (HTTPS) ─────────────────────────────────────
+  caddy:
+    image: caddy:2-alpine
+    container_name: openatonomyx-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+      - "8448:8448"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      logto:
+        condition: service_healthy
+    networks: [openatonomyx]
+
+  # ─── Identity Provider (start first) ────────────────────────────
+  logto:
+    extends:
+      file: logto/docker-compose.yml
+      service: logto
+    networks: [openatonomyx]
+
+  logto-db:
+    extends:
+      file: logto/docker-compose.yml
+      service: logto-db
+    networks: [openatonomyx]
+
+  # ─── Portal / CMS ──────────────────────────────────────────────
+  liferay:
+    extends:
+      file: liferay/docker-compose.yml
+      service: liferay
+    depends_on:
+      logto:
+        condition: service_healthy
+    networks: [openatonomyx]
+
+  liferay-db:
+    extends:
+      file: liferay/docker-compose.yml
+      service: liferay-db
+    networks: [openatonomyx]
+
+  liferay-es:
+    extends:
+      file: liferay/docker-compose.yml
+      service: liferay-es
+    networks: [openatonomyx]
+
+  # ─── Billing / Metering ────────────────────────────────────────
+  lago-api:
+    extends:
+      file: lago/docker-compose.yml
+      service: lago-api
+    depends_on:
+      logto:
+        condition: service_healthy
+    networks: [openatonomyx]
+
+  lago-front:
+    extends:
+      file: lago/docker-compose.yml
+      service: lago-front
+    networks: [openatonomyx]
+
+  lago-db:
+    extends:
+      file: lago/docker-compose.yml
+      service: lago-db
+    networks: [openatonomyx]
+
+  lago-redis:
+    extends:
+      file: lago/docker-compose.yml
+      service: lago-redis
+    networks: [openatonomyx]
+
+  lago-worker:
+    extends:
+      file: lago/docker-compose.yml
+      service: lago-worker
+    networks: [openatonomyx]
+
+  # ─── ERP ───────────────────────────────────────────────────────
+  erpnext:
+    extends:
+      file: erpnext/docker-compose.yml
+      service: erpnext
+    depends_on:
+      logto:
+        condition: service_healthy
+    networks: [openatonomyx]
+
+  erpnext-db:
+    extends:
+      file: erpnext/docker-compose.yml
+      service: erpnext-db
+    networks: [openatonomyx]
+
+  erpnext-redis-cache:
+    extends:
+      file: erpnext/docker-compose.yml
+      service: erpnext-redis-cache
+    networks: [openatonomyx]
+
+  erpnext-redis-queue:
+    extends:
+      file: erpnext/docker-compose.yml
+      service: erpnext-redis-queue
+    networks: [openatonomyx]
+
+  erpnext-worker:
+    extends:
+      file: erpnext/docker-compose.yml
+      service: erpnext-worker
+    networks: [openatonomyx]
+
+  # ─── ERP (Odoo) ────────────────────────────────────────────────
+  odoo:
+    extends:
+      file: odoo/docker-compose.yml
+      service: odoo
+    depends_on:
+      logto:
+        condition: service_healthy
+    networks: [openatonomyx]
+
+  odoo-db:
+    extends:
+      file: odoo/docker-compose.yml
+      service: odoo-db
+    networks: [openatonomyx]
+
+  # ─── Workflow Automation ───────────────────────────────────────
+  n8n:
+    extends:
+      file: n8n/docker-compose.yml
+      service: n8n
+    depends_on:
+      logto:
+        condition: service_healthy
+    networks: [openatonomyx]
+
+  n8n-db:
+    extends:
+      file: n8n/docker-compose.yml
+      service: n8n-db
+    networks: [openatonomyx]
+
+  # ─── WhatsApp API ────────────────────────────────────────────
+  wuzapi:
+    extends:
+      file: wuzapi/docker-compose.yml
+      service: wuzapi
+    networks: [openatonomyx]
+
+  wuzapi-db:
+    extends:
+      file: wuzapi/docker-compose.yml
+      service: wuzapi-db
+    networks: [openatonomyx]
+
+  # ─── Matrix Homeserver ───────────────────────────────────────
+  conduit:
+    extends:
+      file: conduit/docker-compose.yml
+      service: conduit
+    networks: [openatonomyx]
+
+  # ─── AI Workflow Builder ────────────────────────────────────
+  simstudio:
+    extends:
+      file: simstudio/docker-compose.yml
+      service: simstudio
+    networks: [openatonomyx]
+
+  simstudio-realtime:
+    extends:
+      file: simstudio/docker-compose.yml
+      service: simstudio-realtime
+    networks: [openatonomyx]
+
+  simstudio-migrations:
+    extends:
+      file: simstudio/docker-compose.yml
+      service: simstudio-migrations
+    networks: [openatonomyx]
+
+  simstudio-db:
+    extends:
+      file: simstudio/docker-compose.yml
+      service: simstudio-db
+    networks: [openatonomyx]
+
+networks:
+  openatonomyx:
+    driver: bridge
+
+volumes:
+  caddy-data:
+  caddy-config:
+  logto-db-data:
+  liferay-data:
+  liferay-osgi:
+  liferay-db-data:
+  liferay-es-data:
+  lago-db-data:
+  lago-redis-data:
+  erpnext-data:
+  erpnext-db-data:
+  odoo-data:
+  odoo-addons:
+  odoo-db-data:
+  n8n-data:
+  n8n-db-data:
+  wuzapi-db-data:
+  conduit-data:
+  simstudio-db-data:

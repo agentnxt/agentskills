@@ -1,0 +1,114 @@
+# Sim Studio — AI Agent Workflow Builder
+# Upstream: https://github.com/simstudioai/sim (MIT)
+
+services:
+  simstudio:
+    image: ghcr.io/simstudioai/simstudio:latest
+    container_name: openatonomyx-simstudio
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${SIMSTUDIO_DB_USER:-postgres}:${SIMSTUDIO_DB_PASSWORD:-postgres}@simstudio-db:5432/${SIMSTUDIO_DB_NAME:-simstudio}
+      BETTER_AUTH_URL: ${SIMSTUDIO_HOST:-https://sim.agnxxt.com}
+      NEXT_PUBLIC_APP_URL: ${SIMSTUDIO_HOST:-https://sim.agnxxt.com}
+      BETTER_AUTH_SECRET: ${SIMSTUDIO_AUTH_SECRET}
+      ENCRYPTION_KEY: ${SIMSTUDIO_ENCRYPTION_KEY}
+      API_ENCRYPTION_KEY: ${SIMSTUDIO_API_ENCRYPTION_KEY:-}
+      INTERNAL_API_SECRET: ${SIMSTUDIO_INTERNAL_API_SECRET}
+      REDIS_URL: ${SIMSTUDIO_REDIS_URL:-}
+      COPILOT_API_KEY: ${SIMSTUDIO_COPILOT_API_KEY:-}
+      OLLAMA_URL: ${SIMSTUDIO_OLLAMA_URL:-http://host.docker.internal:11434}
+      # OIDC / Logto SSO — BetterAuth generic OIDC provider
+      AUTH_OIDC_ENABLED: "true"
+      AUTH_OIDC_CLIENT_ID: ${SIMSTUDIO_OIDC_CLIENT_ID:-}
+      AUTH_OIDC_CLIENT_SECRET: ${SIMSTUDIO_OIDC_CLIENT_SECRET:-}
+      AUTH_OIDC_ISSUER: ${LOGTO_ENDPOINT:-http://logto:3001}/oidc
+      SOCKET_SERVER_URL: http://simstudio-realtime:3002
+      NEXT_PUBLIC_SOCKET_URL: ${SIMSTUDIO_SOCKET_URL:-https://sim-ws.agnxxt.com}
+    expose:
+      - "3000"
+    depends_on:
+      simstudio-db:
+        condition: service_healthy
+      simstudio-migrations:
+        condition: service_completed_successfully
+      simstudio-realtime:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "--quiet", "http://127.0.0.1:3000"]
+      interval: 90s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks: [default]
+
+  simstudio-realtime:
+    image: ghcr.io/simstudioai/realtime:latest
+    container_name: openatonomyx-simstudio-realtime
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${SIMSTUDIO_DB_USER:-postgres}:${SIMSTUDIO_DB_PASSWORD:-postgres}@simstudio-db:5432/${SIMSTUDIO_DB_NAME:-simstudio}
+      NEXT_PUBLIC_APP_URL: ${SIMSTUDIO_HOST:-https://sim.agnxxt.com}
+      BETTER_AUTH_URL: ${SIMSTUDIO_HOST:-https://sim.agnxxt.com}
+      BETTER_AUTH_SECRET: ${SIMSTUDIO_AUTH_SECRET}
+      INTERNAL_API_SECRET: ${SIMSTUDIO_INTERNAL_API_SECRET}
+      REDIS_URL: ${SIMSTUDIO_REDIS_URL:-}
+    expose:
+      - "3002"
+    depends_on:
+      simstudio-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "--quiet", "http://127.0.0.1:3002/health"]
+      interval: 90s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks: [default]
+
+  simstudio-migrations:
+    image: ghcr.io/simstudioai/migrations:latest
+    container_name: openatonomyx-simstudio-migrations
+    working_dir: /app/packages/db
+    environment:
+      DATABASE_URL: postgresql://${SIMSTUDIO_DB_USER:-postgres}:${SIMSTUDIO_DB_PASSWORD:-postgres}@simstudio-db:5432/${SIMSTUDIO_DB_NAME:-simstudio}
+    depends_on:
+      simstudio-db:
+        condition: service_healthy
+    command: ["bun", "run", "db:migrate"]
+    restart: "no"
+    networks: [default]
+
+  simstudio-db:
+    image: pgvector/pgvector:pg17
+    container_name: openatonomyx-simstudio-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${SIMSTUDIO_DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${SIMSTUDIO_DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${SIMSTUDIO_DB_NAME:-simstudio}
+    volumes:
+      - simstudio-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${SIMSTUDIO_DB_USER:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks: [default]
+
+volumes:
+  simstudio-db-data:
+
+networks:
+  default:
+    name: openatonomyx
+    external: true

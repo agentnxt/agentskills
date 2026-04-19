@@ -1,0 +1,11 @@
+# Liferay — HTTPS reverse proxy for www.openautonomyx.com
+# Automatic TLS via Let's Encrypt
+
+www.openautonomyx.com {
+	reverse_proxy liferay:8080
+}
+
+# Redirect bare domain to www
+openautonomyx.com {
+	redir https://www.openautonomyx.com{uri} permanent
+}

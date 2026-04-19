@@ -1,0 +1,62 @@
+# OpenAtonomyx — Caddy Reverse Proxy
+# Automatic HTTPS via Let's Encrypt for all *.agnxxt.com subdomains
+
+# Logto — Identity Provider
+logto.agnxxt.com {
+	reverse_proxy logto:3001
+}
+
+# Logto Admin Console (on openautonomyx.com domain)
+authadmin.openautonomyx.com {
+	reverse_proxy logto:3002
+}
+
+# Liferay — Portal / CMS
+liferay.agnxxt.com {
+	reverse_proxy liferay:8080
+}
+
+# Lago — Billing UI
+lago.agnxxt.com {
+	reverse_proxy lago-front:80
+}
+
+# Lago — Billing API
+lago-api.agnxxt.com {
+	reverse_proxy lago-api:3000
+}
+
+# ERPNext — ERP
+erp.agnxxt.com {
+	reverse_proxy erpnext:8069
+}
+
+# Odoo — ERP/CRM
+odoo.agnxxt.com {
+	reverse_proxy odoo:8069
+}
+
+# n8n — Workflow Automation
+n8n.agnxxt.com {
+	reverse_proxy n8n:5678
+}
+
+# WuzAPI — WhatsApp API
+wuzapi.agnxxt.com {
+	reverse_proxy wuzapi:8080
+}
+
+# Conduit — Matrix Homeserver (clients on 443, federation on 8448)
+matrix.agnxxt.com matrix.agnxxt.com:8448 {
+	reverse_proxy conduit:6167
+}
+
+# Sim Studio — AI Workflow Builder
+sim.agnxxt.com {
+	reverse_proxy simstudio:3000
+}
+
+# Sim Studio — WebSocket (realtime collaboration)
+sim-ws.agnxxt.com {
+	reverse_proxy simstudio-realtime:3002
+}

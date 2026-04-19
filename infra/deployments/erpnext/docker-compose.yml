@@ -1,0 +1,109 @@
+# ERPNext — Open-Source ERP
+# Upstream: https://github.com/frappe/erpnext (GPL-3.0)
+
+services:
+  erpnext:
+    image: frappe/erpnext:latest
+    container_name: openatonomyx-erpnext
+    restart: unless-stopped
+    command:
+      - bench
+      - start
+    environment:
+      DB_HOST: ${ERPNEXT_DB_HOST:-erpnext-db}
+      DB_PORT: "3306"
+      REDIS_CACHE: redis://erpnext-redis-cache:6379
+      REDIS_QUEUE: redis://erpnext-redis-queue:6379
+      SITE_NAME: ${ERPNEXT_HOST:-erp.localhost}
+      DB_ROOT_USER: root
+      DB_ROOT_PASSWORD: ${ERPNEXT_DB_ROOT_PASSWORD:-erpnext}
+      ADMIN_PASSWORD: ${ERPNEXT_ADMIN_PASSWORD:-admin}
+      ENCRYPTION_KEY: ${ERPNEXT_ENCRYPTION_KEY}
+      # OIDC / Logto SSO — configured via site_config.json or Frappe Social Login
+      OAUTH_CLIENT_ID: ${ERPNEXT_OIDC_CLIENT_ID}
+      OAUTH_CLIENT_SECRET: ${ERPNEXT_OIDC_CLIENT_SECRET}
+      OAUTH_PROVIDER_URL: ${LOGTO_ENDPOINT:-http://logto:3001}/oidc
+    expose:
+      - "8069"
+    volumes:
+      - erpnext-data:/home/frappe/frappe-bench/sites
+    depends_on:
+      erpnext-db:
+        condition: service_healthy
+      erpnext-redis-cache:
+        condition: service_healthy
+      erpnext-redis-queue:
+        condition: service_healthy
+    networks: [default]
+
+  erpnext-worker:
+    image: frappe/erpnext:latest
+    container_name: openatonomyx-erpnext-worker
+    restart: unless-stopped
+    command:
+      - bench
+      - worker
+      - --queue
+      - default,short,long
+    environment:
+      DB_HOST: ${ERPNEXT_DB_HOST:-erpnext-db}
+      DB_PORT: "3306"
+      REDIS_CACHE: redis://erpnext-redis-cache:6379
+      REDIS_QUEUE: redis://erpnext-redis-queue:6379
+    volumes:
+      - erpnext-data:/home/frappe/frappe-bench/sites
+    depends_on:
+      - erpnext
+    networks: [default]
+
+  erpnext-db:
+    image: mariadb:11
+    container_name: openatonomyx-erpnext-db
+    restart: unless-stopped
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --skip-character-set-client-handshake
+      - --skip-innodb-read-only-compressed
+    environment:
+      MYSQL_ROOT_PASSWORD: ${ERPNEXT_DB_ROOT_PASSWORD:-erpnext}
+      MYSQL_DATABASE: ${ERPNEXT_DB_NAME:-erpnext}
+    volumes:
+      - erpnext-db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [default]
+
+  erpnext-redis-cache:
+    image: redis:7-alpine
+    container_name: openatonomyx-erpnext-redis-cache
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks: [default]
+
+  erpnext-redis-queue:
+    image: redis:7-alpine
+    container_name: openatonomyx-erpnext-redis-queue
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks: [default]
+
+volumes:
+  erpnext-data:
+  erpnext-db-data:
+
+networks:
+  default:
+    name: openatonomyx
+    external: true

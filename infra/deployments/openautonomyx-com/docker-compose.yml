@@ -1,0 +1,112 @@
+# Liferay DXP — Standalone deployment for www.openautonomyx.com
+# Enterprise Portal & CMS with Caddy reverse proxy (auto-HTTPS)
+#
+# Usage:
+#   cp .env.example .env   # fill in secrets
+#   ./deploy.sh            # or: docker compose up -d
+#
+# Endpoint: https://www.openautonomyx.com
+
+name: openautonomyx-com
+
+services:
+  # ─── Reverse Proxy (HTTPS) ─────────────────────────────────────
+  caddy:
+    image: caddy:2-alpine
+    container_name: oax-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      liferay:
+        condition: service_healthy
+    networks: [oax-net]
+
+  # ─── Liferay Portal ───────────────────────────────────────────
+  liferay:
+    image: liferay/dxp:latest
+    container_name: oax-liferay
+    restart: unless-stopped
+    environment:
+      LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_DRIVER_UPPERCASEC_LASS_UPPERCASEN_AME: org.postgresql.Driver
+      LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL: jdbc:postgresql://liferay-db:5432/${LIFERAY_DB_NAME:-lportal}
+      LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_USERNAME: ${LIFERAY_DB_USER:-liferay}
+      LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_PASSWORD: ${LIFERAY_DB_PASSWORD:-liferay}
+      LIFERAY_SETUP_PERIOD_WIZARD_PERIOD_ENABLED: "false"
+      LIFERAY_ADMIN_PERIOD_EMAIL_PERIOD_FROM_PERIOD_ADDRESS: ${LIFERAY_ADMIN_EMAIL:-admin@openautonomyx.com}
+      LIFERAY_ELASTICSEARCH_PERIOD_CONNECTION_PERIOD_URL: http://liferay-es:9200
+      LIFERAY_WEB_PERIOD_SERVER_PERIOD_PROTOCOL: https
+      LIFERAY_WEB_PERIOD_SERVER_PERIOD_HOST: www.openautonomyx.com
+      LIFERAY_WEB_PERIOD_SERVER_PERIOD_HTTPS_PERIOD_PORT: "443"
+    expose:
+      - "8080"
+    volumes:
+      - liferay-data:/opt/liferay/data
+      - liferay-osgi:/opt/liferay/osgi
+    depends_on:
+      liferay-db:
+        condition: service_healthy
+      liferay-es:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/api/jsonws || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 120s
+    networks: [oax-net]
+
+  # ─── PostgreSQL ────────────────────────────────────────────────
+  liferay-db:
+    image: postgres:16-alpine
+    container_name: oax-liferay-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${LIFERAY_DB_NAME:-lportal}
+      POSTGRES_USER: ${LIFERAY_DB_USER:-liferay}
+      POSTGRES_PASSWORD: ${LIFERAY_DB_PASSWORD:-liferay}
+    volumes:
+      - liferay-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${LIFERAY_DB_USER:-liferay}"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks: [oax-net]
+
+  # ─── Elasticsearch ─────────────────────────────────────────────
+  liferay-es:
+    image: elasticsearch:8.13.0
+    container_name: oax-liferay-es
+    restart: unless-stopped
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+    volumes:
+      - liferay-es-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks: [oax-net]
+
+networks:
+  oax-net:
+    driver: bridge
+
+volumes:
+  caddy-data:
+  caddy-config:
+  liferay-data:
+  liferay-osgi:
+  liferay-db-data:
+  liferay-es-data:

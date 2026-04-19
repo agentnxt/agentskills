@@ -1,0 +1,58 @@
+# Logto — OpenID Connect Identity Provider
+# Upstream: https://github.com/logto-io/logto (MIT)
+
+services:
+  logto:
+    image: svhd/logto:latest
+    container_name: openatonomyx-logto
+    restart: unless-stopped
+    entrypoint:
+      - sh
+      - -c
+      - |
+        npm run cli db seed -- --swe &&
+        npm start
+    environment:
+      TRUST_PROXY_HEADER: "1"
+      DB_URL: ${LOGTO_DB_URL:-postgresql://logto:logto@logto-db:5432/logto}
+      ENDPOINT: ${LOGTO_ENDPOINT:-http://localhost:3001}
+      ADMIN_ENDPOINT: ${LOGTO_ADMIN_ENDPOINT:-http://localhost:3002}
+      COOKIE_KEYS: ${LOGTO_COOKIE_KEYS:-cookie-key-change-me}
+    expose:
+      - "3001"
+      - "3002"
+    depends_on:
+      logto-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3001/api/status || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks: [default]
+
+  logto-db:
+    image: postgres:16-alpine
+    container_name: openatonomyx-logto-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${LOGTO_DB_NAME:-logto}
+      POSTGRES_USER: ${LOGTO_DB_USER:-logto}
+      POSTGRES_PASSWORD: ${LOGTO_DB_PASSWORD:-logto}
+    volumes:
+      - logto-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${LOGTO_DB_USER:-logto}"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks: [default]
+
+volumes:
+  logto-db-data:
+
+networks:
+  default:
+    name: openatonomyx
+    external: true
