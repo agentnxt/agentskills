@@ -1,4 +1,4 @@
-# Autonomyx Skill Evaluator: AI-Powered Professional Skills Assessment and Resume Generation
+# Autonomyx Skill Score for Professionals: AI-Powered Professional Skills Assessment and Resume Generation
 
 **White Paper v1.0 — March 2026**
 
@@ -8,7 +8,7 @@
 
 ## Abstract
 
-The professional resume remains the primary artifact in hiring, yet it is fundamentally broken. Resumes are self-reported, unverified, inconsistent in format, and disconnected from the professional standards that define competency. The Autonomyx Skill Evaluator addresses these problems by introducing an AI-driven system that aggregates professional data from multiple verified sources, maps every skill to internationally recognized competency frameworks, assigns credibility-tiered proof to each claim, and produces resumes optimized for 15 distinct target platforms. This white paper describes the architecture, methodology, and standards underpinning the system, and outlines a roadmap toward a future where professional credentials are portable, verifiable, and universally understood.
+The professional resume remains the primary artifact in hiring, yet it is fundamentally broken. Resumes are self-reported, unverified, inconsistent in format, and disconnected from the professional standards that define competency. The Autonomyx Skill Score for Professionals addresses these problems by introducing an AI-driven system that aggregates professional data from multiple verified sources, maps every skill to internationally recognized competency frameworks, assigns credibility-tiered proof to each claim, and produces resumes optimized for 15 distinct target platforms. This white paper describes the architecture, methodology, and standards underpinning the system, and outlines a roadmap toward a future where professional credentials are portable, verifiable, and universally understood.
 
 ---
 
@@ -34,7 +34,7 @@ A resume optimized for an Applicant Tracking System (ATS) differs fundamentally 
 
 ## 2. The Autonomyx Approach
 
-The Autonomyx Skill Evaluator is a Claude Code skill — an AI-powered agent that operates within the Claude ecosystem — designed to solve each of these problems systematically.
+The Autonomyx Skill Score for Professionals is a Claude Code skill — an AI-powered agent that operates within the Claude ecosystem — designed to solve each of these problems systematically.
 
 ### 2.1 Multi-Source Data Aggregation
 
@@ -111,7 +111,7 @@ A key design principle: **publicly verifiable information is Tier [S] and requir
 
 ### 2.5 Behavioral and Soft Skills Assessment
 
-Unlike traditional resume builders that focus exclusively on technical skills, the Autonomyx Skill Evaluator treats behavioral competencies with equal rigor. Leadership, communication, collaboration, mentoring, conflict resolution, and other interpersonal skills are identified from multiple evidence sources:
+Unlike traditional resume builders that focus exclusively on technical skills, the Autonomyx Skill Score for Professionals treats behavioral competencies with equal rigor. Leadership, communication, collaboration, mentoring, conflict resolution, and other interpersonal skills are identified from multiple evidence sources:
 
 - **Role titles and tenure**: "Director" implies leadership scope; team size implies delegation
 - **Communication archives** (with full anonymization): Language patterns in Slack, email, and meeting transcripts reveal collaboration styles, mentoring behavior, and decision-making patterns
@@ -153,7 +153,7 @@ When a professional leaves an employer, they lose access to the corporate system
 
 ### 3.2 Verifiable Credentials as the Solution
 
-Verifiable Credentials (VCs), as defined by the W3C standard, solve this problem by making professional data portable, tamper-proof, and individually owned. The Autonomyx Skill Evaluator natively supports:
+Verifiable Credentials (VCs), as defined by the W3C standard, solve this problem by making professional data portable, tamper-proof, and individually owned. The Autonomyx Skill Score for Professionals natively supports:
 
 - **W3C Verifiable Credentials** (JSON-LD)
 - **JWT-encoded VCs**
@@ -198,7 +198,7 @@ This hierarchy makes resume trustworthiness transparent and quantifiable. A resu
 
 ### 4.1 System Components
 
-The Autonomyx Skill Evaluator operates as an agentic skill within the Claude Code ecosystem, leveraging:
+The Autonomyx Skill Score for Professionals operates as an agentic skill within the Claude Code ecosystem, leveraging:
 
 - **Explorium MCP**: Prospect matching and enrichment via `match-prospects` and `enrich-prospects` APIs for professional background data
 - **Platform APIs**: Direct integration with GitHub, Docker Hub, npm, PyPI, Stack Overflow, Dev.to, and WordPress APIs
@@ -246,7 +246,7 @@ The system implements several privacy safeguards:
 
 ## 5. Comparison with Existing Solutions
 
-| Capability | Traditional Resume Builders | LinkedIn | Autonomyx Skill Evaluator |
+| Capability | Traditional Resume Builders | LinkedIn | Autonomyx Skill Score for Professionals |
 |---|---|---|---|
 | Multi-source aggregation | No — single manual input | Partial — LinkedIn data only | Yes — 15+ source types |
 | Framework-mapped skills | No | No | Yes — 17 frameworks |
@@ -289,11 +289,11 @@ The system implements several privacy safeguards:
 
 ## 7. Conclusion
 
-The Autonomyx Skill Evaluator represents a paradigm shift in how professional competency is documented, verified, and communicated. By aggregating data from multiple sources, mapping skills to internationally recognized frameworks, assigning credibility tiers to every claim, and formatting output for the specific platform where it will be consumed, the system produces resumes that are more accurate, more trustworthy, and more useful than anything built manually.
+The Autonomyx Skill Score for Professionals represents a paradigm shift in how professional competency is documented, verified, and communicated. By aggregating data from multiple sources, mapping skills to internationally recognized frameworks, assigning credibility tiers to every claim, and formatting output for the specific platform where it will be consumed, the system produces resumes that are more accurate, more trustworthy, and more useful than anything built manually.
 
 The integration of Verifiable Credentials points toward a future where professional identity is truly portable — owned by the individual, cryptographically verifiable, and universally understood. Every resume generated today includes a prompt to begin this transition, encouraging professionals to convert their claimed credentials into proven ones.
 
-The gap between "what you claim" and "what you can prove" is where trust breaks down in hiring. The Autonomyx Skill Evaluator closes that gap.
+The gap between "what you claim" and "what you can prove" is where trust breaks down in hiring. The Autonomyx Skill Score for Professionals closes that gap.
 
 ---
 

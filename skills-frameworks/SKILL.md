@@ -16,7 +16,7 @@ description: >
 # Professional Skills Frameworks Vocabulary
 
 Shared reference skill for mapping professional skills to internationally recognized
-competency frameworks. Used by the `autonomyx-skill-evaluator` skill and any future Autonomyx skill
+competency frameworks. Used by the `autonomyx-skill-score` skill and any future Autonomyx skill
 that needs standardized skill classification.
 
 Read the relevant section for your use case:
@@ -725,7 +725,7 @@ proof point is.
 ## Section 16 — Top Educational Institutions Directory
 
 A reference directory of globally recognized educational institutions organized by discipline.
-Used by the `autonomyx-skill-evaluator` skill to:
+Used by the `autonomyx-skill-score` skill to:
 1. **Assess credential weight** — degrees from top-tier institutions carry stronger signal
 2. **Guide verification** — identify which institutions offer digital/verifiable credentials
 3. **Enrich the Education section** — add institutional reputation context when relevant

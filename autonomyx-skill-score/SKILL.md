@@ -1,5 +1,5 @@
 ---
-name: autonomyx-skill-evaluator
+name: autonomyx-skill-score
 description: >
   Evaluates professional skills from any source and generates a verified, framework-mapped
   resume. Trigger this skill when a user asks to create, build, or generate a resume, evaluate
@@ -14,7 +14,7 @@ description: >
   verification encouragement.
 ---
 
-# Autonomyx Skill Evaluator
+# Autonomyx Skill Score for Professionals
 
 Evaluates professional skills from any source — profiles, credentials, documents, and
 communications — and generates a verified, framework-mapped resume.

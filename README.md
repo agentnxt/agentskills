@@ -17,7 +17,7 @@ Produces exhaustive, standardised profiles of SaaS products across 18 dimensions
 - Reads from and writes to the shared Notion feature registry
 - Covers: features, use cases, APIs, pricing, security, support, roadmap, analyst rankings, and more
 
-### `autonomyx-skill-evaluator`
+### `autonomyx-skill-score`
 Evaluates professional skills from any source and generates a verified, framework-mapped resume.
 - Accepts any input: profile URLs (LinkedIn, GitHub, Docker Hub, Stack Overflow, npm, PyPI, etc.), Verifiable Credentials, chat/email exports, authored documents, patents, certifications
 - Evaluates each skill against profession-specific frameworks (SFIA, NICE, EDISON, PMI, CFA, SHRM, CIM, etc.) with proficiency levels and credibility-tiered proof ([S] self-evident through [G] self-reported)
@@ -69,7 +69,7 @@ saas-standardizer
 autonomyx-vocabulary
   └── standalone reference (no dependencies)
 
-autonomyx-skill-evaluator
+autonomyx-skill-score
   └── reads → skills-frameworks (skill classification and framework mapping)
   └── reads → Explorium (match-prospects, enrich-prospects)
   └── reads → Platform APIs (GitHub, Docker Hub, Stack Overflow, npm, PyPI, Dev.to, etc.)
