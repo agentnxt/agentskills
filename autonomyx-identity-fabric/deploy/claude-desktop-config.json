@@ -1,0 +1,35 @@
+{
+  "_comment": "Autonomyx Identity Fabric MCP — Claude Desktop configuration",
+  "_instructions": "Add the relevant block to ~/Library/Application Support/Claude/claude_desktop_config.json (macOS) or %APPDATA%\\Claude\\claude_desktop_config.json (Windows)",
+
+  "mcpServers": {
+
+    "_option_A_comment": "=== OPTION A: stdio (local, runs on your machine) ===",
+    "autonomyx-identity-fabric": {
+      "command": "python3",
+      "args": ["/path/to/agentskills/autonomyx-identity-fabric/scripts/mcp_server.py"],
+      "env": {
+        "MCP_TRANSPORT": "stdio",
+        "SURREAL_URL": "wss://schemadb-06ehsj292ppah8kbsk9pmnjjbc.aws-aps1.surreal.cloud",
+        "SURREAL_USER": "root",
+        "SURREAL_PASS": "YOUR_SURREAL_PASS",
+        "IDENTITY_FABRIC_ENC_KEY": "YOUR_32_BYTE_HEX_KEY",
+        "IDENTITY_FABRIC_HMAC_KEY": "YOUR_HMAC_KEY",
+        "AUTONOMYX_AGENT_SECRET": "YOUR_AGENT_SECRET",
+        "LOGTO_DOMAIN": "auth.openautonomyx.com",
+        "LOGTO_M2M_APP_ID": "YOUR_LOGTO_M2M_APP_ID",
+        "LOGTO_M2M_APP_SECRET": "YOUR_LOGTO_M2M_APP_SECRET",
+        "DEFAULT_TENANT_ID": "autonomyx"
+      }
+    },
+
+    "_option_B_comment": "=== OPTION B: SSE (remote, connects to VPS) ===",
+    "autonomyx-identity-fabric-remote": {
+      "url": "https://mcp.identity.openautonomyx.com/sse",
+      "headers": {
+        "Authorization": "Bearer YOUR_AUTONOMYX_AGENT_SECRET"
+      }
+    }
+
+  }
+}

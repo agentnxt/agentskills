@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Autonomyx Music Player</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg: #001141;
+  --bg2: #00193a;
+  --bg3: #002060;
+  --blue: #1B5EBE;
+  --cyan: #00CFFF;
+  --text: #e8eef8;
+  --muted: #6a85b0;
+  --border: rgba(27,94,190,0.35);
+  --glow: rgba(0,207,255,0.15);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'IBM Plex Sans', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 16px 80px;
+}
+
+.header {
+  width: 100%;
+  max-width: 780px;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.logo {
+  font-size: 13px;
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--cyan);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.logo span {
+  color: var(--muted);
+  font-size: 11px;
+  margin-left: 8px;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+.player-shell {
+  width: 100%;
+  max-width: 780px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* TABS */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.tab {
+  padding: 14px 24px;
+  font-size: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  border: none;
+  background: none;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+
+/* TAB PANELS */
+.panel { display: none; padding: 28px; }
+.panel.active { display: block; }
+
+/* CANVAS */
+.waveform-wrap {
+  width: 100%;
+  height: 100px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+
+canvas.paused { opacity: 0.38; }
+
+.waveform-idle {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  pointer-events: none;
+}
+
+/* TRACK INFO */
+.track-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 14px;
+}
+
+.track-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70%;
+}
+
+.track-time {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* SEEK */
+.seek-wrap { margin-bottom: 18px; }
+
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 3px;
+  background: var(--bg3);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--cyan);
+  cursor: pointer;
+  box-shadow: 0 0 8px var(--glow);
+  transition: transform 0.1s;
+}
+
+input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.3); }
+
+/* CONTROLS ROW */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.btn-play {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid var(--cyan);
+  background: transparent;
+  color: var(--cyan);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.btn-play:hover {
+  background: rgba(0,207,255,0.08);
+  box-shadow: 0 0 16px var(--glow);
+}
+
+.vol-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  margin-left: auto;
+}
+
+.vol-wrap { display: flex; align-items: center; gap: 8px; }
+
+.vol-wrap input { width: 80px; }
+
+/* DROP ZONE */
+.drop-zone {
+  border: 1.5px dashed var(--border);
+  border-radius: 3px;
+  padding: 32px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  margin-bottom: 24px;
+}
+
+.drop-zone:hover, .drop-zone.drag-over {
+  border-color: var(--cyan);
+  background: rgba(0,207,255,0.04);
+}
+
+.drop-zone .drop-icon { font-size: 28px; margin-bottom: 8px; }
+.drop-zone p { font-size: 13px; color: var(--muted); }
+.drop-zone p strong { color: var(--text); }
+
+input[type=file] { display: none; }
+
+/* QUEUE */
+.queue { margin-top: 20px; }
+.queue-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.queue-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-size: 13px;
+}
+
+.queue-item:hover { background: rgba(27,94,190,0.15); }
+.queue-item.active { background: rgba(0,207,255,0.08); color: var(--cyan); }
+.queue-item .qi-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  width: 18px;
+  flex-shrink: 0;
+}
+
+/* URL TAB */
+.url-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.url-input {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 10px 14px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.url-input:focus { border-color: var(--cyan); }
+.url-input::placeholder { color: var(--muted); }
+
+.btn-load {
+  padding: 10px 20px;
+  background: var(--blue);
+  border: none;
+  border-radius: 3px;
+  color: #fff;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-load:hover { background: #2470d8; }
+
+.error-card {
+  background: rgba(190,30,30,0.12);
+  border: 1px solid rgba(190,30,30,0.4);
+  border-radius: 3px;
+  padding: 14px 16px;
+  font-size: 12px;
+  color: #f88;
+  margin-bottom: 20px;
+  display: none;
+}
+
+/* MOOD TAB */
+.mood-textarea {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 14px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  resize: vertical;
+  min-height: 80px;
+  outline: none;
+  transition: border-color 0.2s;
+  margin-bottom: 12px;
+}
+
+.mood-textarea:focus { border-color: var(--blue); }
+.mood-textarea::placeholder { color: var(--muted); }
+
+.mood-actions { display: flex; gap: 10px; margin-bottom: 24px; }
+
+.btn-gen {
+  padding: 10px 24px;
+  background: var(--blue);
+  border: none;
+  border-radius: 3px;
+  color: #fff;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-gen:hover { background: #2470d8; }
+.btn-gen:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.btn-regen {
+  padding: 10px 16px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--muted);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.btn-regen:hover { border-color: var(--cyan); color: var(--cyan); }
+.btn-regen:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* LOADING BARS */
+.loading-bars {
+  display: none;
+  align-items: flex-end;
+  gap: 4px;
+  height: 28px;
+  margin-bottom: 20px;
+}
+
+.loading-bars.active { display: flex; }
+
+.bar {
+  width: 4px;
+  background: var(--cyan);
+  border-radius: 2px;
+  animation: barPulse 1s ease-in-out infinite;
+}
+
+.bar:nth-child(1) { animation-delay: 0s; }
+.bar:nth-child(2) { animation-delay: 0.1s; }
+.bar:nth-child(3) { animation-delay: 0.2s; }
+.bar:nth-child(4) { animation-delay: 0.3s; }
+.bar:nth-child(5) { animation-delay: 0.4s; }
+.bar:nth-child(6) { animation-delay: 0.5s; }
+.bar:nth-child(7) { animation-delay: 0.6s; }
+.bar:nth-child(8) { animation-delay: 0.7s; }
+
+@keyframes barPulse {
+  0%, 100% { height: 6px; opacity: 0.4; }
+  50% { height: 24px; opacity: 1; }
+}
+
+/* TRACK CARDS */
+.playlist-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.track-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 14px 16px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.track-card:hover {
+  border-color: var(--blue);
+  box-shadow: 0 0 16px rgba(27,94,190,0.12);
+}
+
+.tc-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 6px;
+}
+
+.tc-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.tc-artist {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.tc-year {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+.tc-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--blue);
+  border: 1px solid var(--blue);
+  border-radius: 2px;
+  padding: 2px 7px;
+  letter-spacing: 0.06em;
+}
+
+.tc-reason {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.tc-links { display: flex; gap: 8px; }
+
+.btn-link {
+  padding: 6px 14px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  border-radius: 2px;
+  text-decoration: none;
+  transition: background 0.15s;
+  border: 1px solid transparent;
+}
+
+.btn-yt {
+  background: rgba(255,50,50,0.12);
+  color: #ff6b6b;
+  border-color: rgba(255,50,50,0.3);
+}
+
+.btn-yt:hover { background: rgba(255,50,50,0.22); }
+
+.btn-sc {
+  background: rgba(255,130,0,0.1);
+  color: #ffaa55;
+  border-color: rgba(255,130,0,0.3);
+}
+
+.btn-sc:hover { background: rgba(255,130,0,0.2); }
+
+/* SEARCH TAB */
+.search-row { display:flex; gap:10px; margin-bottom:24px; }
+.search-input {
+  flex:1; background:var(--bg); border:1px solid var(--border);
+  border-radius:3px; padding:10px 14px;
+  font-family:'IBM Plex Mono',monospace; font-size:12px;
+  color:var(--text); outline:none; transition:border-color 0.2s;
+}
+.search-input:focus { border-color:var(--cyan); }
+.search-input::placeholder { color:var(--muted); }
+
+.results-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+  gap:10px; margin-bottom:20px;
+}
+
+.result-card {
+  background:var(--bg); border:1px solid var(--border);
+  border-radius:3px; overflow:hidden; cursor:pointer;
+  transition:border-color 0.2s, box-shadow 0.2s;
+}
+.result-card:hover { border-color:var(--blue); box-shadow:0 0 14px rgba(27,94,190,0.18); }
+.result-card.active { border-color:var(--cyan); box-shadow:0 0 18px rgba(0,207,255,0.2); }
+
+.result-thumb {
+  width:100%; aspect-ratio:16/9; object-fit:cover;
+  display:block; background:var(--bg3);
+}
+.result-thumb-placeholder {
+  width:100%; aspect-ratio:16/9; background:var(--bg3);
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px; color:var(--muted);
+}
+.result-body { padding:10px 12px; }
+.result-title { font-size:12px; font-weight:600; color:var(--text); margin-bottom:3px; line-height:1.4; }
+.result-meta { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); }
+
+.embed-wrap {
+  display:none; margin-bottom:16px;
+  border:1px solid var(--border); border-radius:3px; overflow:hidden;
+}
+.embed-wrap.active { display:block; }
+.embed-wrap iframe { width:100%; height:340px; border:none; display:block; }
+
+.btn-open-yt {
+  display:none; margin-bottom:20px;
+  padding:8px 18px; background:transparent;
+  border:1px solid rgba(255,50,50,0.4); border-radius:3px;
+  color:#ff6b6b; font-family:'IBM Plex Mono',monospace;
+  font-size:10px; letter-spacing:0.08em; cursor:pointer;
+  text-decoration:none; transition:background 0.15s;
+}
+.btn-open-yt:hover { background:rgba(255,50,50,0.1); }
+.btn-open-yt.active { display:inline-flex; align-items:center; gap:6px; }
+
+/* FOOTER */
+footer {
+  margin-top: 36px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">Autonomyx<span>From Foundational To Frontier: FullStack AI</span></div>
+</div>
+
+<div class="player-shell">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('upload')">UPLOAD &amp; PLAY</button>
+    <button class="tab" onclick="switchTab('stream')">STREAM URL</button>
+    <button class="tab" onclick="switchTab('mood')">MOOD PLAYLIST</button>
+    <button class="tab" onclick="switchTab('search')">SEARCH &amp; PLAY</button>
+  </div>
+
+  <!-- UPLOAD TAB -->
+  <div class="panel active" id="panel-upload">
+    <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+      <div class="drop-icon">◈</div>
+      <p><strong>Drop audio files here</strong> or click to browse</p>
+      <p style="margin-top:6px;font-size:11px;">MP3 · WAV · OGG · AAC · FLAC</p>
+    </div>
+    <input type="file" id="fileInput" accept="audio/*" multiple onchange="loadFiles(this.files)">
+
+    <div class="waveform-wrap">
+      <canvas id="waveCanvas"></canvas>
+      <div class="waveform-idle" id="idleMsg">NO SIGNAL</div>
+    </div>
+
+    <div class="track-info">
+      <div class="track-name" id="trackName">—</div>
+      <div class="track-time" id="trackTime">0:00 / 0:00</div>
+    </div>
+
+    <div class="seek-wrap">
+      <input type="range" id="seekBar" min="0" max="1000" value="0" oninput="seekTo(this.value)">
+    </div>
+
+    <div class="controls">
+      <button class="btn-play" id="playBtn" onclick="togglePlay()">▶</button>
+      <div class="vol-wrap">
+        <span class="vol-label">VOL</span>
+        <input type="range" id="volBar" min="0" max="1" step="0.01" value="0.8" oninput="setVol(this.value)">
+      </div>
+    </div>
+
+    <div class="queue" id="queueWrap" style="display:none">
+      <div class="queue-title">Queue</div>
+      <div id="queueList"></div>
+    </div>
+  </div>
+
+  <!-- STREAM TAB -->
+  <div class="panel" id="panel-stream">
+    <div class="url-row">
+      <input class="url-input" type="text" id="urlInput" placeholder="https://example.com/track.mp3">
+      <button class="btn-load" onclick="loadUrl()">LOAD &amp; PLAY</button>
+    </div>
+    <div class="error-card" id="urlError"></div>
+
+    <div class="waveform-wrap">
+      <canvas id="waveCanvas2"></canvas>
+      <div class="waveform-idle" id="idleMsg2">NO SIGNAL</div>
+    </div>
+
+    <div class="track-info">
+      <div class="track-name" id="trackName2">—</div>
+      <div class="track-time" id="trackTime2">0:00 / 0:00</div>
+    </div>
+
+    <div class="seek-wrap">
+      <input type="range" id="seekBar2" min="0" max="1000" value="0" oninput="seekTo2(this.value)">
+    </div>
+
+    <div class="controls">
+      <button class="btn-play" id="playBtn2" onclick="togglePlay2()">▶</button>
+      <div class="vol-wrap">
+        <span class="vol-label">VOL</span>
+        <input type="range" id="volBar2" min="0" max="1" step="0.01" value="0.8" oninput="setVol2(this.value)">
+      </div>
+    </div>
+  </div>
+
+  <!-- MOOD TAB -->
+  <div class="panel" id="panel-mood">
+    <textarea class="mood-textarea" id="moodInput" placeholder="Describe a mood, activity, or vibe... e.g. 'late night coding session', 'rainy Sunday morning', 'pre-match hype'"></textarea>
+    <div class="mood-actions">
+      <button class="btn-gen" id="genBtn" onclick="generatePlaylist(false)">GENERATE PLAYLIST</button>
+      <button class="btn-regen" id="regenBtn" onclick="generatePlaylist(true)" style="display:none">↺ REGENERATE</button>
+    </div>
+    <div class="loading-bars" id="loadingBars">
+      <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+      <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+      <div class="bar"></div><div class="bar"></div>
+    </div>
+    <div class="playlist-grid" id="playlistGrid"></div>
+  </div>
+  <!-- SEARCH TAB -->
+  <div class="panel" id="panel-search">
+    <div class="search-row">
+      <input class="search-input" type="text" id="searchInput" placeholder="Artist, track, album..." onkeydown="if(event.key==='Enter')doSearch()">
+      <button class="btn-load" onclick="doSearch()">SEARCH</button>
+    </div>
+    <div class="loading-bars" id="searchBars">
+      <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+      <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+      <div class="bar"></div><div class="bar"></div>
+    </div>
+    <div class="embed-wrap" id="embedWrap">
+      <iframe id="ytEmbed" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+    </div>
+    <a class="btn-open-yt" id="openYtBtn" target="_blank">▶ OPEN ON YOUTUBE</a>
+    <div class="results-grid" id="resultsGrid"></div>
+  </div>
+
+</div>Autonomyx · From Foundational To Frontier: FullStack AI</footer>
+
+<script>
+// ─── TAB SWITCHING ───────────────────────────────────────────────
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    t.classList.toggle('active', ['upload','stream','mood','search'][i] === id);
+  });
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+}
+
+// ─── SHARED AUDIO ENGINE ─────────────────────────────────────────
+let audioCtx, analyser1, analyser2;
+
+function initCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+}
+
+// ─── UPLOAD TAB ──────────────────────────────────────────────────
+const audio1 = new Audio();
+audio1.crossOrigin = 'anonymous';
+let src1, queue = [], qIdx = 0, raf1;
+
+const canvas1 = document.getElementById('waveCanvas');
+const ctx1 = canvas1.getContext('2d');
+
+function resizeCanvas(c) { c.width = c.offsetWidth * devicePixelRatio; c.height = c.offsetHeight * devicePixelRatio; }
+
+function loadFiles(files) {
+  queue = Array.from(files);
+  if (!queue.length) return;
+  qIdx = 0;
+  renderQueue();
+  playTrack(0);
+}
+
+function playTrack(i) {
+  if (i < 0 || i >= queue.length) return;
+  qIdx = i;
+  const url = URL.createObjectURL(queue[i]);
+  audio1.src = url;
+  document.getElementById('idleMsg').style.display = 'none';
+  setupAnalyser1();
+  audio1.play().then(() => { document.getElementById('playBtn').textContent = '❚❚'; }).catch(() => {});
+  document.getElementById('trackName').textContent = queue[i].name.replace(/\.[^.]+$/, '');
+  highlightQueue(i);
+}
+
+function setupAnalyser1() {
+  initCtx();
+  if (src1) { try { src1.disconnect(); } catch(e) {} }
+  src1 = audioCtx.createMediaElementSource(audio1);
+  analyser1 = audioCtx.createAnalyser();
+  analyser1.fftSize = 2048;
+  src1.connect(analyser1);
+  analyser1.connect(audioCtx.destination);
+  drawWave1();
+}
+
+function drawWave1() {
+  cancelAnimationFrame(raf1);
+  resizeCanvas(canvas1);
+  const buf = new Float32Array(analyser1.fftSize);
+  function loop() {
+    raf1 = requestAnimationFrame(loop);
+    analyser1.getFloatTimeDomainData(buf);
+    const w = canvas1.width, h = canvas1.height;
+    ctx1.clearRect(0,0,w,h);
+    ctx1.strokeStyle = '#00CFFF';
+    ctx1.lineWidth = 1.5 * devicePixelRatio;
+    ctx1.beginPath();
+    const step = w / buf.length;
+    buf.forEach((v,i) => {
+      const x = i * step, y = (v * 0.8 + 1) / 2 * h;
+      i === 0 ? ctx1.moveTo(x,y) : ctx1.lineTo(x,y);
+    });
+    ctx1.stroke();
+    canvas1.classList.toggle('paused', audio1.paused);
+  }
+  loop();
+}
+
+function togglePlay() {
+  if (!audio1.src) return;
+  initCtx();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  if (audio1.paused) { audio1.play(); document.getElementById('playBtn').textContent = '❚❚'; }
+  else { audio1.pause(); document.getElementById('playBtn').textContent = '▶'; }
+}
+
+audio1.addEventListener('timeupdate', () => {
+  if (!audio1.duration) return;
+  document.getElementById('seekBar').value = (audio1.currentTime / audio1.duration) * 1000;
+  document.getElementById('trackTime').textContent = fmt(audio1.currentTime) + ' / ' + fmt(audio1.duration);
+});
+
+audio1.addEventListener('ended', () => {
+  if (qIdx + 1 < queue.length) playTrack(qIdx + 1);
+  else document.getElementById('playBtn').textContent = '▶';
+});
+
+function seekTo(v) { if (audio1.duration) audio1.currentTime = (v / 1000) * audio1.duration; }
+function setVol(v) { audio1.volume = v; }
+
+function renderQueue() {
+  const wrap = document.getElementById('queueWrap');
+  const list = document.getElementById('queueList');
+  wrap.style.display = queue.length > 1 ? 'block' : 'none';
+  list.innerHTML = queue.map((f,i) => `
+    <div class="queue-item ${i===qIdx?'active':''}" onclick="playTrack(${i})">
+      <span class="qi-num">${String(i+1).padStart(2,'0')}</span>
+      ${f.name.replace(/\.[^.]+$/,'')}
+    </div>`).join('');
+}
+
+function highlightQueue(i) {
+  document.querySelectorAll('.queue-item').forEach((el,j) => el.classList.toggle('active', j===i));
+}
+
+// Drag & drop
+const dz = document.getElementById('dropZone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag-over'); loadFiles(e.dataTransfer.files); });
+
+// ─── STREAM TAB ──────────────────────────────────────────────────
+const audio2 = new Audio();
+audio2.crossOrigin = 'anonymous';
+let src2, raf2;
+
+const canvas2 = document.getElementById('waveCanvas2');
+const ctx2 = canvas2.getContext('2d');
+
+function loadUrl() {
+  const url = document.getElementById('urlInput').value.trim();
+  const errEl = document.getElementById('urlError');
+  errEl.style.display = 'none';
+  if (!url) return;
+
+  if (/youtube\.com|youtu\.be/.test(url)) {
+    errEl.textContent = "YouTube links can't be streamed directly. Use the Mood Playlist tab to find it instead.";
+    errEl.style.display = 'block';
+    return;
+  }
+
+  audio2.src = url;
+  document.getElementById('idleMsg2').style.display = 'none';
+  document.getElementById('trackName2').textContent = url.split('/').pop().replace(/\?.*/, '').replace(/\.[^.]+$/, '') || 'Stream';
+  setupAnalyser2();
+  audio2.play()
+    .then(() => { document.getElementById('playBtn2').textContent = '❚❚'; })
+    .catch(() => {
+      errEl.textContent = "This URL couldn't be loaded directly. SoundCloud and some sites block direct embedding — try a direct .mp3 link or download the file and use the Upload tab.";
+      errEl.style.display = 'block';
+    });
+}
+
+function setupAnalyser2() {
+  initCtx();
+  if (src2) { try { src2.disconnect(); } catch(e) {} }
+  src2 = audioCtx.createMediaElementSource(audio2);
+  analyser2 = audioCtx.createAnalyser();
+  analyser2.fftSize = 2048;
+  src2.connect(analyser2);
+  analyser2.connect(audioCtx.destination);
+  drawWave2();
+}
+
+function drawWave2() {
+  cancelAnimationFrame(raf2);
+  resizeCanvas(canvas2);
+  const buf = new Float32Array(analyser2.fftSize);
+  function loop() {
+    raf2 = requestAnimationFrame(loop);
+    analyser2.getFloatTimeDomainData(buf);
+    const w = canvas2.width, h = canvas2.height;
+    ctx2.clearRect(0,0,w,h);
+    ctx2.strokeStyle = '#00CFFF';
+    ctx2.lineWidth = 1.5 * devicePixelRatio;
+    ctx2.beginPath();
+    buf.forEach((v,i) => {
+      const x = i * (w/buf.length), y = (v*0.8+1)/2*h;
+      i===0 ? ctx2.moveTo(x,y) : ctx2.lineTo(x,y);
+    });
+    ctx2.stroke();
+    canvas2.classList.toggle('paused', audio2.paused);
+  }
+  loop();
+}
+
+function togglePlay2() {
+  if (!audio2.src) return;
+  initCtx();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  if (audio2.paused) { audio2.play(); document.getElementById('playBtn2').textContent = '❚❚'; }
+  else { audio2.pause(); document.getElementById('playBtn2').textContent = '▶'; }
+}
+
+audio2.addEventListener('timeupdate', () => {
+  if (!audio2.duration) return;
+  document.getElementById('seekBar2').value = (audio2.currentTime / audio2.duration) * 1000;
+  document.getElementById('trackTime2').textContent = fmt(audio2.currentTime) + ' / ' + fmt(audio2.duration);
+});
+
+audio2.addEventListener('ended', () => { document.getElementById('playBtn2').textContent = '▶'; });
+function seekTo2(v) { if (audio2.duration) audio2.currentTime = (v/1000) * audio2.duration; }
+function setVol2(v) { audio2.volume = v; }
+
+// ─── MOOD PLAYLIST ───────────────────────────────────────────────
+let lastMood = '', regenerateCount = 0;
+
+async function generatePlaylist(isRegen) {
+  const mood = document.getElementById('moodInput').value.trim();
+  if (!mood) return;
+  lastMood = mood;
+  if (isRegen) regenerateCount++;
+
+  const genBtn = document.getElementById('genBtn');
+  const regenBtn = document.getElementById('regenBtn');
+  const bars = document.getElementById('loadingBars');
+  const grid = document.getElementById('playlistGrid');
+
+  genBtn.disabled = true;
+  regenBtn.disabled = true;
+  bars.classList.add('active');
+  grid.innerHTML = '';
+
+  const seed = isRegen ? ` (variation ${regenerateCount}, pick different tracks)` : '';
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: `You are a music curator. Return ONLY a JSON array of 10 track objects. No markdown, no preamble, no explanation, no code fences — just the raw JSON array.
+Each object must have exactly these keys:
+{ "title": string, "artist": string, "year": number, "tags": string[3-4], "reason": string, "youtubeSearchUrl": string, "soundcloudSearchUrl": string }
+Build URLs like: youtubeSearchUrl = "https://www.youtube.com/results?search_query=" + encodeURIComponent(artist + " " + title)
+soundcloudSearchUrl = "https://soundcloud.com/search?q=" + encodeURIComponent(artist + " " + title)
+reason = one sentence explaining why this track fits the mood.`,
+        messages: [{ role: 'user', content: `Generate a playlist for this mood: ${mood}${seed}` }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content[0].text.replace(/```json|```/g,'').trim();
+    const tracks = JSON.parse(text);
+    renderPlaylist(tracks);
+    regenBtn.style.display = '';
+  } catch(e) {
+    grid.innerHTML = `<div class="error-card" style="display:block">Failed to generate playlist. Check your connection and try again.</div>`;
+  } finally {
+    genBtn.disabled = false;
+    regenBtn.disabled = false;
+    bars.classList.remove('active');
+  }
+}
+
+function renderPlaylist(tracks) {
+  const grid = document.getElementById('playlistGrid');
+  grid.innerHTML = tracks.map((t,i) => `
+    <div class="track-card">
+      <div class="tc-top">
+        <div>
+          <div class="tc-title">${esc(t.title)}</div>
+          <div class="tc-artist">${esc(t.artist)}</div>
+        </div>
+        <div class="tc-year">${t.year}</div>
+      </div>
+      <div class="tc-tags">${(t.tags||[]).map(tag => `<span class="tag">${esc(tag)}</span>`).join('')}</div>
+      <div class="tc-reason">${esc(t.reason)}</div>
+      <div class="tc-links">
+        <a href="${esc(t.youtubeSearchUrl)}" target="_blank" class="btn-link btn-yt">▶ YouTube</a>
+        <a href="${esc(t.soundcloudSearchUrl)}" target="_blank" class="btn-link btn-sc">☁ SoundCloud</a>
+      </div>
+    </div>`).join('');
+}
+
+// ─── UTILS ────────────────────────────────────────────────────────
+function fmt(s) {
+  if (!s || isNaN(s)) return '0:00';
+  const m = Math.floor(s/60), sec = Math.floor(s%60);
+  return m + ':' + String(sec).padStart(2,'0');
+}
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─── SEARCH & PLAY ───────────────────────────────────────────────
+async function doSearch() {
+  const q = document.getElementById('searchInput').value.trim();
+  if (!q) return;
+  const bars = document.getElementById('searchBars');
+  const grid = document.getElementById('resultsGrid');
+  const embedWrap = document.getElementById('embedWrap');
+  const openBtn = document.getElementById('openYtBtn');
+  bars.classList.add('active');
+  grid.innerHTML = '';
+  embedWrap.classList.remove('active');
+  openBtn.classList.remove('active');
+  document.getElementById('ytEmbed').src = '';
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: `You are a music search assistant. Return ONLY a JSON array of 6 objects. No markdown, no preamble, no code fences — just the raw JSON array.
+Each object: { "title": string, "artist": string, "year": number, "description": string, "youtubeId": string|null, "youtubeSearchUrl": string }
+youtubeId: the actual YouTube video ID (11 chars) if you are highly confident it exists on YouTube — otherwise null.
+youtubeSearchUrl: "https://www.youtube.com/results?search_query=" + encodeURIComponent(artist + " " + title)
+description: one short sentence about the track.`,
+        messages: [{ role: 'user', content: 'Search YouTube music for: ' + q }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content[0].text.replace(/```json|```/g,'').trim();
+    const results = JSON.parse(text);
+    renderResults(results);
+  } catch(e) {
+    grid.innerHTML = '<div class="error-card" style="display:block;grid-column:1/-1">Search failed. Try again.</div>';
+  } finally {
+    bars.classList.remove('active');
+  }
+}
+
+function renderResults(results) {
+  window._searchResults = results;
+  const grid = document.getElementById('resultsGrid');
+  grid.innerHTML = results.map((r, i) => {
+    const hasId = r.youtubeId && r.youtubeId.length === 11;
+    const thumbHtml = hasId
+      ? '<img class="result-thumb" src="https://img.youtube.com/vi/' + r.youtubeId + '/mqdefault.jpg" alt="" onerror="this.style.display=\'none\'">'
+      : '<div class="result-thumb-placeholder">▶</div>';
+    return '<div class="result-card" id="rc-' + i + '" onclick="playResult(' + i + ')">'
+      + thumbHtml
+      + '<div class="result-body">'
+      + '<div class="result-title">' + esc(r.title) + '</div>'
+      + '<div class="result-meta">' + esc(r.artist) + ' · ' + (r.year||'') + '</div>'
+      + '</div></div>';
+  }).join('');
+}
+
+function playResult(idx) {
+  const r = window._searchResults[idx];
+  if (!r) return;
+  document.querySelectorAll('.result-card').forEach((c,i) => c.classList.toggle('active', i===idx));
+  const embedWrap = document.getElementById('embedWrap');
+  const openBtn = document.getElementById('openYtBtn');
+  const iframe = document.getElementById('ytEmbed');
+  if (r.youtubeId && r.youtubeId.length === 11) {
+    iframe.src = 'https://www.youtube.com/embed/' + r.youtubeId + '?autoplay=1';
+    embedWrap.classList.add('active');
+    openBtn.href = 'https://www.youtube.com/watch?v=' + r.youtubeId;
+  } else {
+    embedWrap.classList.remove('active');
+    iframe.src = '';
+    openBtn.href = r.youtubeSearchUrl;
+    window.open(r.youtubeSearchUrl, '_blank');
+  }
+  openBtn.textContent = '▶ OPEN ON YOUTUBE';
+  openBtn.classList.add('active');
+  embedWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+</body>
+</html>

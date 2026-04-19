@@ -1,0 +1,161 @@
+{
+  "name": "AgentSkills — Auto Build & Publish",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "agentskills-push",
+        "responseMode": "onReceived",
+        "responseData": "allEntries"
+      },
+      "id": "webhook-trigger",
+      "name": "GitHub Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "ref-check",
+              "leftValue": "={{ $json.body.ref }}",
+              "rightValue": "refs/heads/main",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "filter-main",
+      "name": "Only main branch",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "command": "#!/bin/bash\nset -e\n\nREPO_DIR=\"/tmp/agentskills-build\"\nGITHUB_REPO=\"https://github.com/agentnxt/agentskills.git\"\n\n# Clone or pull\nif [ -d \"$REPO_DIR/.git\" ]; then\n  cd \"$REPO_DIR\" && git fetch origin main && git reset --hard origin/main\nelse\n  rm -rf \"$REPO_DIR\"\n  git clone --depth 1 \"$GITHUB_REPO\" \"$REPO_DIR\"\n  cd \"$REPO_DIR\"\nfi\n\necho \"REPO_DIR=$REPO_DIR\"\necho \"Cloned successfully\""
+      },
+      "id": "clone-repo",
+      "name": "Clone/Pull Repo",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "command": "#!/bin/bash\nset -e\ncd /tmp/agentskills-build\n\npython3 << 'PYEOF'\nimport os, json, re\nfrom datetime import datetime, timezone\n\nCATEGORY_MAP = {\n    \"app-alternatives-finder\": \"analysis\",\n    \"autonomyx-content-formatter\": \"content\",\n    \"autonomyx-fraud-sentinel\": \"security\",\n    \"autonomyx-identity-fabric\": \"dev\",\n    \"autonomyx-langflow-expert\": \"dev\",\n    \"autonomyx-logo-favicon-creator\": \"design\",\n    \"autonomyx-music-player\": \"media\",\n    \"autonomyx-pro-list-to-action\": \"automation\",\n    \"autonomyx-skill-evaluator\": \"meta\",\n    \"autonomyx-vocabulary\": \"meta\",\n    \"blog-cover-pic\": \"design\",\n    \"brand-kit-generator\": \"design\",\n    \"content-formatter\": \"content\",\n    \"coolify-one-click-deploy\": \"dev\",\n    \"ecommerce-integration-expert\": \"ecommerce\",\n    \"feature-gap-analyzer\": \"analysis\",\n    \"list-to-action\": \"automation\",\n    \"mcp-from-apidocs\": \"dev\",\n    \"microsoft-integration-expert\": \"dev\",\n    \"oss-to-saas-analyzer\": \"analysis\",\n    \"rebrand-value-index\": \"analysis\",\n    \"saas-cost-analyzer\": \"saas\",\n    \"saas-evaluator\": \"saas\",\n    \"saas-policy-intelligence\": \"saas\",\n    \"saas-standardizer\": \"saas\",\n    \"saas-total-cost-of-ownership-analyzer\": \"saas\",\n    \"skill-creator\": \"meta\",\n    \"skills-frameworks\": \"meta\",\n    \"unboxd-badges\": \"credentials\",\n    \"web-crawler\": \"dev\",\n    \"website-policy-drafting-skill\": \"legal\",\n}\n\nskills = []\nfor d in sorted(os.listdir(\".\")):\n    skill_path = os.path.join(d, \"SKILL.md\")\n    if not os.path.isfile(skill_path):\n        continue\n    with open(skill_path) as f:\n        content = f.read()\n    fm_match = re.match(r'^---\\s*\\n(.*?)\\n---', content, re.DOTALL)\n    if not fm_match:\n        continue\n    fm = fm_match.group(1)\n    name_match = re.search(r'^name:\\s*(.+)', fm, re.MULTILINE)\n    name = name_match.group(1).strip().strip('\"\\\"') if name_match else d\n    desc = \"\"\n    desc_block = re.search(r'^description:\\s*[>|]-?\\s*\\n((?:\\s+.+\\n?)+)', fm, re.MULTILINE)\n    if desc_block:\n        desc = \" \".join(desc_block.group(1).strip().split())\n    if not desc:\n        desc_match = re.search(r'^description:\\s*[\"\\'](.+?)[\"\\']', fm, re.MULTILINE)\n        if desc_match:\n            desc = desc_match.group(1).strip()\n    if not desc:\n        desc_match = re.search(r'^description:\\s*(.+)', fm, re.MULTILINE)\n        if desc_match:\n            val = desc_match.group(1).strip()\n            if val not in (\">\", \"|\", \">-\", \"|-\"):\n                desc = val\n    heading_match = re.search(r'^#\\s+(.+)', content[fm_match.end():], re.MULTILINE)\n    display_name = heading_match.group(1).strip() if heading_match else name\n    category = CATEGORY_MAP.get(d, \"general\")\n    deprecated = \"DEPRECATED\" in (desc or \"\").upper()\n    has_dist = os.path.isfile(f\"dist/{d}.skill\")\n    refs_dir = os.path.join(d, \"references\")\n    ref_count = len(os.listdir(refs_dir)) if os.path.isdir(refs_dir) else 0\n    skills.append({\n        \"slug\": d, \"name\": name, \"displayName\": display_name,\n        \"description\": desc[:500] if desc else \"\",\n        \"category\": category, \"deprecated\": deprecated,\n        \"hasDistPackage\": has_dist, \"referenceCount\": ref_count,\n        \"github\": f\"https://github.com/agentnxt/agentskills/tree/main/{d}\",\n        \"download\": f\"https://github.com/agentnxt/agentskills/raw/main/dist/{d}.skill\"\n    })\n\nmanifest = {\n    \"version\": \"1.0.0\",\n    \"generated\": datetime.now(timezone.utc).isoformat(),\n    \"totalSkills\": len(skills),\n    \"activeSkills\": len([s for s in skills if not s[\"deprecated\"]]),\n    \"categories\": sorted(set(CATEGORY_MAP.values())),\n    \"skills\": skills\n}\nwith open(\"skills-manifest.json\", \"w\") as f:\n    json.dump(manifest, f, indent=2)\nprint(f\"Manifest: {len(skills)} skills ({manifest['activeSkills']} active)\")\nPYEOF"
+      },
+      "id": "gen-manifest",
+      "name": "Generate Manifest",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "command": "#!/bin/bash\nset -e\ncd /tmp/agentskills-build\nmkdir -p dist\n\nfor dir in */; do\n  slug=$(basename \"$dir\")\n  if [ -f \"$dir/SKILL.md\" ]; then\n    rm -f \"dist/$slug.skill\"\n    zip -r \"dist/$slug.skill\" \"$slug/\" -x \"$slug/.git/*\" > /dev/null 2>&1\n    echo \"Built: $slug.skill\"\n  fi\ndone\n\necho \"Total packages: $(ls dist/*.skill 2>/dev/null | wc -l)\""
+      },
+      "id": "build-packages",
+      "name": "Build .skill Packages",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "command": "#!/bin/bash\nset -e\ncd /tmp/agentskills-build\n\ngit config user.email \"automation@agentnxt.com\"\ngit config user.name \"AgentNXT Bot\"\n\ngit add skills-manifest.json dist/\n\nif git diff --cached --quiet; then\n  echo \"No changes to commit\"\nelse\n  git commit -m \"Auto-build: update manifest and .skill packages\"\n  git push origin main\n  echo \"Pushed updates\"\nfi"
+      },
+      "id": "commit-push",
+      "name": "Commit & Push",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "command": "#!/bin/bash\n# Trigger GitHub Pages rebuild\ncd /tmp/agentskills-build\ncurl -s -X POST \\\n  -H \"Accept: application/vnd.github+json\" \\\n  -H \"Authorization: Bearer ${GITHUB_TOKEN}\" \\\n  \"https://api.github.com/repos/agentnxt/agentskills/pages/builds\" || echo \"Pages rebuild triggered (or not configured)\""
+      },
+      "id": "rebuild-pages",
+      "name": "Rebuild GitHub Pages",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [1560, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.NOTIFICATION_WEBHOOK_URL }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"text\": \"🚀 *AgentSkills Updated*\\n\\nPushed by: {{ $node['GitHub Webhook'].json.body.pusher.name }}\\nCommit: {{ $node['GitHub Webhook'].json.body.head_commit.message }}\\nManifest: {{ $node['Generate Manifest'].json.stdout }}\\n\\n🔗 https://github.com/agentnxt/agentskills\",\n  \"content\": \"🚀 **AgentSkills Updated**\\n\\nPushed by: {{ $node['GitHub Webhook'].json.body.pusher.name }}\\nCommit: {{ $node['GitHub Webhook'].json.body.head_commit.message }}\\n\\n🔗 https://github.com/agentnxt/agentskills\"\n}"
+      },
+      "id": "notify",
+      "name": "Notify Channel",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1780, 300]
+    }
+  ],
+  "connections": {
+    "GitHub Webhook": {
+      "main": [
+        [{ "node": "Only main branch", "type": "main", "index": 0 }]
+      ]
+    },
+    "Only main branch": {
+      "main": [
+        [{ "node": "Clone/Pull Repo", "type": "main", "index": 0 }]
+      ]
+    },
+    "Clone/Pull Repo": {
+      "main": [
+        [{ "node": "Generate Manifest", "type": "main", "index": 0 }]
+      ]
+    },
+    "Generate Manifest": {
+      "main": [
+        [{ "node": "Build .skill Packages", "type": "main", "index": 0 }]
+      ]
+    },
+    "Build .skill Packages": {
+      "main": [
+        [{ "node": "Commit & Push", "type": "main", "index": 0 }]
+      ]
+    },
+    "Commit & Push": {
+      "main": [
+        [
+          { "node": "Rebuild GitHub Pages", "type": "main", "index": 0 },
+          { "node": "Notify Channel", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    { "name": "agentskills" },
+    { "name": "automation" }
+  ]
+}

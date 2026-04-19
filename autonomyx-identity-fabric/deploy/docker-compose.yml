@@ -1,0 +1,71 @@
+services:
+  identity-fabric:
+    image: ghcr.io/openautonomyx/identity-fabric:latest
+    container_name: identity_fabric
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8091:8080"   # only bind locally — nginx proxies externally
+    environment:
+      # ── SurrealDB ──────────────────────────────────────────────────────────
+      SURREAL_URL:    ${SURREAL_URL}
+      SURREAL_USER:   ${SURREAL_USER}
+      SURREAL_PASS:   ${SURREAL_PASS}
+
+      # ── Encryption ─────────────────────────────────────────────────────────
+      IDENTITY_FABRIC_ENC_KEY:  ${IDENTITY_FABRIC_ENC_KEY}
+      IDENTITY_FABRIC_HMAC_KEY: ${IDENTITY_FABRIC_HMAC_KEY}
+
+      # ── Caller auth ────────────────────────────────────────────────────────
+      AUTONOMYX_AGENT_SECRET: ${AUTONOMYX_AGENT_SECRET}
+
+      # ── Social providers ───────────────────────────────────────────────────
+      # No extra config needed — Google/GitHub/Microsoft/Apple/LinkedIn/Twitter
+      # are stateless; tokens are passed per-request.
+
+      # ── Logto (Autonomyx native) ───────────────────────────────────────────
+      LOGTO_DOMAIN:          ${LOGTO_DOMAIN}
+      LOGTO_M2M_APP_ID:      ${LOGTO_M2M_APP_ID}
+      LOGTO_M2M_APP_SECRET:  ${LOGTO_M2M_APP_SECRET}
+
+      # ── Okta (optional) ───────────────────────────────────────────────────
+      OKTA_DOMAIN:     ${OKTA_DOMAIN:-}
+      OKTA_API_TOKEN:  ${OKTA_API_TOKEN:-}
+
+      # ── Auth0 (optional) ──────────────────────────────────────────────────
+      AUTH0_DOMAIN:            ${AUTH0_DOMAIN:-}
+      AUTH0_M2M_CLIENT_ID:     ${AUTH0_M2M_CLIENT_ID:-}
+      AUTH0_M2M_CLIENT_SECRET: ${AUTH0_M2M_CLIENT_SECRET:-}
+
+      # ── Ping Identity (optional) ──────────────────────────────────────────
+      PING_ENV_ID:        ${PING_ENV_ID:-}
+      PING_CLIENT_ID:     ${PING_CLIENT_ID:-}
+      PING_CLIENT_SECRET: ${PING_CLIENT_SECRET:-}
+      PING_REGION:        ${PING_REGION:-NorthAmerica}
+
+      # ── Keycloak (optional) ───────────────────────────────────────────────
+      KEYCLOAK_BASE_URL:            ${KEYCLOAK_BASE_URL:-}
+      KEYCLOAK_REALM:               ${KEYCLOAK_REALM:-master}
+      KEYCLOAK_ADMIN_CLIENT_ID:     ${KEYCLOAK_ADMIN_CLIENT_ID:-}
+      KEYCLOAK_ADMIN_CLIENT_SECRET: ${KEYCLOAK_ADMIN_CLIENT_SECRET:-}
+
+      # ── Custom OIDC providers (optional) ──────────────────────────────────
+      # Format: "provider_name=https://issuer,provider2=https://issuer2"
+      CUSTOM_OIDC_PROVIDERS: ${CUSTOM_OIDC_PROVIDERS:-}
+
+      # ── Server ────────────────────────────────────────────────────────────
+      PORT:      "8080"
+      WORKERS:   "2"
+      LOG_LEVEL: "info"
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+
+    networks:
+      - shared-infra_default
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  shared-infra_default:
+    external: true

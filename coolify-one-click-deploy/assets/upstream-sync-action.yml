@@ -1,0 +1,119 @@
+name: Upstream Sync
+
+on:
+  schedule:
+    # Runs daily at 08:00 UTC
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+    inputs:
+      force_pr:
+        description: 'Force open a PR even if already up to date'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync-upstream:
+    name: Check & sync upstream
+    runs-on: ubuntu-latest
+
+    env:
+      UPSTREAM_URL: "{{UPSTREAM_URL}}"
+      SYNC_BRANCH: "{{SYNC_BRANCH}}"
+      REPO_NAME: "{{REPO_NAME}}"
+
+    steps:
+      - name: Checkout fork
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.SYNC_BRANCH }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Add upstream remote
+        run: |
+          git remote add upstream ${{ env.UPSTREAM_URL }} || true
+          git fetch upstream ${{ env.SYNC_BRANCH }}
+
+      - name: Check for drift
+        id: drift
+        run: |
+          UPSTREAM_SHA=$(git rev-parse upstream/${{ env.SYNC_BRANCH }})
+          FORK_SHA=$(git rev-parse HEAD)
+          echo "upstream_sha=$UPSTREAM_SHA" >> $GITHUB_OUTPUT
+          echo "fork_sha=$FORK_SHA" >> $GITHUB_OUTPUT
+          if [ "$UPSTREAM_SHA" = "$FORK_SHA" ]; then
+            echo "has_drift=false" >> $GITHUB_OUTPUT
+            echo "✅ Fork is up to date with upstream."
+          else
+            echo "has_drift=true" >> $GITHUB_OUTPUT
+            COMMIT_COUNT=$(git rev-list HEAD..upstream/${{ env.SYNC_BRANCH }} --count)
+            echo "commit_count=$COMMIT_COUNT" >> $GITHUB_OUTPUT
+            echo "⚠️ Upstream has $COMMIT_COUNT new commit(s)."
+          fi
+
+      - name: Generate diff summary
+        if: steps.drift.outputs.has_drift == 'true'
+        id: diff
+        run: |
+          # Commits ahead in upstream
+          COMMITS=$(git log HEAD..upstream/${{ env.SYNC_BRANCH }} --oneline --no-decorate | head -20)
+          # Files changed
+          FILES=$(git diff --name-only HEAD upstream/${{ env.SYNC_BRANCH }} | head -30)
+
+          # Write to file to avoid quoting issues
+          {
+            echo "## Upstream Sync — $(date +%Y-%m-%d)"
+            echo ""
+            echo "**Upstream:** ${{ env.UPSTREAM_URL }}"
+            echo "**Branch:** \`${{ env.SYNC_BRANCH }}\`"
+            echo "**Upstream SHA:** \`${{ steps.drift.outputs.upstream_sha }}\`"
+            echo "**Fork SHA:** \`${{ steps.drift.outputs.fork_sha }}\`"
+            echo "**New commits upstream:** ${{ steps.drift.outputs.commit_count }}"
+            echo ""
+            echo "### Commits in upstream not in fork"
+            echo '```'
+            echo "$COMMITS"
+            echo '```'
+            echo ""
+            echo "### Files changed"
+            echo '```'
+            echo "$FILES"
+            echo '```'
+            echo ""
+            echo "### How to merge"
+            echo "Review the diff, resolve any conflicts with rebranding changes, then merge this PR."
+            echo ""
+            echo "> ⚠️ Check for changes to \`docker-compose.yml\` service names — they may conflict with rebranding patches."
+          } > /tmp/pr_body.md
+
+      - name: Create sync branch
+        if: steps.drift.outputs.has_drift == 'true' || github.event.inputs.force_pr == 'true'
+        run: |
+          SYNC_BRANCH_NAME="upstream-sync-$(date +%Y-%m-%d)"
+          git checkout -b "$SYNC_BRANCH_NAME"
+          git merge upstream/${{ env.SYNC_BRANCH }} --no-edit --allow-unrelated-histories || true
+          git push origin "$SYNC_BRANCH_NAME" --force
+          echo "SYNC_BRANCH_NAME=$SYNC_BRANCH_NAME" >> $GITHUB_ENV
+
+      - name: Open Pull Request
+        if: steps.drift.outputs.has_drift == 'true' || github.event.inputs.force_pr == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ env.SYNC_BRANCH_NAME }}
+          base: ${{ env.SYNC_BRANCH }}
+          title: "chore: sync upstream — ${{ steps.drift.outputs.commit_count }} new commit(s) [$(date +%Y-%m-%d)]"
+          body-path: /tmp/pr_body.md
+          labels: |
+            upstream-sync
+            automated
+          draft: false

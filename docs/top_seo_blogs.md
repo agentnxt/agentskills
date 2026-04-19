@@ -1,0 +1,11 @@
+Top SEO Blogs (curated)
+- Moz Blog: https://moz.com/blog
+- Search Engine Journal: https://www.searchenginejournal.com
+- Search Engine Land: https://searchengineland.com
+- Backlinko: https://backlinko.com/blog
+- Neil Patel: https://neilpatel.com/blog/
+- Ahrefs Blog: https://ahrefs.com/blog
+- Semrush Blog: https://www.semrush.com/blog/
+- Google's Official Search Central Blog: https://developers.google.com/search/blog
+- HubSpot Marketing Blog: https://blog.hubspot.com/marketing
+- Content Marketing Institute: https://contentmarketinginstitute.com/blog/

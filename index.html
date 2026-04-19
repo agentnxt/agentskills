@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skills Marketplace | AgentNXXT × Autonomyx</title>
+
+  <!-- OpenGraph / Social Share -->
+  <meta property="og:title" content="AgentNXXT Skills Marketplace — AI Skills for Claude">
+  <meta property="og:description" content="Open-source AI skills that turn Claude into a domain specialist. Built by AgentNXXT, Autonomyx's dedicated agents department.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://agentnxxt.github.io/agentskills/">
+  <meta property="og:image" content="https://agentnxxt.github.io/agentskills/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AgentNXXT Skills Marketplace — AI Skills for Claude">
+  <meta name="twitter:description" content="Open-source AI skills that turn Claude into a domain specialist. Built by AgentNXXT.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #080A10;
+      --surface: #0E1018;
+      --surface2: #13161F;
+      --border: rgba(255,255,255,0.07);
+      --border2: rgba(255,255,255,0.12);
+      --text: #E8E6DF;
+      --text-muted: rgba(232,230,223,0.45);
+      --text-faint: rgba(232,230,223,0.22);
+      --purple: #7B5CF0;
+      --purple-light: #9D82FF;
+      --green: #00D28C;
+      --amber: #F59E0B;
+      --red: #EF4444;
+      --blue: #3B82F6;
+      --purple-glow: rgba(123,92,240,0.15);
+      --green-glow: rgba(0,210,140,0.10);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 64px;
+      background: rgba(8,10,16,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .nav-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--purple), var(--green));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      letter-spacing: -0.2px;
+    }
+
+    .nav-sep {
+      width: 1px;
+      height: 16px;
+      background: var(--border2);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-link {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover { color: var(--text); }
+    .nav-link.active { color: var(--purple-light); }
+
+    .nav-cta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .nav-cta:hover {
+      background: rgba(123,92,240,0.1);
+      border-color: var(--purple);
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      padding: 160px 48px 80px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: radial-gradient(ellipse at center, black 20%, transparent 70%);
+    }
+
+    .hero-orb1 {
+      position: absolute;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 400px;
+      background: radial-gradient(ellipse, var(--purple-glow), transparent 70%);
+      filter: blur(60px);
+    }
+
+    .hero-orb2 {
+      position: absolute;
+      bottom: -50px;
+      right: 10%;
+      width: 400px;
+      height: 300px;
+      background: radial-gradient(ellipse, var(--green-glow), transparent 70%);
+      filter: blur(60px);
+    }
+
+    .hero-content {
+      position: relative;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 100px;
+      font-size: 12px;
+      font-family: 'IBM Plex Mono', monospace;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+    }
+
+    .hero-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .hero-title {
+      font-family: 'Fraunces', serif;
+      font-size: 56px;
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -2px;
+      margin-bottom: 24px;
+    }
+
+    .grad {
+      background: linear-gradient(135deg, var(--purple-light), var(--green));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-desc {
+      font-size: 18px;
+      line-height: 1.7;
+      color: var(--text-muted);
+      max-width: 560px;
+      margin: 0 auto 40px;
+    }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+    }
+
+    .hero-stat {
+      text-align: center;
+    }
+
+    .hero-stat-value {
+      font-family: 'Fraunces', serif;
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .hero-stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    /* ─── FILTER ─── */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 48px;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 8px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--border2);
+      color: var(--text);
+    }
+
+    .filter-btn.active {
+      background: var(--purple);
+      border-color: var(--purple);
+      color: #fff;
+    }
+
+    /* ─── SKILLS GRID ─── */
+    .skills-section {
+      padding: 0 48px 80px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 20px;
+    }
+
+    .skill-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      transition: all 0.25s ease;
+      cursor: default;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .skill-card:hover {
+      border-color: var(--border2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+
+    .skill-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .skill-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .skill-icon.legal { background: linear-gradient(135deg, rgba(123,92,240,0.2), rgba(123,92,240,0.05)); }
+    .skill-icon.finance { background: linear-gradient(135deg, rgba(0,210,140,0.2), rgba(0,210,140,0.05)); }
+    .skill-icon.saas { background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(59,130,246,0.05)); }
+    .skill-icon.design { background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(245,158,11,0.05)); }
+    .skill-icon.dev { background: linear-gradient(135deg, rgba(239,68,68,0.2), rgba(239,68,68,0.05)); }
+    .skill-icon.content { background: linear-gradient(135deg, rgba(168,85,247,0.2), rgba(0,210,140,0.05)); }
+
+    .skill-status {
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 500;
+      font-family: 'IBM Plex Mono', monospace;
+      letter-spacing: 0.3px;
+      flex-shrink: 0;
+    }
+
+    .skill-status.shipped {
+      background: rgba(0,210,140,0.12);
+      color: var(--green);
+    }
+
+    .skill-status.beta {
+      background: rgba(245,158,11,0.12);
+      color: var(--amber);
+    }
+
+    .skill-name {
+      font-family: 'Fraunces', serif;
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+    }
+
+    .skill-slug {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--text-faint);
+      margin-bottom: 12px;
+    }
+
+    .skill-desc {
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      flex-grow: 1;
+    }
+
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+
+    .skill-tag {
+      padding: 3px 10px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 11px;
+      font-family: 'IBM Plex Mono', monospace;
+      color: var(--text-muted);
+    }
+
+    .skill-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .skill-category {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-faint);
+    }
+
+    .skill-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .skill-btn {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: 'DM Sans', sans-serif;
+      text-decoration: none;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .skill-btn-primary {
+      background: var(--purple);
+      color: #fff;
+    }
+
+    .skill-btn-primary:hover {
+      background: var(--purple-light);
+    }
+
+    .skill-btn-secondary {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      color: var(--text-muted);
+    }
+
+    .skill-btn-secondary:hover {
+      color: var(--text);
+      border-color: var(--purple);
+    }
+
+    /* ─── CTA SECTION ─── */
+    .cta-section {
+      padding: 80px 48px;
+      text-align: center;
+    }
+
+    .cta-box {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 48px;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-box::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--purple), var(--green), transparent);
+    }
+
+    .cta-title {
+      font-family: 'Fraunces', serif;
+      font-size: 28px;
+      font-weight: 400;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+    }
+
+    .cta-desc {
+      font-size: 15px;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      line-height: 1.7;
+    }
+
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .cta-btn-primary {
+      background: var(--purple);
+      color: #fff;
+    }
+
+    .cta-btn-primary:hover {
+      background: var(--purple-light);
+      transform: translateY(-1px);
+    }
+
+    .cta-btn-secondary {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      color: var(--text);
+    }
+
+    .cta-btn-secondary:hover {
+      border-color: var(--purple);
+      transform: translateY(-1px);
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 64px 48px 32px;
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+
+    .footer-brand { max-width: 360px; }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .footer-logo-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--purple), var(--green));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .footer-logo-text {
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .footer-logo-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .footer-desc {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-muted);
+    }
+
+    .footer-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-faint);
+      margin-bottom: 16px;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-link {
+      font-size: 14px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-link:hover { color: var(--text); }
+
+    .footer-bottom {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-copy {
+      font-size: 12px;
+      color: var(--text-faint);
+    }
+
+    .footer-disclaimer {
+      font-size: 11px;
+      color: var(--text-faint);
+      font-style: italic;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .hero { padding: 120px 20px 60px; }
+      .hero-title { font-size: 36px; letter-spacing: -1px; }
+      .hero-desc { font-size: 16px; }
+      .hero-stats { gap: 32px; }
+      .hero-stat-value { font-size: 24px; }
+      .filter-bar { padding: 0 20px; }
+      .skills-section { padding: 0 20px 60px; }
+      .skills-grid { grid-template-columns: 1fr; }
+      .cta-section { padding: 60px 20px; }
+      .cta-box { padding: 32px 24px; }
+      footer { padding: 48px 20px 24px; }
+      .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <a href="/" class="nav-brand">
+      <div class="nav-logo">AX</div>
+      <span class="nav-name">AgentNXXT</span>
+    </a>
+    <div class="nav-sep"></div>
+    <div class="nav-links">
+      <a href="/" class="nav-link active">Skills</a>
+      <a href="how-to-use.html" class="nav-link">How to Use</a>
+      <a href="docs.html" class="nav-link">Docs</a>
+      <a href="roadmap.html" class="nav-link">Roadmap</a>
+      <a href="blog.html" class="nav-link">Blog</a>
+    </div>
+  </div>
+  <a href="https://github.com/AgentNXXT/agentskills" class="nav-cta">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+    GitHub
+  </a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-grid"></div>
+    <div class="hero-orb1"></div>
+    <div class="hero-orb2"></div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="hero-badge-dot"></div>
+      Open Source &middot; Built by Autonomyx
+    </div>
+
+    <h1 class="hero-title">
+      The <span class="grad">Skills Marketplace</span><br>
+      for Claude.
+    </h1>
+
+    <p class="hero-desc">
+      Purpose-built AI skills that turn Claude into a domain specialist.
+      Install a skill, unlock deep expertise. Open source, free forever.
+    </p>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-value">7</div>
+        <div class="hero-stat-label">Skills</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">6</div>
+        <div class="hero-stat-label">Categories</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">100%</div>
+        <div class="hero-stat-label">Open Source</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <button class="filter-btn active" data-filter="all">All Skills</button>
+  <button class="filter-btn" data-filter="legal">Legal &amp; Compliance</button>
+  <button class="filter-btn" data-filter="finance">Finance</button>
+  <button class="filter-btn" data-filter="saas">SaaS Research</button>
+  <button class="filter-btn" data-filter="design">Design</button>
+  <button class="filter-btn" data-filter="dev">Developer Tools</button>
+  <button class="filter-btn" data-filter="content">Content</button>
+</div>
+
+<!-- SKILLS GRID -->
+<section class="skills-section">
+  <div class="skills-grid">
+
+    <!-- Skill 001: Website Policy Drafting -->
+    <div class="skill-card" data-category="legal">
+      <div class="skill-card-header">
+        <div class="skill-icon legal">&#9878;&#65039;</div>
+        <div class="skill-status shipped">Shipped</div>
+      </div>
+      <div class="skill-name">Website Policy Drafting</div>
+      <div class="skill-slug">autonomyx-website-policy-author</div>
+      <p class="skill-desc">
+        Drafts legal and compliance documents for digital products &mdash; privacy policies, terms of service, AI usage policies, DPAs, and more. Auto-detects applicable regulations based on your product and users.
+      </p>
+      <div class="skill-tags">
+        <span class="skill-tag">GDPR</span>
+        <span class="skill-tag">CCPA</span>
+        <span class="skill-tag">EU AI Act</span>
+        <span class="skill-tag">DPDP</span>
+        <span class="skill-tag">10 policy types</span>
+      </div>
+      <div class="skill-footer">
+        <span class="skill-category">Legal &amp; Compliance</span>
+        <div class="skill-actions">
+          <a href="policy-skill.html" class="skill-btn skill-btn-secondary">Details</a>
+          <a href="https://raw.githubusercontent.com/agentnxxt/agentskills/main/autonomyx-website-policy-author.skill" download class="skill-btn skill-btn-primary">⬇ Download</a>
+          <a href="https://github.com/agentnxxt/agentskills/tree/main/autonomyx-website-policy-author" target="_blank" class="skill-btn skill-btn-secondary">GitHub</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skill 002: SaaS Total Cost of Ownership Analyzer -->
+    <div class="skill-card" data-category="finance">
+      <div class="skill-card-header">
+        <div class="skill-icon finance">&#128200;</div>
+        <div class="skill-status shipped">Shipped</div>
+      </div>
+      <div class="skill-name">SaaS TCO Analyzer</div>
+      <div class="skill-slug">autonomyx-saas-total-cost-of-ownership-analyzer</div>
+      <p class="skill-desc">
+        Calculates total cost of ownership for SaaS and open-source software across 17 dimensions — cost extraction, scenario modelling, compliance filtering, marketplace pricing, ranked recommendations, and an executive summary.
+      </p>
+      <div class="skill-tags">
+        <span class="skill-tag">TCO</span>
+        <span class="skill-tag">Compliance Filtering</span>
+        <span class="skill-tag">Build vs Buy</span>
+        <span class="skill-tag">Procurement</span>
+        <span class="skill-tag">17 Sections</span>
+      </div>
+      <div class="skill-footer">
+        <span class="skill-category">Finance</span>
+        <div class="skill-actions">
+          <a href="saas-cost-analyzer-blog.html" class="skill-btn skill-btn-secondary">Details</a>
+          <a href="https://raw.githubusercontent.com/agentnxxt/agentskills/main/autonomyx-saas-total-cost-of-ownership-analyzer.skill" download class="skill-btn skill-btn-primary">⬇ Download</a>
+          <a href="https://github.com/agentnxxt/agentskills/tree/main/autonomyx-saas-total-cost-of-ownership-analyzer" target="_blank" class="skill-btn skill-btn-secondary">GitHub</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skill 003: SaaS Standardizer -->
+    <div class="skill-card" data-category="saas">
+      <div class="skill-card-header">
+        <div class="skill-icon saas">&#128202;</div>
+        <div class="skill-status beta">Beta</div>
+      </div>
+      <div class="skill-name">SaaS Standardizer</div>
+      <div class="skill-slug">autonomyx-saas-standardizer</div>
+      <p class="skill-desc">
+        Produces exhaustive, standardized profiles of SaaS products across 23 dimensions &mdash; features, APIs, integrations, pricing, security, compliance, competitive positioning, and more.
+      </p>
+      <div class="skill-tags">
+        <span class="skill-tag">23 Dimensions</span>
+        <span class="skill-tag">G2 / Gartner</span>
+        <span class="skill-tag">Webhook</span>
+        <span class="skill-tag">Comparison</span>
+      </div>
+      <div class="skill-footer">
+        <span class="skill-category">SaaS Research</span>
+        <div class="skill-actions">
+          <a href="https://raw.githubusercontent.com/agentnxxt/agentskills/main/autonomyx-saas-standardizer.skill" download class="skill-btn skill-btn-primary">⬇ Download</a>
+          <a href="https://github.com/agentnxxt/agentskills/tree/main/autonomyx-saas-standardizer" target="_blank" class="skill-btn skill-btn-secondary">GitHub</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skill 004: SaaS Evaluator -->
+    <div class="skill-card" data-category="saas">
+      <div class="skill-card-header">
+        <div class="skill-icon saas">&#128101;</div>
+        <div class="skill-status beta">Beta</div>
+      </div>
+      <div class="skill-name">SaaS Evaluator</div>
+      <div class="skill-slug">autonomyx-saas-evaluator</div>
+      <p class="skill-desc">
+        Multi-persona enterprise SaaS evaluation framework. Six personas &mdash; CISO, IT Admin, Procurement, CTO, Legal, End User &mdash; each score and assess products from their perspective.
+      </p>
+      <div class="skill-tags">
+        <span class="skill-tag">6 Personas</span>
+        <span class="skill-tag">Enterprise</span>
+        <span class="skill-tag">Scoring</span>
+        <span class="skill-tag">Audit</span>
+      </div>
+      <div class="skill-footer">
+        <span class="skill-category">SaaS Research</span>
+        <div class="skill-actions">
+          <a href="https://raw.githubusercontent.com/agentnxxt/agentskills/main/autonomyx-saas-evaluator.skill" download class="skill-btn skill-btn-primary">⬇ Download</a>
+          <a href="https://github.com/agentnxxt/agentskills/tree/main/autonomyx-saas-evaluator" target="_blank" class="skill-btn skill-btn-secondary">GitHub</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skill 005: Brand Kit Generator -->
+    <div class="skill-card" data-category="design">
+      <div class="skill-card-header">
+        <div class="skill-icon design">&#127912;</div>
+        <div class="skill-status beta">Beta</div>
+      </div>
+      <div class="skill-name">Brand Kit Generator</div>
+      <div class="skill-slug">autonomyx-brand-kit-generator</div>
+      <p class="skill-desc">
+        Generates complete brand kits from a product description &mdash; SVG logos, color palettes, favicons, app icons, social preview images, and a brand guidelines document, all in a ZIP.
+      </p>
+      <div class="skill-tags">
+        <span class="skill-tag">Logo</span>
+        <span class="skill-tag">Colors</span>
+        <span class="skill-tag">Guidelines</span>
+        <span class="skill-tag">ZIP Export</span>
+      </div>
+      <div class="skill-footer">
+        <span class="skill-category">Design</span>
+        <div class="skill-actions">
+          <a href="https://raw.githubusercontent.com/agentnxxt/agentskills/main/autonomyx-brand-kit-generator.skill" download class="skill-btn skill-btn-primary">⬇ Download</a>
+          <a href="https://github.com/agentnxxt/agentskills/tree/main/autonomyx-brand-kit-generator" target="_blank" class="skill-btn skill-btn-secondary">GitHub</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skill 006: Landing Page Generator -->
+    <div class="skill-card" data-category="design">
+      <div class="skill-card-header">
+        <div class="skill-icon design">&#128640;</div>
+        <div class="skill-status beta">Beta</div>
+      </div>
+      <div class="skill-name">Landing Page Generator</div>
+      <div class="skill-slug">autonomyx-landing-page-generator</div>
+      <p class="skill-desc">
+        Generates production-grade landing pages from any existing website URL or uploaded file. Outputs single HTML or React component with distinctive, non-generic design.
+      </p>
+      <div class="skill-tags">
+        <span class="skill-tag">HTML</span>
+        <span class="skill-tag">React</span>
+        <span class="skill-tag">URL Scrape</span>
+        <span class="skill-tag">Responsive</span>
+      </div>
+      <div class="skill-footer">
+        <span class="skill-category">Design</span>
+        <div class="skill-actions">
+          <a href="https://raw.githubusercontent.com/agentnxxt/agentskills/main/autonomyx-landing-page-generator.skill" download class="skill-btn skill-btn-primary">⬇ Download</a>
+          <a href="https://github.com/agentnxxt/agentskills/tree/main/autonomyx-landing-page-generator" target="_blank" class="skill-btn skill-btn-secondary">GitHub</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skill 007: MCP from API Docs -->
+    <div class="skill-card" data-category="dev">
+      <div class="skill-card-header">
+        <div class="skill-icon dev">&#128268;</div>
+        <div class="skill-status beta">Beta</div>
+      </div>
+      <div class="skill-name">MCP from API Docs</div>
+      <div class="skill-slug">autonomyx-mcp-from-apidocs</div>
+      <p class="skill-desc">
+        Generates complete, ready-to-run MCP server projects from any API documentation. Turns third-party APIs into Claude-native tools with full TypeScript scaffolding.
+      </p>
+      <div class="skill-tags">
+        <span class="skill-tag">MCP</span>
+        <span class="skill-tag">TypeScript</span>
+        <span class="skill-tag">OpenAPI</span>
+        <span class="skill-tag">Deployable</span>
+      </div>
+      <div class="skill-footer">
+        <span class="skill-category">Developer Tools</span>
+        <div class="skill-actions">
+          <a href="https://raw.githubusercontent.com/agentnxxt/agentskills/main/autonomyx-mcp-from-apidocs.skill" download class="skill-btn skill-btn-primary">⬇ Download</a>
+          <a href="https://github.com/agentnxxt/agentskills/tree/main/autonomyx-mcp-from-apidocs" target="_blank" class="skill-btn skill-btn-secondary">GitHub</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skill 008: Autonomyx Content Formatter -->
+    <div class="skill-card" data-category="content">
+      <div class="skill-card-header">
+        <div class="skill-icon content">✍️</div>
+        <div class="skill-status shipped">Shipped</div>
+      </div>
+      <div class="skill-name">Autonomyx Content Formatter</div>
+      <div class="skill-slug">autonomyx-content-formatter</div>
+      <p class="skill-desc">
+        Repurposes any piece of content for 14 platforms — LinkedIn, Twitter/X, Instagram, YouTube, Podcast, Email, Blog, Medium, Substack, WhatsApp, Pinterest, Snapchat, Facebook, Threads. Fully tuned to audience industry, seniority, education level, and generation.
+      </p>
+      <div class="skill-tags">
+        <span class="skill-tag">14 Platforms</span>
+        <span class="skill-tag">Audience Tuning</span>
+        <span class="skill-tag">Tone &amp; Style</span>
+        <span class="skill-tag">Demographics</span>
+      </div>
+      <div class="skill-footer">
+        <span class="skill-category">Content</span>
+        <div class="skill-actions">
+          <a href="https://forms.gle/7mCFDQF3Dg3oCNRv9" class="skill-btn skill-btn-secondary">Feedback</a>
+          <a href="https://raw.githubusercontent.com/agentnxxt/agentskills/main/autonomyx-content-formatter.skill" download class="skill-btn skill-btn-primary">⬇ Download</a>
+          <a href="https://github.com/agentnxxt/agentskills/tree/main/autonomyx-content-formatter" target="_blank" class="skill-btn skill-btn-secondary">GitHub</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-box">
+    <h2 class="cta-title">Build with us.</h2>
+    <p class="cta-desc">
+      Every skill is open source. Fork them, improve them, or build your own.
+      The AgentNXXT skill library is our bet that the future of AI is specialized, composable skills.
+    </p>
+    <div class="cta-buttons">
+      <a href="https://github.com/AgentNXXT/agentskills" class="cta-btn cta-btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        Explore on GitHub
+      </a>
+      <a href="blog.html" class="cta-btn cta-btn-secondary">
+        Read the Blog
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <div class="footer-logo-icon">AX</div>
+        <div>
+          <div class="footer-logo-text">AgentSkills by AgentNXXT</div>
+          <div class="footer-logo-sub">by OpenAutonomyx (OPC) Private Limited</div>
+        </div>
+      </div>
+      <p class="footer-desc">AgentNXXT — The AI Cloud of Autonomyx. Building the future of intelligent agents — openly. OpenAutonomyx is your trusted advisor and implementation partner in all things AI.</p>
+    </div>
+
+    <div>
+      <div class="footer-section-title">Links</div>
+      <div class="footer-links">
+        <a href="https://agentnxxt.github.io/agentskills/" class="footer-link">Skills Marketplace</a>
+        <a href="https://agnxxt.com/skills" class="footer-link">Blog</a>
+        <a href="https://openautonomyx.com" class="footer-link">openautonomyx.com</a>
+        <a href="https://github.com/agentnxxt/agentskills" class="footer-link">GitHub Repo</a>
+        <a href="https://github.com/agentnxxt/agentskills/issues" class="footer-link">Report a Bug</a>
+        <a href="https://forms.gle/7mCFDQF3Dg3oCNRv9" class="footer-link">Feedback Form</a>
+        <a href="https://cal.com/thefractionalpm" class="footer-link">Book a Call</a>
+      </div>
+    </div>
+
+    <div>
+      <div class="footer-section-title">Connect</div>
+      <div class="footer-links">
+        <a href="https://linkedin.com/showcase/agentnxxt" class="footer-link">LinkedIn (AgentNXXT)</a>
+        <a href="https://www.linkedin.com/company/openautonomyx1/" class="footer-link">LinkedIn (OpenAutonomyx)</a>
+        <a href="https://www.linkedin.com/in/thefractionalproductmanager/" class="footer-link">Chinmay Panda</a>
+        <a href="https://github.com/agentnxxt" class="footer-link">GitHub</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span class="footer-copy">&copy; 2026 OpenAutonomyx (OPC) Private Limited. Built by AgentNXXT.</span>
+    <span class="footer-disclaimer">Skills are open source. Always review outputs before production use.</span>
+  </div>
+</footer>
+
+<!-- FILTER JS -->
+<script>
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const filter = btn.dataset.filter;
+      document.querySelectorAll('.skill-card').forEach(card => {
+        if (filter === 'all' || card.dataset.category === filter) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  saas-evaluator-mcp:
+    build: .
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - EVAL_DATA_DIR=/data
+    volumes:
+      - eval_data:/data
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+volumes:
+  eval_data:

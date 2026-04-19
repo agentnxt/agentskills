@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Okta Integration — Autonomyx Identity Fabric</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --autonomyx-blue:  #1B5EBE;
+    --deep-navy:       #001141;
+    --electric-cyan:   #00CFFF;
+    --light-blue:      #4D8FFF;
+    --bg:              #F7F8FC;
+    --surface:         #FFFFFF;
+    --border:          #E2E6EF;
+    --text-primary:    #0A0F1E;
+    --text-secondary:  #5A6580;
+    --text-muted:      #9BA5BE;
+    --success:         #00C48C;
+    --error:           #FF4757;
+    --warning:         #FFB020;
+    --step-inactive:   #D0D7E8;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--deep-navy);
+    padding: 0 40px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    color: #fff;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-keystone {
+    width: 28px; height: 28px;
+    background: linear-gradient(135deg, var(--electric-cyan), var(--light-blue));
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800; color: var(--deep-navy);
+  }
+  .header-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--electric-cyan);
+    background: rgba(0,207,255,0.1);
+    border: 1px solid rgba(0,207,255,0.3);
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── Main layout ── */
+  main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    max-width: 1100px;
+    margin: 48px auto;
+    gap: 32px;
+    padding: 0 24px;
+    width: 100%;
+  }
+
+  /* ── Sidebar / step navigator ── */
+  .sidebar {
+    position: sticky;
+    top: 92px;
+    align-self: start;
+  }
+  .sidebar-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+  .step-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+  .step-nav::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 30px;
+    bottom: 30px;
+    width: 1px;
+    background: var(--border);
+  }
+  .step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 12px 0;
+    cursor: default;
+    position: relative;
+    z-index: 1;
+  }
+  .step-dot {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--step-inactive);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    transition: all 0.3s ease;
+  }
+  .step-item.active .step-dot {
+    background: var(--autonomyx-blue);
+    border-color: var(--autonomyx-blue);
+    color: #fff;
+    box-shadow: 0 0 0 4px rgba(27,94,190,0.15);
+  }
+  .step-item.done .step-dot {
+    background: var(--success);
+    border-color: var(--success);
+    color: #fff;
+  }
+  .step-item.done .step-dot::after { content: '✓'; font-size: 13px; }
+  .step-item.done .step-num { display: none; }
+  .step-meta { padding-top: 4px; }
+  .step-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text-secondary);
+    transition: color 0.2s;
+  }
+  .step-item.active .step-name { color: var(--autonomyx-blue); }
+  .step-item.done .step-name { color: var(--success); }
+  .step-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+
+  /* ── Card ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(0,17,65,0.06);
+  }
+  .card-header {
+    padding: 32px 36px 24px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(to bottom, #F0F4FF, var(--surface));
+  }
+  .card-step-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--light-blue);
+    margin-bottom: 8px;
+  }
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
+  }
+  .card-subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 6px;
+    line-height: 1.6;
+  }
+  .card-body { padding: 32px 36px; }
+
+  /* ── Steps content ── */
+  .step-panel { display: none; }
+  .step-panel.active { display: block; }
+
+  /* ── Instructions list ── */
+  .instruction-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .instruction {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 16px;
+    background: #F7F9FF;
+    border: 1px solid #E0E8FF;
+    border-radius: 10px;
+  }
+  .instruction-num {
+    width: 24px; height: 24px;
+    background: var(--autonomyx-blue);
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .instruction-text {
+    font-size: 14px;
+    color: var(--text-primary);
+    line-height: 1.6;
+  }
+  .instruction-text strong { color: var(--autonomyx-blue); font-weight: 500; }
+  .instruction-text code {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    background: #E8EDFF;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--deep-navy);
+  }
+
+  /* ── Form fields ── */
+  .field-group { margin-bottom: 20px; }
+  .field-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .field-required {
+    font-size: 10px;
+    color: var(--error);
+    font-style: normal;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  .field-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--text-primary);
+    background: #fff;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field-input:focus {
+    border-color: var(--autonomyx-blue);
+    box-shadow: 0 0 0 3px rgba(27,94,190,0.1);
+  }
+  .field-input.error { border-color: var(--error); }
+  .field-input.success { border-color: var(--success); }
+  .field-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  /* ── Inline alert ── */
+  .alert {
+    padding: 14px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .alert-info  { background: #EEF4FF; border: 1px solid #C5D8FF; color: #1a3a7a; }
+  .alert-warn  { background: #FFF8EC; border: 1px solid #FFE0A0; color: #7a4f00; }
+  .alert-ok    { background: #EDFBF5; border: 1px solid #A0EDD0; color: #00613e; }
+  .alert-error { background: #FFF0F0; border: 1px solid #FFB0B0; color: #7a0000; }
+  .alert-icon  { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── Test result ── */
+  .test-box {
+    background: var(--deep-navy);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    line-height: 1.8;
+  }
+  .test-box .ok   { color: var(--success); }
+  .test-box .fail { color: var(--error); }
+  .test-box .info { color: var(--electric-cyan); }
+  .test-box .muted{ color: #4A5980; }
+
+  /* ── Config output ── */
+  .config-block {
+    background: var(--deep-navy);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .config-block-header {
+    padding: 12px 20px;
+    background: rgba(255,255,255,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .config-block-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #4A5980;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .copy-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--electric-cyan);
+    background: rgba(0,207,255,0.1);
+    border: 1px solid rgba(0,207,255,0.25);
+    padding: 4px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .copy-btn:hover { background: rgba(0,207,255,0.2); }
+  .config-block pre {
+    padding: 20px 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12.5px;
+    line-height: 2;
+    color: #B8C8E8;
+    overflow-x: auto;
+  }
+  .config-block pre .key   { color: var(--electric-cyan); }
+  .config-block pre .val   { color: #E8F0FF; }
+  .config-block pre .cmt   { color: #3A4F80; }
+
+  /* ── Buttons ── */
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .btn {
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-primary {
+    background: var(--autonomyx-blue);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(27,94,190,0.3);
+  }
+  .btn-primary:hover { background: #1650a8; transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .btn-secondary {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1.5px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--autonomyx-blue); color: var(--autonomyx-blue); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 13px;
+    padding: 12px 0;
+  }
+
+  /* ── Spinner ── */
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: inline-block;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Scope tag ── */
+  .scope-tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    background: #EEF4FF;
+    color: var(--autonomyx-blue);
+    border: 1px solid #C5D8FF;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin: 2px 2px 2px 0;
+  }
+
+  /* ── Success banner ── */
+  .success-banner {
+    background: linear-gradient(135deg, #001141 0%, #0A2560 100%);
+    border-radius: 14px;
+    padding: 36px;
+    text-align: center;
+    color: #fff;
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .success-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(0,207,255,0.15), transparent 70%);
+  }
+  .success-icon {
+    width: 56px; height: 56px;
+    background: var(--success);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    margin: 0 auto 16px;
+    box-shadow: 0 0 0 8px rgba(0,196,140,0.15);
+    position: relative; z-index: 1;
+  }
+  .success-banner h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    position: relative; z-index: 1;
+  }
+  .success-banner p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.65);
+    position: relative; z-index: 1;
+  }
+
+  /* ── Progress bar ── */
+  .progress-bar-wrap {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--autonomyx-blue), var(--electric-cyan));
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+
+  @media (max-width: 768px) {
+    main { grid-template-columns: 1fr; }
+    .sidebar { position: static; }
+    .step-nav::before { display: none; }
+    .step-nav { flex-direction: row; flex-wrap: wrap; gap: 8px; }
+    .step-item { flex-direction: column; align-items: center; padding: 8px; width: 80px; }
+    .step-desc { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-keystone">A</div>
+    Autonomyx
+  </div>
+  <span class="header-badge">Identity Fabric · Okta Integration</span>
+</header>
+
+<main>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-label">Setup progress</div>
+    <nav class="step-nav">
+      <div class="step-item active" id="nav-1">
+        <div class="step-dot"><span class="step-num">1</span></div>
+        <div class="step-meta">
+          <div class="step-name">Create Okta app</div>
+          <div class="step-desc">OAuth 2.0 server-side app in your Okta org</div>
+        </div>
+      </div>
+      <div class="step-item" id="nav-2">
+        <div class="step-dot"><span class="step-num">2</span></div>
+        <div class="step-meta">
+          <div class="step-name">Enter credentials</div>
+          <div class="step-desc">Domain, client ID, and secret</div>
+        </div>
+      </div>
+      <div class="step-item" id="nav-3">
+        <div class="step-dot"><span class="step-num">3</span></div>
+        <div class="step-meta">
+          <div class="step-name">Test connection</div>
+          <div class="step-desc">Live validation against your Okta org</div>
+        </div>
+      </div>
+      <div class="step-item" id="nav-4">
+        <div class="step-dot"><span class="step-num">4</span></div>
+        <div class="step-meta">
+          <div class="step-name">Get config</div>
+          <div class="step-desc">Copy env block into your deployment</div>
+        </div>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- Main card -->
+  <div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress" style="width:10%"></div>
+    </div>
+
+    <div class="card">
+
+      <!-- ── STEP 1: Create Okta App ── -->
+      <div class="step-panel active" id="panel-1">
+        <div class="card-header">
+          <div class="card-step-tag">Step 1 of 4</div>
+          <div class="card-title">Create an OAuth 2.0 app in Okta</div>
+          <div class="card-subtitle">We'll use OAuth 2.0 client credentials to read user identities from your Okta org — no SSWS token needed.</div>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-info">
+            <span class="alert-icon">ℹ️</span>
+            <span>This creates a <strong>machine-to-machine</strong> (service app) in Okta. No user login or redirect URI is needed.</span>
+          </div>
+
+          <div class="instruction-list">
+            <div class="instruction">
+              <div class="instruction-num">1</div>
+              <div class="instruction-text">
+                Log into your <strong>Okta Admin Console</strong> at <code>https://your-domain.okta.com/admin</code>
+              </div>
+            </div>
+            <div class="instruction">
+              <div class="instruction-num">2</div>
+              <div class="instruction-text">
+                Go to <strong>Applications → Applications</strong> → click <strong>Create App Integration</strong>
+              </div>
+            </div>
+            <div class="instruction">
+              <div class="instruction-num">3</div>
+              <div class="instruction-text">
+                Select <strong>API Services</strong> (machine-to-machine). Name it <code>Autonomyx Identity Fabric</code>
+              </div>
+            </div>
+            <div class="instruction">
+              <div class="instruction-num">4</div>
+              <div class="instruction-text">
+                In the app's <strong>Okta API Scopes</strong> tab, grant these scopes:<br><br>
+                <span class="scope-tag">okta.users.read</span>
+                <span class="scope-tag">okta.groups.read</span>
+                <span class="scope-tag">okta.apps.read</span>
+              </div>
+            </div>
+            <div class="instruction">
+              <div class="instruction-num">5</div>
+              <div class="instruction-text">
+                Copy the <strong>Client ID</strong> and <strong>Client Secret</strong> from the General tab — you'll enter them in the next step.
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-warn">
+            <span class="alert-icon">⚠️</span>
+            <span>The Client Secret is shown only once. Copy it before leaving the page.</span>
+          </div>
+
+          <div class="btn-row" style="border-top:none; margin-top:0; padding-top:0;">
+            <button class="btn btn-primary" onclick="goTo(2)">
+              App created — next <span>→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── STEP 2: Enter Credentials ── -->
+      <div class="step-panel" id="panel-2">
+        <div class="card-header">
+          <div class="card-step-tag">Step 2 of 4</div>
+          <div class="card-title">Enter your Okta credentials</div>
+          <div class="card-subtitle">These are stored only in your browser for this session and used solely to test the connection.</div>
+        </div>
+        <div class="card-body">
+          <div class="field-group">
+            <label class="field-label">
+              Okta Domain
+              <span class="field-required">required</span>
+            </label>
+            <input class="field-input" id="okta-domain" type="text"
+              placeholder="your-org.okta.com"
+              autocomplete="off" spellcheck="false">
+            <div class="field-hint">Your Okta org domain — no https://, no trailing slash. Example: <code>acme.okta.com</code> or <code>dev-12345.okta.com</code></div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">
+              Client ID
+              <span class="field-required">required</span>
+            </label>
+            <input class="field-input" id="okta-client-id" type="text"
+              placeholder="0oa1ab2cd3ef4gh5IJ6"
+              autocomplete="off" spellcheck="false">
+            <div class="field-hint">From the app's General tab in Okta Admin Console.</div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">
+              Client Secret
+              <span class="field-required">required</span>
+            </label>
+            <input class="field-input" id="okta-client-secret" type="password"
+              placeholder="••••••••••••••••••••••••••••••••"
+              autocomplete="off">
+            <div class="field-hint">Shown once when you created the app. Never sent to our servers — used only for client-side validation.</div>
+          </div>
+
+          <div class="alert alert-info" style="margin-top:24px">
+            <span class="alert-icon">🔒</span>
+            <span>Your credentials are <strong>never sent to Autonomyx servers</strong>. The connection test runs directly from your browser to Okta's API. We generate an env block you copy into your own deployment.</span>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="validateAndNext()" id="btn-next-2">
+              Continue <span>→</span>
+            </button>
+            <button class="btn btn-secondary" onclick="goTo(1)">← Back</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── STEP 3: Test Connection ── -->
+      <div class="step-panel" id="panel-3">
+        <div class="card-header">
+          <div class="card-step-tag">Step 3 of 4</div>
+          <div class="card-title">Testing your Okta connection</div>
+          <div class="card-subtitle">We're validating your credentials against Okta's token endpoint and verifying user read access.</div>
+        </div>
+        <div class="card-body">
+          <div class="test-box" id="test-log">
+            <div class="muted">Initialising connection test...</div>
+          </div>
+
+          <div id="test-result-area"></div>
+
+          <div class="btn-row" id="test-btn-row" style="display:none">
+            <button class="btn btn-primary" onclick="goTo(4)" id="btn-to-config">
+              Get config block <span>→</span>
+            </button>
+            <button class="btn btn-secondary" onclick="goTo(2)">← Edit credentials</button>
+            <button class="btn btn-ghost" onclick="runTest()">↺ Retry</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── STEP 4: Config Output ── -->
+      <div class="step-panel" id="panel-4">
+        <div class="card-header">
+          <div class="card-step-tag">Step 4 of 4</div>
+          <div class="card-title">Your Okta configuration</div>
+          <div class="card-subtitle">Copy this env block into your Identity Fabric deployment and restart the container.</div>
+        </div>
+        <div class="card-body">
+
+          <div class="success-banner">
+            <div class="success-icon">✓</div>
+            <h2>Okta connected successfully</h2>
+            <p>Your credentials validated. Add the env block below to activate Okta identity resolution.</p>
+          </div>
+
+          <div class="config-block">
+            <div class="config-block-header">
+              <span class="config-block-title">.env — append to /opt/identity-fabric/.env</span>
+              <button class="copy-btn" onclick="copyConfig()">Copy</button>
+            </div>
+            <pre id="config-output"></pre>
+          </div>
+
+          <div class="instruction-list">
+            <div class="instruction">
+              <div class="instruction-num">1</div>
+              <div class="instruction-text">
+                SSH into your VPS and open the env file:<br>
+                <code>nano /opt/identity-fabric/.env</code>
+              </div>
+            </div>
+            <div class="instruction">
+              <div class="instruction-num">2</div>
+              <div class="instruction-text">
+                Paste the block above at the end of the file. Save and exit.
+              </div>
+            </div>
+            <div class="instruction">
+              <div class="instruction-num">3</div>
+              <div class="instruction-text">
+                Restart the container:<br>
+                <code>sudo docker restart identity_fabric</code>
+              </div>
+            </div>
+            <div class="instruction">
+              <div class="instruction-num">4</div>
+              <div class="instruction-text">
+                Verify Okta is live:<br>
+                <code>curl https://identity.openautonomyx.com/health/connectors</code><br>
+                You should see <code>"okta": true</code>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-warn">
+            <span class="alert-icon">⚠️</span>
+            <span>Close this tab after copying — your Client Secret is in the env block and shouldn't remain in browser history.</span>
+          </div>
+
+          <div class="btn-row" style="border-top:none;padding-top:0;margin-top:0">
+            <button class="btn btn-primary" onclick="copyConfig()">Copy env block</button>
+            <button class="btn btn-secondary" onclick="resetWizard()">Start over</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /card -->
+  </div>
+</main>
+
+<script>
+let currentStep = 1;
+const STEPS = 4;
+
+// State
+let state = {
+  domain: '', clientId: '', clientSecret: '',
+  testPassed: false, accessToken: ''
+};
+
+function goTo(step) {
+  // Deactivate current
+  document.getElementById(`panel-${currentStep}`).classList.remove('active');
+  document.getElementById(`nav-${currentStep}`).classList.remove('active');
+  if (step > currentStep) {
+    document.getElementById(`nav-${currentStep}`).classList.add('done');
+  }
+
+  currentStep = step;
+
+  // Activate new
+  document.getElementById(`panel-${step}`).classList.add('active');
+  document.querySelectorAll('.step-item').forEach((el, i) => {
+    if (i + 1 < step) el.classList.add('done');
+    if (i + 1 === step) { el.classList.add('active'); el.classList.remove('done'); }
+    if (i + 1 > step) { el.classList.remove('active'); el.classList.remove('done'); }
+  });
+
+  // Progress bar
+  const pct = { 1: 10, 2: 35, 3: 65, 4: 100 }[step] || 10;
+  document.getElementById('progress').style.width = pct + '%';
+
+  // Trigger test on step 3
+  if (step === 3) setTimeout(runTest, 400);
+
+  // Build config on step 4
+  if (step === 4) buildConfig();
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function validateAndNext() {
+  const domain = document.getElementById('okta-domain').value.trim();
+  const clientId = document.getElementById('okta-client-id').value.trim();
+  const clientSecret = document.getElementById('okta-client-secret').value.trim();
+
+  let valid = true;
+
+  ['okta-domain', 'okta-client-id', 'okta-client-secret'].forEach(id => {
+    document.getElementById(id).classList.remove('error');
+  });
+
+  if (!domain || !domain.includes('.')) {
+    document.getElementById('okta-domain').classList.add('error');
+    valid = false;
+  }
+  if (!clientId || clientId.length < 10) {
+    document.getElementById('okta-client-id').classList.add('error');
+    valid = false;
+  }
+  if (!clientSecret || clientSecret.length < 10) {
+    document.getElementById('okta-client-secret').classList.add('error');
+    valid = false;
+  }
+
+  if (!valid) return;
+
+  // Normalise domain
+  state.domain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
+  state.clientId = clientId;
+  state.clientSecret = clientSecret;
+
+  goTo(3);
+}
+
+// ── Test runner (calls Okta directly from browser) ────────────────────────────
+async function runTest() {
+  const log = document.getElementById('test-log');
+  const resultArea = document.getElementById('test-result-area');
+  const btnRow = document.getElementById('test-btn-row');
+  const btnConfig = document.getElementById('btn-to-config');
+
+  log.innerHTML = '<div class="info">▶ Starting connection test...</div>';
+  resultArea.innerHTML = '';
+  btnRow.style.display = 'none';
+  state.testPassed = false;
+
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+  function appendLog(msg, cls = '') {
+    log.innerHTML += `<div class="${cls}">${msg}</div>`;
+    log.scrollTop = log.scrollHeight;
+  }
+
+  try {
+    // Step 1: Resolve domain
+    appendLog(`<span class="muted">  domain    </span> ${state.domain}`);
+    await sleep(300);
+
+    // Step 2: Fetch token via client_credentials
+    appendLog(`<span class="muted">  endpoint  </span> https://${state.domain}/oauth2/v1/token`);
+    await sleep(200);
+    appendLog(`<span class="info">→ Requesting access token (client_credentials)...</span>`);
+
+    const tokenRes = await fetch(`https://${state.domain}/oauth2/v1/token`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json' },
+      body: new URLSearchParams({
+        grant_type: 'client_credentials',
+        client_id: state.clientId,
+        client_secret: state.clientSecret,
+        scope: 'okta.users.read',
+      })
+    });
+
+    const tokenData = await tokenRes.json();
+
+    if (!tokenRes.ok || !tokenData.access_token) {
+      const errMsg = tokenData.error_description || tokenData.error || `HTTP ${tokenRes.status}`;
+      appendLog(`<span class="fail">✗ Token request failed: ${errMsg}</span>`);
+      throw new Error(errMsg);
+    }
+
+    state.accessToken = tokenData.access_token;
+    appendLog(`<span class="ok">✓ Access token obtained</span>`);
+    appendLog(`<span class="muted">  scope     </span> ${tokenData.scope || 'okta.users.read'}`);
+    appendLog(`<span class="muted">  expires   </span> ${tokenData.expires_in}s`);
+    await sleep(300);
+
+    // Step 3: Test user read
+    appendLog(`<span class="info">→ Testing user read access (GET /api/v1/users?limit=1)...</span>`);
+    const usersRes = await fetch(`https://${state.domain}/api/v1/users?limit=1`, {
+      headers: { 'Authorization': `Bearer ${state.accessToken}`, 'Accept': 'application/json' }
+    });
+
+    if (!usersRes.ok) {
+      appendLog(`<span class="fail">✗ User read failed: HTTP ${usersRes.status}</span>`);
+      appendLog(`<span class="muted">  → Check that okta.users.read scope is granted to the app</span>`);
+      throw new Error(`User read HTTP ${usersRes.status}`);
+    }
+
+    const users = await usersRes.json();
+    appendLog(`<span class="ok">✓ User read access confirmed</span>`);
+    appendLog(`<span class="muted">  sample    </span> ${users[0]?.profile?.login || '(user found)'}`);
+    await sleep(200);
+
+    // Step 4: Check groups scope
+    appendLog(`<span class="info">→ Testing group read access...</span>`);
+    const grpRes = await fetch(`https://${state.domain}/api/v1/groups?limit=1`, {
+      headers: { 'Authorization': `Bearer ${state.accessToken}`, 'Accept': 'application/json' }
+    });
+    if (grpRes.ok) {
+      appendLog(`<span class="ok">✓ Group read access confirmed</span>`);
+    } else {
+      appendLog(`<span class="muted">⚠ Group read not available (okta.groups.read scope may be missing — optional)</span>`);
+    }
+    await sleep(200);
+
+    appendLog(`\n<span class="ok">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>`);
+    appendLog(`<span class="ok">✓ All checks passed — Okta org is ready</span>`);
+
+    state.testPassed = true;
+    resultArea.innerHTML = `<div class="alert alert-ok"><span class="alert-icon">✅</span><span><strong>Connection verified.</strong> Okta credentials are valid and user read access is confirmed.</span></div>`;
+    btnRow.style.display = 'flex';
+
+  } catch (err) {
+    resultArea.innerHTML = `<div class="alert alert-error"><span class="alert-icon">❌</span><span><strong>Test failed:</strong> ${err.message}. Check your credentials and Okta app scopes, then try again.</span></div>`;
+    btnConfig.disabled = true;
+    btnRow.style.display = 'flex';
+    document.getElementById('btn-to-config').style.display = 'none';
+  }
+}
+
+// ── Config builder ────────────────────────────────────────────────────────────
+function buildConfig() {
+  const pre = document.getElementById('config-output');
+  const lines = [
+    ['# ── Okta Integration ─────────────────────────────────', null, 'cmt'],
+    ['OKTA_DOMAIN', state.domain],
+    ['OKTA_CLIENT_ID', state.clientId],
+    ['OKTA_CLIENT_SECRET', state.clientSecret],
+    ['# After restart, verify with:', null, 'cmt'],
+    ['# curl https://identity.openautonomyx.com/health/connectors', null, 'cmt'],
+  ];
+
+  pre.innerHTML = lines.map(([k, v, cls]) => {
+    if (cls === 'cmt') return `<span class="cmt">${k}</span>`;
+    return `<span class="key">${k}</span>=<span class="val">${v}</span>`;
+  }).join('\n');
+}
+
+function copyConfig() {
+  const text = [
+    '# ── Okta Integration ─────────────────────────────────',
+    `OKTA_DOMAIN=${state.domain}`,
+    `OKTA_CLIENT_ID=${state.clientId}`,
+    `OKTA_CLIENT_SECRET=${state.clientSecret}`,
+    '# After restart, verify with:',
+    '# curl https://identity.openautonomyx.com/health/connectors',
+  ].join('\n');
+
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    btn.textContent = 'Copied ✓';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+
+function resetWizard() {
+  state = { domain: '', clientId: '', clientSecret: '', testPassed: false, accessToken: '' };
+  document.getElementById('okta-domain').value = '';
+  document.getElementById('okta-client-id').value = '';
+  document.getElementById('okta-client-secret').value = '';
+  goTo(1);
+}
+</script>
+</body>
+</html>

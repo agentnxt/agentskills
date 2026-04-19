@@ -1,0 +1,9 @@
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+httpx==0.28.1
+cryptography==44.0.0
+surrealdb==0.3.2
+pydantic==2.10.4
+python-multipart==0.0.20
+aiofiles==24.1.0
+fastmcp==3.2.3
