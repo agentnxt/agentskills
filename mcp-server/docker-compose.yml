@@ -1,0 +1,14 @@
+services:
+  mcp-server:
+    build: .
+    ports:
+      - "${PORT:-3100}:3100"
+    volumes:
+      - keydata:/app/data
+    environment:
+      PORT: 3100
+      ADMIN_SECRET: ${ADMIN_SECRET:-changeme}
+    restart: unless-stopped
+
+volumes:
+  keydata:
