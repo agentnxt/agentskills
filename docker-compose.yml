@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  skill-gallery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: skill-gallery
+    ports:
+      - "3002:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///./skill-gallery.db}
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
