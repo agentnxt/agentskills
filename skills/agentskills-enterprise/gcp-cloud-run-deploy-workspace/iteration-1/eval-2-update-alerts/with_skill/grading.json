@@ -1,0 +1,34 @@
+{
+  "expectations": [
+    {
+      "text": "No gcloud CLI commands used",
+      "passed": true,
+      "evidence": "Pattern 'gcloud' absent (good)"
+    },
+    {
+      "text": "Uses PATCH to update existing service (not POST/create)",
+      "passed": false,
+      "evidence": "Pattern 'PATCH' NOT found in output"
+    },
+    {
+      "text": "Creates webhook notification channel",
+      "passed": false,
+      "evidence": "Pattern 'webhook' NOT found in output"
+    },
+    {
+      "text": "Sets custom 3% error rate threshold",
+      "passed": false,
+      "evidence": "3% threshold not found"
+    },
+    {
+      "text": "Includes cost summary",
+      "passed": true,
+      "evidence": "Pattern 'Cost' found in output"
+    },
+    {
+      "text": "Asks user for confirmation",
+      "passed": true,
+      "evidence": "Confirmation language found"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "expectations": [
+    {
+      "text": "Does NOT deploy or redeploy the service",
+      "passed": null,
+      "evidence": "Manual review needed"
+    },
+    {
+      "text": "Creates GitHub Actions workflow",
+      "passed": true,
+      "evidence": "Workflow YAML content found"
+    },
+    {
+      "text": "Creates Cloud Build trigger via API",
+      "passed": true,
+      "evidence": "Pattern 'triggers' found in output"
+    },
+    {
+      "text": "Connects to Metabase via API",
+      "passed": false,
+      "evidence": "Pattern 'api/session' NOT found in output"
+    },
+    {
+      "text": "Suggests additional metrics beyond what was asked",
+      "passed": true,
+      "evidence": "Additional suggestions found"
+    },
+    {
+      "text": "Includes cost summary",
+      "passed": true,
+      "evidence": "Pattern 'Cost' found in output"
+    },
+    {
+      "text": "Minimal or no gcloud CLI usage",
+      "passed": false,
+      "evidence": "gcloud mentions: 23 (<=3 acceptable)"
+    }
+  ]
+}

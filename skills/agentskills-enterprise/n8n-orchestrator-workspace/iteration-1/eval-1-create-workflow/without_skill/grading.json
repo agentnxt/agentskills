@@ -1,0 +1,44 @@
+{
+  "expectations": [
+    {
+      "text": "Uses correct n8n API endpoint for creating workflows",
+      "passed": false,
+      "evidence": "Pattern '/api/v1/workflows' NOT found"
+    },
+    {
+      "text": "Uses correct base URL (localhost:5678 or n8n-bot.agnxxt.com)",
+      "passed": false,
+      "evidence": "Pattern 'localhost:5678|n8n-bot.agnxxt.com' NOT found"
+    },
+    {
+      "text": "Produces valid workflow JSON with nodes array",
+      "passed": false,
+      "evidence": "Pattern '\"nodes\"' NOT found"
+    },
+    {
+      "text": "Produces connections object",
+      "passed": false,
+      "evidence": "Pattern '\"connections\"' NOT found"
+    },
+    {
+      "text": "Uses webhook trigger node type",
+      "passed": false,
+      "evidence": "Pattern 'webhook' NOT found"
+    },
+    {
+      "text": "Uses Google Sheets node",
+      "passed": false,
+      "evidence": "Pattern 'googleSheets|Google Sheets' NOT found"
+    },
+    {
+      "text": "Uses IF/filter node for status filtering",
+      "passed": false,
+      "evidence": "Pattern 'n8n-nodes-base\\.if|filter|IF' NOT found"
+    },
+    {
+      "text": "Includes Slack node",
+      "passed": false,
+      "evidence": "Pattern 'slack|Slack' NOT found"
+    }
+  ]
+}

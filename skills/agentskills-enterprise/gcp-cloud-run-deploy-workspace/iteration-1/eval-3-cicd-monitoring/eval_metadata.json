@@ -1,0 +1,14 @@
+{
+  "eval_id": 3,
+  "eval_name": "cicd-monitoring-no-deploy",
+  "prompt": "I already have `user-service` running on Cloud Run in us-east1, project `saas-platform`. Set up both GitHub Actions and Cloud Build triggers for the repo `mycompany/user-service`. Then connect my Metabase at https://analytics.mycompany.com to show request rate, latency p95, and instance scaling. Suggest what other metrics I should track based on the codebase.",
+  "assertions": [
+    {"text": "Does NOT deploy or redeploy the service", "type": "semantic", "description": "No Cloud Run create/update calls"},
+    {"text": "Creates GitHub Actions workflow", "type": "semantic", "description": "Includes workflow YAML"},
+    {"text": "Creates Cloud Build trigger via API", "type": "grep_present", "pattern": "triggers"},
+    {"text": "Connects to Metabase via API", "type": "grep_present", "pattern": "api/session"},
+    {"text": "Suggests additional metrics beyond what was asked", "type": "semantic", "description": "Recommends extra metrics"},
+    {"text": "Includes cost summary", "type": "grep_present", "pattern": "Cost"},
+    {"text": "Minimal or no gcloud CLI usage", "type": "semantic", "description": "Avoids gcloud where API exists"}
+  ]
+}

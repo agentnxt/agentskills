@@ -1,0 +1,44 @@
+{
+  "expectations": [
+    {
+      "text": "Uses correct Firecrawl URL (172.16.1.112:3002)",
+      "passed": false,
+      "evidence": "Pattern '172\\.16\\.1\\.112:3002' NOT found"
+    },
+    {
+      "text": "Uses correct Ollama URL (localllm:11434)",
+      "passed": false,
+      "evidence": "Pattern 'localllm:11434' NOT found"
+    },
+    {
+      "text": "Uses correct Liferay URL (openautonomyx.com)",
+      "passed": false,
+      "evidence": "Pattern 'openautonomyx\\.com' NOT found"
+    },
+    {
+      "text": "Specifies qwen2.5:7b model for Ollama",
+      "passed": false,
+      "evidence": "Pattern 'qwen2\\.5:7b' NOT found"
+    },
+    {
+      "text": "Uses correct Liferay auth (test@liferay.com)",
+      "passed": false,
+      "evidence": "Pattern 'test@liferay\\.com' NOT found"
+    },
+    {
+      "text": "Produces workflow JSON with nodes",
+      "passed": false,
+      "evidence": "Pattern '\"nodes\"' NOT found"
+    },
+    {
+      "text": "Uses n8n-nodes-base.code instead of executeCommand",
+      "passed": false,
+      "evidence": "Pattern 'n8n-nodes-base\\.code' NOT found"
+    },
+    {
+      "text": "Mentions Docker network consideration",
+      "passed": false,
+      "evidence": "Pattern 'network|platform_internal|bridge' NOT found"
+    }
+  ]
+}

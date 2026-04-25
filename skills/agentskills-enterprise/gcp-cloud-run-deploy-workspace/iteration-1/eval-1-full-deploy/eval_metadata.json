@@ -1,0 +1,18 @@
+{
+  "eval_id": 1,
+  "eval_name": "full-deploy-fastapi",
+  "prompt": "I have a FastAPI app at github.com/myorg/inventory-api. Deploy it to Cloud Run in us-central1, set up GitHub Actions CI/CD, create a Metabase dashboard for monitoring, and add alerts for error rate and latency. My service account key is at ~/sa-key.json, project ID is `acme-prod-2024`, and Metabase is at https://metabase.acme.internal.",
+  "assertions": [
+    {"text": "No gcloud CLI commands used — only REST API calls", "type": "grep_absent", "pattern": "gcloud"},
+    {"text": "Uses Cloud Run Admin API v2 endpoints", "type": "grep_present", "pattern": "run.googleapis.com/v2"},
+    {"text": "Shows OAuth2 token exchange from service account key", "type": "grep_present", "pattern": "oauth2.googleapis.com/token"},
+    {"text": "Asks user for confirmation before major actions", "type": "semantic", "description": "Output includes confirmation prompts"},
+    {"text": "Includes cost summary with GCP and Anthropic sections", "type": "grep_present", "pattern": "Cost"},
+    {"text": "Specifies least-privilege IAM roles", "type": "grep_present", "pattern": "roles/run.admin"},
+    {"text": "Auto-detects Dockerfile and framework", "type": "semantic", "description": "Mentions detecting FastAPI or Dockerfile"},
+    {"text": "Creates Cloud Build API call for image build", "type": "grep_present", "pattern": "cloudbuild.googleapis.com"},
+    {"text": "Generates GitHub Actions workflow YAML", "type": "semantic", "description": "Includes .github/workflows YAML content"},
+    {"text": "Creates Metabase dashboard via API", "type": "grep_present", "pattern": "api/dashboard"},
+    {"text": "Creates alert policies via Monitoring API", "type": "grep_present", "pattern": "alertPolicies"}
+  ]
+}
