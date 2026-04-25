@@ -1,0 +1,25 @@
+{
+  "name": "@opensaasapps/saas-factory-mcp",
+  "version": "2.0.0",
+  "description": "Unified MCP server for the SaaS Factory — converts OSS projects, scaffolds infrastructure, configures services, deploys, and diagnoses",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "keys": "tsx src/keys.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "express": "^5.1.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.2",
+    "@types/node": "^22.15.3",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  },
+  "private": true
+}
