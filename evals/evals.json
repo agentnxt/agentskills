@@ -1,0 +1,23 @@
+{
+  "skill_name": "gcp-cloud-run-deploy",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have a FastAPI app at github.com/myorg/inventory-api. Deploy it to Cloud Run in us-central1, set up GitHub Actions CI/CD, create a Metabase dashboard for monitoring, and add alerts for error rate and latency. My service account key is at ~/sa-key.json, project ID is `acme-prod-2024`, and Metabase is at https://metabase.acme.internal.",
+      "expected_output": "Should analyze the repo, detect FastAPI/Dockerfile, present findings for confirmation, build via Cloud Build API, deploy via Cloud Run Admin API v2, generate GitHub Actions workflow YAML, set up Metabase dashboards via API, create alert policies, and show cost summary (GCP + Anthropic) at the end. Must NEVER use gcloud CLI. Must ask for confirmation at each major step.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "My Cloud Run service `payment-gateway` in `eu-west1` needs updating — push the new image from the latest commit on main branch. Also add a webhook alert to https://hooks.slack.com/services/xxx when error rate goes above 3%. Project: `fintech-staging`, SA key: ~/keys/staging.json",
+      "expected_output": "Should update the existing service via PATCH on Cloud Run Admin API v2, create a webhook notification channel, create a custom alert policy with 3% threshold, and show cost summary. Must NOT create a new service. Must use API calls, not CLI.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I already have `user-service` running on Cloud Run in us-east1, project `saas-platform`. Set up both GitHub Actions and Cloud Build triggers for the repo `mycompany/user-service`. Then connect my Metabase at https://analytics.mycompany.com to show request rate, latency p95, and instance scaling. Suggest what other metrics I should track based on the codebase.",
+      "expected_output": "Should set up GitHub Actions workflow AND Cloud Build trigger via API. Connect to Metabase and create dashboard with specified metrics. Analyze the codebase to suggest additional metrics. Present suggestions for user confirmation before creating. Show cost summary at end. Must NOT deploy or redeploy the service.",
+      "files": []
+    }
+  ]
+}

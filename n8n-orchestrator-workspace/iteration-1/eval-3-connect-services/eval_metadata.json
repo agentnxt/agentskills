@@ -1,0 +1,46 @@
+{
+  "eval_id": "eval-3-connect-services",
+  "eval_name": "eval-3-connect-services",
+  "assertions": [
+    {
+      "text": "Uses correct Firecrawl URL (172.16.1.112:3002)",
+      "type": "grep_present",
+      "pattern": "172\\.16\\.1\\.112:3002"
+    },
+    {
+      "text": "Uses correct Ollama URL (localllm:11434)",
+      "type": "grep_present",
+      "pattern": "localllm:11434"
+    },
+    {
+      "text": "Uses correct Liferay URL (openautonomyx.com)",
+      "type": "grep_present",
+      "pattern": "openautonomyx\\.com"
+    },
+    {
+      "text": "Specifies qwen2.5:7b model for Ollama",
+      "type": "grep_present",
+      "pattern": "qwen2\\.5:7b"
+    },
+    {
+      "text": "Uses correct Liferay auth (test@liferay.com)",
+      "type": "grep_present",
+      "pattern": "test@liferay\\.com"
+    },
+    {
+      "text": "Produces workflow JSON with nodes",
+      "type": "grep_present",
+      "pattern": "\"nodes\""
+    },
+    {
+      "text": "Uses n8n-nodes-base.code instead of executeCommand",
+      "type": "grep_present",
+      "pattern": "n8n-nodes-base\\.code"
+    },
+    {
+      "text": "Mentions Docker network consideration",
+      "type": "grep_present",
+      "pattern": "network|platform_internal|bridge"
+    }
+  ]
+}

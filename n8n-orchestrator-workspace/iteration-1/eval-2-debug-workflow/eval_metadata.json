@@ -1,0 +1,41 @@
+{
+  "eval_id": "eval-2-debug-workflow",
+  "eval_name": "eval-2-debug-workflow",
+  "assertions": [
+    {
+      "text": "Uses GET executions endpoint",
+      "type": "grep_present",
+      "pattern": "/api/v1/executions"
+    },
+    {
+      "text": "Uses GET workflow endpoint for ID 42",
+      "type": "grep_present",
+      "pattern": "/api/v1/workflows/42"
+    },
+    {
+      "text": "Uses PUT to fix the workflow",
+      "type": "grep_present",
+      "pattern": "PUT"
+    },
+    {
+      "text": "Uses correct base URL",
+      "type": "grep_present",
+      "pattern": "localhost:5678|n8n-bot.agnxxt.com"
+    },
+    {
+      "text": "Warns about executeCommand being unavailable",
+      "type": "grep_present",
+      "pattern": "executeCommand|not available|NOT available"
+    },
+    {
+      "text": "Mentions correct n8n version (2.14.2)",
+      "type": "grep_present",
+      "pattern": "2\\.14"
+    },
+    {
+      "text": "Shows authentication step",
+      "type": "grep_present",
+      "pattern": "login|cookie|auth|API.KEY"
+    }
+  ]
+}

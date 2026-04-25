@@ -1,0 +1,23 @@
+{
+  "skill_name": "n8n-orchestrator",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Create an n8n workflow that triggers on a webhook, fetches data from a Google Sheet, filters rows where status is 'pending', and sends each one to a Slack channel.",
+      "expected_output": "Should produce a valid n8n workflow JSON with webhook trigger, Google Sheets node, IF/filter node, and Slack node with proper connections. Should use the n8n API to create the workflow via POST /api/v1/workflows.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "My n8n workflow ID 42 keeps failing on execution. List recent executions, find the errors, and fix the workflow.",
+      "expected_output": "Should use GET /api/v1/executions to list recent runs, identify the failing execution, read error details, then GET /api/v1/workflows/42 to inspect the workflow, diagnose the issue, and PUT /api/v1/workflows/42 to fix it.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Build an n8n workflow that uses Firecrawl to scrape a URL, processes the content with Ollama (qwen2.5:7b), and posts the summary to Liferay as a web content article.",
+      "expected_output": "Should reference the correct internal service URLs (Firecrawl at 172.16.1.112:3002, Ollama at localllm:11434, Liferay at www.openautonomyx.com). Should use HTTP Request nodes with correct endpoints. Should produce valid workflow JSON.",
+      "files": []
+    }
+  ]
+}

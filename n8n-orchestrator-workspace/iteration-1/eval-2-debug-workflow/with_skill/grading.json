@@ -1,0 +1,39 @@
+{
+  "expectations": [
+    {
+      "text": "Uses GET executions endpoint",
+      "passed": true,
+      "evidence": "Pattern '/api/v1/executions' found"
+    },
+    {
+      "text": "Uses GET workflow endpoint for ID 42",
+      "passed": true,
+      "evidence": "Pattern '/api/v1/workflows/42' found"
+    },
+    {
+      "text": "Uses PUT to fix the workflow",
+      "passed": true,
+      "evidence": "Pattern 'PUT' found"
+    },
+    {
+      "text": "Uses correct base URL",
+      "passed": true,
+      "evidence": "Pattern 'localhost:5678|n8n-bot.agnxxt.com' found"
+    },
+    {
+      "text": "Warns about executeCommand being unavailable",
+      "passed": true,
+      "evidence": "Pattern 'executeCommand|not available|NOT available' found"
+    },
+    {
+      "text": "Mentions correct n8n version (2.14.2)",
+      "passed": true,
+      "evidence": "Pattern '2\\.14' found"
+    },
+    {
+      "text": "Shows authentication step",
+      "passed": true,
+      "evidence": "Pattern 'login|cookie|auth|API.KEY' found"
+    }
+  ]
+}

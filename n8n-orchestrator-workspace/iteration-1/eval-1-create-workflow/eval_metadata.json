@@ -1,0 +1,46 @@
+{
+  "eval_id": "eval-1-create-workflow",
+  "eval_name": "eval-1-create-workflow",
+  "assertions": [
+    {
+      "text": "Uses correct n8n API endpoint for creating workflows",
+      "type": "grep_present",
+      "pattern": "/api/v1/workflows"
+    },
+    {
+      "text": "Uses correct base URL (localhost:5678 or n8n-bot.agnxxt.com)",
+      "type": "grep_present",
+      "pattern": "localhost:5678|n8n-bot.agnxxt.com"
+    },
+    {
+      "text": "Produces valid workflow JSON with nodes array",
+      "type": "grep_present",
+      "pattern": "\"nodes\""
+    },
+    {
+      "text": "Produces connections object",
+      "type": "grep_present",
+      "pattern": "\"connections\""
+    },
+    {
+      "text": "Uses webhook trigger node type",
+      "type": "grep_present",
+      "pattern": "webhook"
+    },
+    {
+      "text": "Uses Google Sheets node",
+      "type": "grep_present",
+      "pattern": "googleSheets|Google Sheets"
+    },
+    {
+      "text": "Uses IF/filter node for status filtering",
+      "type": "grep_present",
+      "pattern": "n8n-nodes-base\\.if|filter|IF"
+    },
+    {
+      "text": "Includes Slack node",
+      "type": "grep_present",
+      "pattern": "slack|Slack"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "expectations": [
+    {
+      "text": "No gcloud CLI commands used \u2014 only REST API calls",
+      "passed": true,
+      "evidence": "Pattern 'gcloud' absent (good)"
+    },
+    {
+      "text": "Uses Cloud Run Admin API v2 endpoints",
+      "passed": false,
+      "evidence": "Pattern 'run.googleapis.com/v2' NOT found in output"
+    },
+    {
+      "text": "Shows OAuth2 token exchange from service account key",
+      "passed": false,
+      "evidence": "Pattern 'oauth2.googleapis.com/token' NOT found in output"
+    },
+    {
+      "text": "Asks user for confirmation before major actions",
+      "passed": false,
+      "evidence": "Confirmation language not found"
+    },
+    {
+      "text": "Includes cost summary with GCP and Anthropic sections",
+      "passed": false,
+      "evidence": "Pattern 'Cost' NOT found in output"
+    },
+    {
+      "text": "Specifies least-privilege IAM roles",
+      "passed": false,
+      "evidence": "Pattern 'roles/run.admin' NOT found in output"
+    },
+    {
+      "text": "Auto-detects Dockerfile and framework",
+      "passed": true,
+      "evidence": "FastAPI/Dockerfile detection found"
+    },
+    {
+      "text": "Creates Cloud Build API call for image build",
+      "passed": false,
+      "evidence": "Pattern 'cloudbuild.googleapis.com' NOT found in output"
+    },
+    {
+      "text": "Generates GitHub Actions workflow YAML",
+      "passed": true,
+      "evidence": "Workflow YAML content found"
+    },
+    {
+      "text": "Creates Metabase dashboard via API",
+      "passed": false,
+      "evidence": "Pattern 'api/dashboard' NOT found in output"
+    },
+    {
+      "text": "Creates alert policies via Monitoring API",
+      "passed": false,
+      "evidence": "Pattern 'alertPolicies' NOT found in output"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "eval_id": 2,
+  "eval_name": "update-service-add-webhook-alert",
+  "prompt": "My Cloud Run service `payment-gateway` in `eu-west1` needs updating — push the new image from the latest commit on main branch. Also add a webhook alert to https://hooks.slack.com/services/xxx when error rate goes above 3%. Project: `fintech-staging`, SA key: ~/keys/staging.json",
+  "assertions": [
+    {"text": "No gcloud CLI commands used", "type": "grep_absent", "pattern": "gcloud"},
+    {"text": "Uses PATCH to update existing service (not POST/create)", "type": "grep_present", "pattern": "PATCH"},
+    {"text": "Creates webhook notification channel", "type": "grep_present", "pattern": "webhook"},
+    {"text": "Sets custom 3% error rate threshold", "type": "semantic", "description": "Alert threshold is 3, not default 5"},
+    {"text": "Includes cost summary", "type": "grep_present", "pattern": "Cost"},
+    {"text": "Asks user for confirmation", "type": "semantic", "description": "Includes confirmation prompts"}
+  ]
+}
