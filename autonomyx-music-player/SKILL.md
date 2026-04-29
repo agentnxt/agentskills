@@ -2,6 +2,7 @@
 did: skill:007
 version: "1.0.0"
 created: "2026-04-29"
+featureFlag: "beta"
 name: autonomyx-music-player
 description: >
   Builds a production-grade interactive music player as an HTML artifact with Autonomyx branding.

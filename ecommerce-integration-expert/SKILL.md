@@ -2,6 +2,7 @@
 did: skill:015
 version: "1.0.0"
 created: "2026-04-29"
+featureFlag: "beta"
 name: ecommerce-integration-expert
 description: >
   Expert on e-commerce integrations, APIs, and agentic commerce. Covers:

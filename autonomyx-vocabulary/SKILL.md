@@ -2,6 +2,7 @@
 did: skill:010
 version: "1.0.0"
 created: "2026-04-29"
+featureFlag: "production"
 name: autonomyx-vocabulary
 description: >
   Shared vocabulary, taxonomy, and category mapping reference used by all Autonomyx skills.

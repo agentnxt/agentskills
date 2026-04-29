@@ -2,6 +2,7 @@
 did: skill:008
 version: "1.0.0"
 created: "2026-04-29"
+featureFlag: "beta"
 name: autonomyx-pro-list-to-action
 description: >
   Autonomyx.Pro — Queue-driven content and research automation for SaaS teams.

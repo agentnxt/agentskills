@@ -2,6 +2,7 @@
 did: skill:024
 version: "1.0.0"
 created: "2026-04-29"
+featureFlag: "production"
 name: saas-policy-intelligence
 description: >
   Analyses inbound SaaS vendor policy documents across five domains: Privacy & Data Usage,

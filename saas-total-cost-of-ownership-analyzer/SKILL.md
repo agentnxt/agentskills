@@ -2,6 +2,7 @@
 did: skill:026
 version: "1.0.0"
 created: "2026-04-29"
+featureFlag: "production"
 name: autonomyx-saas-total-cost-of-ownership-analyzer
 description: >
   Calculates total cost of ownership by analyzing the price as well as usage metrics for SaaS

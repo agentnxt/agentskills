@@ -2,6 +2,7 @@
 did: skill:011
 version: "1.0.0"
 created: "2026-04-29"
+featureFlag: "production"
 name: blog-cover-pic
 description: Use this skill when the user asks to "generate a blog cover image", "create OG images", "make social sharing images", "generate a featured image", "create blog hero image", "generate Open Graph image", or "generate JSON-LD for a blog post". Produces publication-ready cover images and structured data for blog posts.
 ---

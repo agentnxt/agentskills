@@ -2,6 +2,7 @@
 did: skill:020
 version: "1.0.0"
 created: "2026-04-29"
+featureFlag: "beta"
 name: oss-to-saas-analyzer
 description: >
   Scores any OSS GitHub project across five commercial service archetypes —

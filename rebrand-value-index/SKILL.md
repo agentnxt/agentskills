@@ -2,6 +2,7 @@
 did: skill:021
 version: "1.0.0"
 created: "2026-04-29"
+featureFlag: "beta"
 name: rebrand-value-index
 description: >
   Scores any open-source software project on whether rebranding it is worth

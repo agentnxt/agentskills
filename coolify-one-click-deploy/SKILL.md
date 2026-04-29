@@ -2,6 +2,7 @@
 did: skill:014
 version: "1.0.0"
 created: "2026-04-29"
+featureFlag: "production"
 name: coolify-one-click-deploy
 description: >
   Forks an open-source GitHub repo and deploys it to Coolify via Docker Compose,

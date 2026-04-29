@@ -2,6 +2,7 @@
 did: skill:012
 version: "1.0.0"
 created: "2026-04-29"
+featureFlag: "production"
 name: autonomyx-brand-kit-generator
 description: Generates a complete, professional brand kit for a product or company from a title and description. Produces SVG logos, PNG exports, favicons, app icons, social preview images, and a brand guidelines document — all packaged into a downloadable ZIP. Use this skill whenever a user asks for a brand kit, logo, brand identity, brand system, brand guidelines, color palette for a product, or wants to create visual assets for a new company, SaaS, or website. Also trigger when a user says things like "create a logo for my app", "design a brand for my startup", "I need brand assets", "generate a brand identity", or "make me a brand kit". Always use this skill even if the user only mentions one component like "just a logo" — the full kit adds value.
 ---

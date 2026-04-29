@@ -475,6 +475,7 @@ Install first: `pip install PyNaCl --break-system-packages -q`
 On success:
 - ✅ Authenticated as `@<GH_USER>` via GitHub OAuth (no token was pasted)
 - ✅ Repo created: `https://github.com/<GH_USER>/<api-name>-mcp`
+featureFlag: "beta"
 - ✅ Code pushed to `main`
 - ✅ GitHub secrets set (if applicable) — CI will trigger on the next push
 - Remind them: **never commit their API key** — env var or GitHub secret only

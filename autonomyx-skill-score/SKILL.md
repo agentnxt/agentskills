@@ -2,6 +2,7 @@
 did: skill:009
 version: "1.0.0"
 created: "2026-04-29"
+featureFlag: "beta"
 name: autonomyx-skill-score
 description: >
   Evaluates professional skills from any source and generates a verified, framework-mapped
