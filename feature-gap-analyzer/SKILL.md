@@ -1,5 +1,7 @@
 ---
 did: skill:016
+version: "1.0.0"
+created: "2026-04-29"
 name: feature-gap-analyzer
 description: >
   Performs a feature gap analysis between two or more enterprise software applications. Accepts

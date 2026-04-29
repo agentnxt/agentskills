@@ -1,5 +1,7 @@
 ---
 did: skill:025
+version: "1.0.0"
+created: "2026-04-29"
 name: saas-standardizer
 description: >
   Produces exhaustive, standardized profiles of SaaS products across 18 dimensions for procurement and comparison decisions. Trigger whenever a user wants to evaluate, profile, research, or compare any SaaS product — even if they don't say "evaluate". Trigger on: "tell me about [product]", "compare [A] vs [B]", "why choose X over Y", "what's the G2 rating", "who backs [product]", "is X open source", "how fast is [company] growing", "what do Reddit users say about X", "how is [product] priced", "is [product] SOC 2 certified", "what support does [product] offer", "what's on [product]'s roadmap". Covers: Features, Use Cases (role-specific), Login Methods, APIs, Data Ingestion, Integrations, Pricing, Security & Compliance, Support & SLA, Roadmap & Vision, Competitive Positioning, Analyst Rankings (G2/Gartner), Open Source Health (GitHub/Docker), Funding & Backing, Notable Clients, Growth Signals, Customer References, and Community Sentiment. Always be exhaustive.

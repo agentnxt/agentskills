@@ -1,5 +1,7 @@
 ---
 did: skill:031
+version: "1.0.0"
+created: "2026-04-29"
 name: autonomyx-website-policy-author
 description: >
   Drafts legal and compliance policy documents for digital products including websites, SaaS

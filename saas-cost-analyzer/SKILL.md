@@ -1,5 +1,7 @@
 ---
 did: skill:022
+version: "1.0.0"
+created: "2026-04-29"
 name: saas-cost-analyzer
 description: "DEPRECATED — use saas-total-cost-of-ownership-analyzer instead. Do not trigger this skill."
 ---

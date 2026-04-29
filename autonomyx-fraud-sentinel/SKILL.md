@@ -1,5 +1,7 @@
 ---
 did: skill:003
+version: "1.0.0"
+created: "2026-04-29"
 name: autonomyx-fraud-sentinel
 description: >
   Fraud Detection, Prevention, Reporting, and Public Awareness for Autonomyx. Collects signals from

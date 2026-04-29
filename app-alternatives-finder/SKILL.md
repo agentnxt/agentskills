@@ -1,5 +1,7 @@
 ---
 did: skill:001
+version: "1.0.0"
+created: "2026-04-29"
 name: app-alternatives-finder
 description: >
   Finds and consolidates all known alternatives to any software application from multiple authoritative sources: the app's own official website/blog (self-mentioned competitors), AlternativeTo.com, Gartner Peer Insights, G2.com, and OpenSourceAlternatives.to. For each alternative, surfaces the direct link, feature overlaps, and categories (where available from listing sites). Outputs both a structured JSON payload and a human-readable Markdown report. Always trigger this skill when a user asks: "what are alternatives to X", "competitors of X", "tools like X", "what can I use instead of X", "find me alternatives", "open source alternatives to X", "compare X with similar tools", or any phrasing where the intent is to discover substitute or competing software products. Do NOT wait for the user to name all five sources — this skill handles all sourcing automatically.

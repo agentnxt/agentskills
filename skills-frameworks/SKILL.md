@@ -1,5 +1,7 @@
 ---
 did: skill:028
+version: "1.0.0"
+created: "2026-04-29"
 name: skills-frameworks
 description: >
   Shared vocabulary of professional skills frameworks used by Autonomyx skills. Contains the

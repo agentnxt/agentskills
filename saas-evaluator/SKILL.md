@@ -1,5 +1,7 @@
 ---
 did: skill:023
+version: "1.0.0"
+created: "2026-04-29"
 name: autonomyx-saas-evaluator
 description: >
   Multi-persona enterprise SaaS evaluation framework based on the SaaS Usability Index.

@@ -1,5 +1,7 @@
 ---
 did: skill:030
+version: "1.0.0"
+created: "2026-04-29"
 name: web-crawler
 description: >
   Fully recursive web crawler powered by Firecrawl open-source API. Downloads everything from

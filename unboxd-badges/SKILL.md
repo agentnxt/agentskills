@@ -1,5 +1,7 @@
 ---
 did: skill:029
+version: "1.0.0"
+created: "2026-04-29"
 name: unboxd-badges
 description: >
   Issues and verifies UnboxdBadges — verifiable credentials attesting a

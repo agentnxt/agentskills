@@ -1,5 +1,7 @@
 ---
 did: skill:002
+version: "1.0.0"
+created: "2026-04-29"
 name: autonomyx-content-formatter
 metadata:
   version: "1.0.0"
