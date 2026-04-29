@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skill Registry | Autonomyx</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --surface-2: #1a1a24;
+      --border: #2a2a3a;
+      --text: #f0f0f5;
+      --text-muted: #8888a0;
+      --accent: #6366f1;
+      --accent-glow: rgba(99,102,241,0.3);
+      --green: #22c55e;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+    header {
+      text-align: center;
+      padding: 60px 0 80px;
+    }
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 24px;
+    }
+    .logo-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 12px var(--green);
+    }
+    h1 {
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #fff 0%, #a0a0b0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .subtitle {
+      font-size: 18px;
+      color: var(--text-muted);
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      margin-top: 48px;
+      padding: 24px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .stat {
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+      margin-top: 48px;
+    }
+    .skill-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.2s ease;
+    }
+    .skill-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 24px var(--accent-glow);
+      transform: translateY(-2px);
+    }
+    .skill-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .skill-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--accent);
+      background: rgba(99,102,241,0.1);
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    .skill-category {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .skill-name {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .skill-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .skill-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+    }
+    .btn-primary:hover {
+      background: #818cf8;
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover {
+      border-color: var(--text-muted);
+      color: var(--text);
+    }
+    .category-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+    .category-tab {
+      padding: 8px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 13px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .category-tab:hover, .category-tab.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    footer {
+      text-align: center;
+      padding: 60px 0;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    /* Instructions Modal */
+    .instructions {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 32px;
+    }
+    .instructions h3 {
+      font-size: 18px;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+    .instructions ol {
+      padding-left: 20px;
+      color: var(--text-muted);
+    }
+    .instructions li {
+      margin-bottom: 12px;
+    }
+    .instructions code {
+      background: var(--bg);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--accent);
+    }
+    .instructions pre {
+      background: var(--bg);
+      padding: 16px;
+      border-radius: 8px;
+      margin: 16px 0;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <span class="logo-dot"></span>
+        Autonomyx Skill Registry
+      </div>
+      <h1>AI Skills Marketplace</h1>
+      <p class="subtitle">A collection of specialized AI skills for Claude that transform it into domain experts across enterprise SaaS, content, design, and more.</p>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-value">31</div>
+          <div class="stat-label">Skills</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">12</div>
+          <div class="stat-label">Categories</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">DID</div>
+          <div class="stat-label">Identifier Format</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="category-tabs">
+      <button class="category-tab active" data-category="all">All</button>
+      <button class="category-tab" data-category="analysis">Analysis</button>
+      <button class="category-tab" data-category="automation">Automation</button>
+      <button class="category-tab" data-category="content">Content</button>
+      <button class="category-tab" data-category="credentials">Credentials</button>
+      <button class="category-tab" data-category="design">Design</button>
+      <button class="category-tab" data-category="dev">Dev</button>
+      <button class="category-tab" data-category="ecommerce">Ecommerce</button>
+      <button class="category-tab" data-category="legal">Legal</button>
+      <button class="category-tab" data-category="media">Media</button>
+      <button class="category-tab" data-category="meta">Meta</button>
+      <button class="category-tab" data-category="saas">SaaS</button>
+      <button class="category-tab" data-category="security">Security</button>
+    </div>
+
+    <div class="skills-grid" id="skillsGrid">
+      <!-- Skills will be populated by JS -->
+    </div>
+
+    <div class="instructions">
+      <h3>🚀 How to Use These Skills</h3>
+      <ol>
+        <li><strong>Find a skill</strong> — Browse or search the skills above that match your needs</li>
+        <li><strong>Click "Try with Claude"</strong> — Opens Claude with the skill loaded</li>
+        <li><strong>Start using</strong> — Describe your task and the skill will guide you</li>
+      </ol>
+      
+      <h3>📥 Manual Installation</h3>
+      <p>To install a skill manually in Claude:</p>
+      <pre># Download the skill file
+curl -L -o /path/to/skill.skill https://raw.githubusercontent.com/agentnxt/agentskills/main/dist/[skill-name].skill
+
+# Or install via Claude's skill manager
+/load-skill https://raw.githubusercontent.com/agentnxt/agentskills/main/dist/[skill-name].skill</pre>
+      
+      <h3>🔗 Direct Links</h3>
+      <p>GitHub: <code>https://github.com/agentnxt/agentskills</code></p>
+    </div>
+
+    <footer>
+      <p>Built by Autonomyx. Open source skills for AI agents.</p>
+    </footer>
+  </div>
+
+  <script>
+    const skills = [
+      { id: "did: skill:001", name: "app-alternatives-finder", category: "analysis", desc: "Finds alternatives to any software application from multiple sources" },
+      { id: "did: skill:002", name: "autonomyx-content-formatter", category: "content", desc: "Repurpose content for different platforms and audiences" },
+      { id: "did: skill:003", name: "autonomyx-fraud-sentinel", category: "security", desc: "Fraud detection and prevention for Autonomyx" },
+      { id: "did: skill:004", name: "autonomyx-identity-fabric", category: "dev", desc: "Identity resolution and graph traversal" },
+      { id: "did: skill:005", name: "autonomyx-langflow-expert", category: "dev", desc: "Langflow 1.x expert for building AI workflows" },
+      { id: "did: skill:006", name: "autonomyx-logo-favicon-creator", category: "design", desc: "Generate logos and favicons for projects" },
+      { id: "did: skill:007", name: "autonomyx-music-player", category: "media", desc: "Interactive music player with streaming and playlist features" },
+      { id: "did: skill:008", name: "autonomyx-pro-list-to-action", category: "automation", desc: "Queue-driven automation for SaaS teams" },
+      { id: "did: skill:009", name: "autonomyx-skill-score", category: "credentials", desc: "Evaluate professional skills and generate verified resumes" },
+      { id: "did: skill:010", name: "autonomyx-vocabulary", category: "meta", desc: "Shared vocabulary and taxonomy reference" },
+      { id: "did: skill:011", name: "blog-cover-pic", category: "design", desc: "Generate cover images for blog posts" },
+      { id: "did: skill:012", name: "brand-kit-generator", category: "design", desc: "Create complete brand identity kits" },
+      { id: "did: skill:013", name: "content-formatter", category: "content", desc: "Format and repurposer content" },
+      { id: "did: skill:014", name: "coolify-one-click-deploy", category: "dev", desc: "Deploy apps to Coolify with one click" },
+      { id: "did: skill:015", name: "ecommerce-integration-expert", category: "ecommerce", desc: "ECommerce platform integrations" },
+      { id: "did: skill:016", name: "feature-gap-analyzer", category: "analysis", desc: "Analyze feature gaps between software applications" },
+      { id: "did: skill:017", name: "list-to-action", category: "automation", desc: "Process lists and perform actions" },
+      { id: "did: skill:018", name: "mcp-from-apidocs", category: "dev", desc: "Generate MCP servers from API docs" },
+      { id: "did: skill:019", name: "microsoft-integration-expert", category: "dev", desc: "Microsoft platform integrations" },
+      { id: "did: skill:020", name: "oss-to-saas-analyzer", category: "analysis", desc: "Analyze open source to SaaS transitions" },
+      { id: "did: skill:021", name: "rebrand-value-index", category: "analysis", desc: "Calculate rebrand value metrics" },
+      { id: "did: skill:022", name: "saas-cost-analyzer", category: "saas", desc: "Analyze SaaS pricing and costs" },
+      { id: "did: skill:023", name: "saas-evaluator", category: "saas", desc: "Evaluate and compare SaaS products" },
+      { id: "did: skill:024", name: "saas-policy-intelligence", category: "saas", desc: "Analyze vendor policy documents" },
+      { id: "did: skill:025", name: "saas-standardizer", category: "saas", desc: "Standardize SaaS product profiles" },
+      { id: "did: skill:026", name: "saas-total-cost-of-ownership-analyzer", category: "saas", desc: "Calculate TCO for SaaS" },
+      { id: "did: skill:027", name: "skill-creator", category: "meta", desc: "Create new skills and measure performance" },
+      { id: "did: skill:028", name: "skills-frameworks", category: "meta", desc: "Professional skills frameworks vocabulary" },
+      { id: "did: skill:029", name: "unboxd-badges", category: "credentials", desc: "Issue and verify skill badges" },
+      { id: "did: skill:030", name: "web-crawler", category: "dev", desc: "Recursive web crawler powered by Firecrawl" },
+      { id: "did: skill:031", name: "website-policy-drafting-skill", category: "legal", desc: "Draft legal and compliance policies" }
+    ];
+
+    function renderSkills(filter = 'all') {
+      const grid = document.getElementById('skillsGrid');
+      const filtered = filter === 'all' ? skills : skills.filter(s => s.category === filter);
+      grid.innerHTML = filtered.map(skill => `
+        <div class="skill-card" data-category="${skill.category}">
+          <div class="skill-header">
+            <span class="skill-id">${skill.id}</span>
+            <span class="skill-category">${skill.category}</span>
+          </div>
+          <div class="skill-name">${skill.name}</div>
+          <div class="skill-desc">${skill.desc}</div>
+          <div class="skill-actions">
+            <a href="https://claude.com/claude" class="btn btn-primary" target="_blank" rel="noopener">Try with Claude</a>
+            <a href="https://github.com/agentnxt/agentskills/tree/main/${skill.name}" class="btn btn-secondary" target="_blank" rel="noopener">View Docs</a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Render all skills initially
+    renderSkills();
+
+    // Category filter functionality
+    document.querySelectorAll('.category-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        renderSkills(tab.dataset.category);
+      });
+    });
+  </script>
+</body>
+</html>

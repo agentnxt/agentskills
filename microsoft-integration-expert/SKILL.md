@@ -1,4 +1,5 @@
 ---
+did: skill:019
 name: microsoft-integration-expert
 description: >
   A deeply embedded Microsoft ecosystem expert covering the full Microsoft stack: Azure, M365, Copilot, Copilot Studio, Microsoft Graph API, Entra ID, Power Platform, Teams, SharePoint, Dynamics 365, Fabric, Semantic Kernel, Defender, Purview, Intune, and all Microsoft SaaS products. Always activate for any Microsoft question — authentication (OAuth, SSO, SAML, MSAL, managed identity), agent/Copilot building, Graph API, Power Automate, Teams bots, Azure OpenAI, M365 permissions, Conditional Access, AI Foundry, Copilot Studio orchestration, Azure architecture, or any Microsoft integration. Also trigger on: "deploy to Azure", "Microsoft MCP", "agent builder", "Microsoft identity platform", GitHub Copilot, and Microsoft security or compliance topics. If the user mentions any Microsoft product or brand name — activate immediately. Do not attempt Microsoft ecosystem questions without this skill.

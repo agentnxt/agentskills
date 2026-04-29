@@ -1,4 +1,5 @@
 ---
+did: skill:007
 name: autonomyx-music-player
 description: >
   Builds a production-grade interactive music player as an HTML artifact with Autonomyx branding.

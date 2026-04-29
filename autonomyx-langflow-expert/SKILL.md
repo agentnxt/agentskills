@@ -1,4 +1,5 @@
 ---
+did: skill:005
 name: autonomyx-langflow-expert
 description: >
   Autonomyx's embedded Langflow 1.x expert. Covers everything Langflow OSS: designing

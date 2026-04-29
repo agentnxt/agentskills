@@ -1,4 +1,5 @@
 ---
+did: skill:004
 name: autonomyx-identity-fabric
 description: "Resolves any user identifier (email, phone, username, OAuth sub, employee ID) into a unified identity graph stored in SurrealDB. Traverses linked accounts across social providers (Google, GitHub, Microsoft/Entra, Apple, LinkedIn, Twitter/X) and corporate SSO/IdP (Okta, Auth0, Azure AD, Ping, Keycloak, Logto). Three modes: RESOLVE (find all linked accounts), ENRICH (cache full profile data), AUDIT (compliance/IAM review). Always trigger for: find all accounts for, who is this user, link identity, identity graph, identity resolution, linked accounts, federated identity, account correlation, map user across platforms, SSO identity lookup, customer 360 identity, identity fabric, or any request to trace a user across multiple platforms or systems."
 metadata:

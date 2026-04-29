@@ -1,4 +1,5 @@
 ---
+did: skill:023
 name: autonomyx-saas-evaluator
 description: >
   Multi-persona enterprise SaaS evaluation framework based on the SaaS Usability Index.

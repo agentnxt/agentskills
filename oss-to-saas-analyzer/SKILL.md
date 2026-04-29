@@ -1,4 +1,5 @@
 ---
+did: skill:020
 name: oss-to-saas-analyzer
 description: >
   Scores any OSS GitHub project across five commercial service archetypes —

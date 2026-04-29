@@ -1,4 +1,5 @@
 ---
+did: skill:002
 name: autonomyx-content-formatter
 metadata:
   version: "1.0.0"

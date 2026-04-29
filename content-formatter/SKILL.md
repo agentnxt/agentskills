@@ -1,4 +1,5 @@
 ---
+did: skill:013
 name: content-formatter
 description: "DEPRECATED — use autonomyx-content-formatter instead. Do not trigger this skill."
 ---

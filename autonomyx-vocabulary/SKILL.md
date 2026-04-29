@@ -1,4 +1,5 @@
 ---
+did: skill:010
 name: autonomyx-vocabulary
 description: >
   Shared vocabulary, taxonomy, and category mapping reference used by all Autonomyx skills.

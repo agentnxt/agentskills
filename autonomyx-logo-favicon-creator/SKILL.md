@@ -1,4 +1,5 @@
 ---
+did: skill:006
 name: autonomyx-logo-favicon-creator
 description: Use this skill when the user asks to "create a logo", "generate a favicon", "make an icon", "design a logo", "brand assets", or any request involving logo/icon/favicon generation for a project. Produces a complete brand asset kit from an SVG source — multi-size PNGs, multi-size favicon.ico, apple-touch-icon, OG image, and brand manifest.
 ---

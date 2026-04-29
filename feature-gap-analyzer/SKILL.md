@@ -1,4 +1,5 @@
 ---
+did: skill:016
 name: feature-gap-analyzer
 description: >
   Performs a feature gap analysis between two or more enterprise software applications. Accepts

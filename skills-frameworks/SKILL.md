@@ -1,4 +1,5 @@
 ---
+did: skill:028
 name: skills-frameworks
 description: >
   Shared vocabulary of professional skills frameworks used by Autonomyx skills. Contains the

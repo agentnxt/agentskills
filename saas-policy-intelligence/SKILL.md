@@ -1,4 +1,5 @@
 ---
+did: skill:024
 name: saas-policy-intelligence
 description: >
   Analyses inbound SaaS vendor policy documents across five domains: Privacy & Data Usage,

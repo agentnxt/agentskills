@@ -1,4 +1,5 @@
 ---
+did: skill:008
 name: autonomyx-pro-list-to-action
 description: >
   Autonomyx.Pro — Queue-driven content and research automation for SaaS teams.

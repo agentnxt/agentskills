@@ -1,4 +1,5 @@
 ---
+did: skill:018
 name: autonomyx-mcp-from-apidocs
 metadata:
   version: "1.0.0"

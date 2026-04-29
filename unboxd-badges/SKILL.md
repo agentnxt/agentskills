@@ -1,4 +1,5 @@
 ---
+did: skill:029
 name: unboxd-badges
 description: >
   Issues and verifies UnboxdBadges — verifiable credentials attesting a

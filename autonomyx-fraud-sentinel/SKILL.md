@@ -1,4 +1,5 @@
 ---
+did: skill:003
 name: autonomyx-fraud-sentinel
 description: >
   Fraud Detection, Prevention, Reporting, and Public Awareness for Autonomyx. Collects signals from

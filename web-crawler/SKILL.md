@@ -1,4 +1,5 @@
 ---
+did: skill:030
 name: web-crawler
 description: >
   Fully recursive web crawler powered by Firecrawl open-source API. Downloads everything from

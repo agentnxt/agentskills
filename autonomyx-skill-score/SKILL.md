@@ -1,4 +1,5 @@
 ---
+did: skill:009
 name: autonomyx-skill-score
 description: >
   Evaluates professional skills from any source and generates a verified, framework-mapped

@@ -1,4 +1,5 @@
 ---
+did: skill:021
 name: rebrand-value-index
 description: >
   Scores any open-source software project on whether rebranding it is worth

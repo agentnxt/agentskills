@@ -1,4 +1,5 @@
 ---
+did: skill:014
 name: coolify-one-click-deploy
 description: >
   Forks an open-source GitHub repo and deploys it to Coolify via Docker Compose,
