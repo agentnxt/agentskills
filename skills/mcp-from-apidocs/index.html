@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>autonomyx-mcp-from-apidocs | Autonomyx Skill Registry</title>
+  <meta name="description" content="Generates a complete, ready-to-run MCP (Model Context Protocol) server project from API documentation.
+  Use this skill whenever a user wants to turn an API into an MCP server, connect Claude to a thi">
+  
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    "name": "autonomyx-mcp-from-apidocs",
+    "description": "Generates a complete, ready-to-run MCP (Model Context Protocol) server project from API documentation.
+  Use this skill whenever a user wants to turn an API into an MCP server, connect Claude to a thi",
+    "identifier": "did: skill:018",
+    "url": "https://github.com/agentnxt/agentskills/tree/main/mcp-from-apidocs",
+    "downloadUrl": "https://github.com/agentnxt/agentskills/raw/main/dist/mcp-from-apidocs.skill",
+    "author": {
+      "@type": "Organization",
+      "name": "Autonomyx"
+    },
+    "programmingLanguage": "Markdown",
+    "applicationCategory": "dev",
+    "keywords": "AI, skill, dev, autonomyx, claude",
+    "dateCreated": "2026-04-29",
+    "license": "https://opensource.org/licenses/MIT"
+  }
+  </script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --surface-2: #1a1a24;
+      --border: #2a2a3a;
+      --text: #f0f0f5;
+      --text-muted: #8888a0;
+      --accent: #6366f1;
+      --green: #22c55e;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 24px; }
+    header { text-align: center; padding: 40px 0 60px; }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      margin-bottom: 32px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--accent); }
+    .skill-badge {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--accent);
+      background: rgba(99,102,241,0.1);
+      padding: 6px 12px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .category {
+      display: inline-block;
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background: var(--surface);
+      padding: 6px 12px;
+      border-radius: 4px;
+      margin-bottom: 24px;
+    }
+    .description {
+      font-size: 18px;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+    }
+    .actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { background: #818cf8; }
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--accent); }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 48px;
+    }
+    .info-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .info-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .info-value {
+      font-size: 16px;
+      font-weight: 500;
+    }
+    footer {
+      text-align: center;
+      padding: 60px 0;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <a href="landing.html" class="back-link">← Back to Skills</a>
+      <div class="skill-badge">did: skill:018</div>
+      <h1>autonomyx-mcp-from-apidocs</h1>
+      <div class="category">dev</div>
+      <p class="description">Generates a complete, ready-to-run MCP (Model Context Protocol) server project from API documentation.
+  Use this skill whenever a user wants to turn an API into an MCP server, connect Claude to a thi</p>
+      <div class="actions">
+        <a href="https://claude.com/claude" class="btn btn-primary" target="_blank">Try with Claude</a>
+        <a href="https://github.com/agentnxt/agentskills/tree/main/mcp-from-apidocs" class="btn btn-secondary" target="_blank">View Source</a>
+        <a href="https://github.com/agentnxt/agentskills/raw/main/dist/mcp-from-apidocs.skill" class="btn btn-secondary" download>Download Skill</a>
+      </div>
+    </header>
+    
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="info-label">Identifier</div>
+        <div class="info-value">did: skill:018</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label">Category</div>
+        <div class="info-value">dev</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label">Author</div>
+        <div class="info-value">Autonomyx</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label">License</div>
+        <div class="info-value">MIT</div>
+      </div>
+    </div>
+    
+    <footer>
+      <a href="landing.html">← Back to Skill Registry</a>
+      <p style="margin-top: 16px;">Built by Autonomyx. Open source skills for AI agents.</p>
+    </footer>
+  </div>
+</body>
+</html>
