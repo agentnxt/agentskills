@@ -117,11 +117,27 @@
     }
     .skill-id {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
+      font-size: 11px;
       color: var(--accent);
       background: rgba(99,102,241,0.1);
       padding: 4px 8px;
       border-radius: 4px;
+    }
+    .skill-flag {
+      font-size: 10px;
+      padding: 3px 6px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+    }
+    .flag-production {
+      color: #22c55e;
+      background: rgba(34,197,94,0.15);
+    }
+    .flag-beta {
+      color: #f59e0b;
+      background: rgba(245,158,11,0.15);
     }
     .skill-category {
       font-size: 11px;
@@ -268,19 +284,21 @@
     </header>
 
     <div class="category-tabs">
-      <button class="category-tab active" data-category="all">All</button>
-      <button class="category-tab" data-category="analysis">Analysis</button>
-      <button class="category-tab" data-category="automation">Automation</button>
-      <button class="category-tab" data-category="content">Content</button>
-      <button class="category-tab" data-category="credentials">Credentials</button>
-      <button class="category-tab" data-category="design">Design</button>
-      <button class="category-tab" data-category="dev">Dev</button>
-      <button class="category-tab" data-category="ecommerce">Ecommerce</button>
-      <button class="category-tab" data-category="legal">Legal</button>
-      <button class="category-tab" data-category="media">Media</button>
-      <button class="category-tab" data-category="meta">Meta</button>
-      <button class="category-tab" data-category="saas">SaaS</button>
-      <button class="category-tab" data-category="security">Security</button>
+      <button class="category-tab active" data-filter="all">All</button>
+      <button class="category-tab" data-filter="production">Production</button>
+      <button class="category-tab" data-filter="beta">Beta</button>
+      <button class="category-tab" data-filter="analysis">Analysis</button>
+      <button class="category-tab" data-filter="automation">Automation</button>
+      <button class="category-tab" data-filter="content">Content</button>
+      <button class="category-tab" data-filter="credentials">Credentials</button>
+      <button class="category-tab" data-filter="design">Design</button>
+      <button class="category-tab" data-filter="dev">Dev</button>
+      <button class="category-tab" data-filter="ecommerce">Ecommerce</button>
+      <button class="category-tab" data-filter="legal">Legal</button>
+      <button class="category-tab" data-filter="media">Media</button>
+      <button class="category-tab" data-filter="meta">Meta</button>
+      <button class="category-tab" data-filter="saas">SaaS</button>
+      <button class="category-tab" data-filter="security">Security</button>
     </div>
 
     <div class="skills-grid" id="skillsGrid">
@@ -314,37 +332,37 @@ curl -L -o /path/to/skill.skill https://raw.githubusercontent.com/agentnxt/agent
 
   <script>
     const skills = [
-      { id: "did: skill:001", name: "app-alternatives-finder", category: "analysis", desc: "Finds alternatives to any software application from multiple sources" },
-      { id: "did: skill:002", name: "autonomyx-content-formatter", category: "content", desc: "Repurpose content for different platforms and audiences" },
-      { id: "did: skill:003", name: "autonomyx-fraud-sentinel", category: "security", desc: "Fraud detection and prevention for Autonomyx" },
-      { id: "did: skill:004", name: "autonomyx-identity-fabric", category: "dev", desc: "Identity resolution and graph traversal" },
-      { id: "did: skill:005", name: "autonomyx-langflow-expert", category: "dev", desc: "Langflow 1.x expert for building AI workflows" },
-      { id: "did: skill:006", name: "autonomyx-logo-favicon-creator", category: "design", desc: "Generate logos and favicons for projects" },
-      { id: "did: skill:007", name: "autonomyx-music-player", category: "media", desc: "Interactive music player with streaming and playlist features" },
-      { id: "did: skill:008", name: "autonomyx-pro-list-to-action", category: "automation", desc: "Queue-driven automation for SaaS teams" },
-      { id: "did: skill:009", name: "autonomyx-skill-score", category: "credentials", desc: "Evaluate professional skills and generate verified resumes" },
-      { id: "did: skill:010", name: "autonomyx-vocabulary", category: "meta", desc: "Shared vocabulary and taxonomy reference" },
-      { id: "did: skill:011", name: "blog-cover-pic", category: "design", desc: "Generate cover images for blog posts" },
-      { id: "did: skill:012", name: "brand-kit-generator", category: "design", desc: "Create complete brand identity kits" },
-      { id: "did: skill:013", name: "content-formatter", category: "content", desc: "Format and repurposer content" },
-      { id: "did: skill:014", name: "coolify-one-click-deploy", category: "dev", desc: "Deploy apps to Coolify with one click" },
-      { id: "did: skill:015", name: "ecommerce-integration-expert", category: "ecommerce", desc: "ECommerce platform integrations" },
-      { id: "did: skill:016", name: "feature-gap-analyzer", category: "analysis", desc: "Analyze feature gaps between software applications" },
-      { id: "did: skill:017", name: "list-to-action", category: "automation", desc: "Process lists and perform actions" },
-      { id: "did: skill:018", name: "mcp-from-apidocs", category: "dev", desc: "Generate MCP servers from API docs" },
-      { id: "did: skill:019", name: "microsoft-integration-expert", category: "dev", desc: "Microsoft platform integrations" },
-      { id: "did: skill:020", name: "oss-to-saas-analyzer", category: "analysis", desc: "Analyze open source to SaaS transitions" },
-      { id: "did: skill:021", name: "rebrand-value-index", category: "analysis", desc: "Calculate rebrand value metrics" },
-      { id: "did: skill:022", name: "saas-cost-analyzer", category: "saas", desc: "Analyze SaaS pricing and costs" },
-      { id: "did: skill:023", name: "saas-evaluator", category: "saas", desc: "Evaluate and compare SaaS products" },
-      { id: "did: skill:024", name: "saas-policy-intelligence", category: "saas", desc: "Analyze vendor policy documents" },
-      { id: "did: skill:025", name: "saas-standardizer", category: "saas", desc: "Standardize SaaS product profiles" },
-      { id: "did: skill:026", name: "saas-total-cost-of-ownership-analyzer", category: "saas", desc: "Calculate TCO for SaaS" },
-      { id: "did: skill:027", name: "skill-creator", category: "meta", desc: "Create new skills and measure performance" },
-      { id: "did: skill:028", name: "skills-frameworks", category: "meta", desc: "Professional skills frameworks vocabulary" },
-      { id: "did: skill:029", name: "unboxd-badges", category: "credentials", desc: "Issue and verify skill badges" },
-      { id: "did: skill:030", name: "web-crawler", category: "dev", desc: "Recursive web crawler powered by Firecrawl" },
-      { id: "did: skill:031", name: "website-policy-drafting-skill", category: "legal", desc: "Draft legal and compliance policies" }
+      { id: "did: skill:001", name: "app-alternatives-finder", category: "analysis", flag: "production", desc: "Finds alternatives to any software application from multiple sources" },
+      { id: "did: skill:002", name: "autonomyx-content-formatter", category: "content", flag: "production", desc: "Repurpose content for different platforms and audiences" },
+      { id: "did: skill:003", name: "autonomyx-fraud-sentinel", category: "security", flag: "production", desc: "Fraud detection and prevention for Autonomyx" },
+      { id: "did: skill:004", name: "autonomyx-identity-fabric", category: "dev", flag: "beta", desc: "Identity resolution and graph traversal" },
+      { id: "did: skill:005", name: "autonomyx-langflow-expert", category: "dev", flag: "production", desc: "Langflow 1.x expert for building AI workflows" },
+      { id: "did: skill:006", name: "autonomyx-logo-favicon-creator", category: "design", flag: "production", desc: "Generate logos and favicons for projects" },
+      { id: "did: skill:007", name: "autonomyx-music-player", category: "media", flag: "beta", desc: "Interactive music player with streaming and playlist features" },
+      { id: "did: skill:008", name: "autonymx-pro-list-to-action", category: "automation", flag: "beta", desc: "Queue-driven automation for SaaS teams" },
+      { id: "did: skill:009", name: "autonomyx-skill-score", category: "credentials", flag: "beta", desc: "Evaluate professional skills and generate verified resumes" },
+      { id: "did: skill:010", name: "autonomyx-vocabulary", category: "meta", flag: "production", desc: "Shared vocabulary and taxonomy reference" },
+      { id: "did: skill:011", name: "blog-cover-pic", category: "design", flag: "production", desc: "Generate cover images for blog posts" },
+      { id: "did: skill:012", name: "brand-kit-generator", category: "design", flag: "production", desc: "Create complete brand identity kits" },
+      { id: "did: skill:013", name: "content-formatter", category: "content", flag: "production", desc: "Format and repurposer content" },
+      { id: "did: skill:014", name: "coolify-one-click-deploy", category: "dev", flag: "production", desc: "Deploy apps to Coolify with one click" },
+      { id: "did: skill:015", name: "ecommerce-integration-expert", category: "ecommerce", flag: "beta", desc: "ECommerce platform integrations" },
+      { id: "did: skill:016", name: "feature-gap-analyzer", category: "analysis", flag: "production", desc: "Analyze feature gaps between software applications" },
+      { id: "did: skill:017", name: "list-to-action", category: "automation", flag: "production", desc: "Process lists and perform actions" },
+      { id: "did: skill:018", name: "mcp-from-apidocs", category: "dev", flag: "beta", desc: "Generate MCP servers from API docs" },
+      { id: "did: skill:019", name: "microsoft-integration-expert", category: "dev", flag: "beta", desc: "Microsoft platform integrations" },
+      { id: "did: skill:020", name: "oss-to-saas-analyzer", category: "analysis", flag: "beta", desc: "Analyze open source to SaaS transitions" },
+      { id: "did: skill:021", name: "rebrand-value-index", category: "analysis", flag: "beta", desc: "Calculate rebrand value metrics" },
+      { id: "did: skill:022", name: "saas-cost-analyzer", category: "saas", flag: "production", desc: "Analyze SaaS pricing and costs" },
+      { id: "did: skill:023", name: "saas-evaluator", category: "saas", flag: "production", desc: "Evaluate and compare SaaS products" },
+      { id: "did: skill:024", name: "saas-policy-intelligence", category: "saas", flag: "production", desc: "Analyze vendor policy documents" },
+      { id: "did: skill:025", name: "saas-standardizer", category: "saas", flag: "production", desc: "Standardize SaaS product profiles" },
+      { id: "did: skill:026", name: "saas-total-cost-of-ownership-analyzer", category: "saas", flag: "production", desc: "Calculate TCO for SaaS" },
+      { id: "did: skill:027", name: "skill-creator", category: "meta", flag: "production", desc: "Create new skills and measure performance" },
+      { id: "did: skill:028", name: "skills-frameworks", category: "meta", flag: "production", desc: "Professional skills frameworks vocabulary" },
+      { id: "did: skill:029", name: "unboxd-badges", category: "credentials", flag: "beta", desc: "Issue and verify skill badges" },
+      { id: "did: skill:030", name: "web-crawler", category: "dev", flag: "production", desc: "Recursive web crawler powered by Firecrawl" },
+      { id: "did: skill:031", name: "website-policy-drafting-skill", category: "legal", flag: "production", desc: "Draft legal and compliance policies" }
     ];
 
     function renderSkills(filter = 'all') {
@@ -354,7 +372,7 @@ curl -L -o /path/to/skill.skill https://raw.githubusercontent.com/agentnxt/agent
         <div class="skill-card" data-category="${skill.category}">
           <div class="skill-header">
             <span class="skill-id">${skill.id}</span>
-            <span class="skill-category">${skill.category}</span>
+            <span class="skill-flag flag-${skill.flag}">${skill.flag}</span>
           </div>
           <div class="skill-name">${skill.name}</div>
           <div class="skill-desc">${skill.desc}</div>
@@ -374,9 +392,35 @@ curl -L -o /path/to/skill.skill https://raw.githubusercontent.com/agentnxt/agent
       tab.addEventListener('click', () => {
         document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
-        renderSkills(tab.dataset.category);
+        const filter = tab.dataset.filter;
+        if (filter === 'all') {
+          renderSkills();
+        } else if (filter === 'production' || filter === 'beta') {
+          renderSkillsByFlag(filter);
+        } else {
+          renderSkills(filter);
+        }
       });
     });
+
+    function renderSkillsByFlag(flag) {
+      const grid = document.getElementById('skillsGrid');
+      const filtered = skills.filter(s => s.flag === flag);
+      grid.innerHTML = filtered.map(skill => `
+        <div class="skill-card" data-category="${skill.category}">
+          <div class="skill-header">
+            <span class="skill-id">${skill.id}</span>
+            <span class="skill-flag flag-${skill.flag}">${skill.flag}</span>
+          </div>
+          <div class="skill-name">${skill.name}</div>
+          <div class="skill-desc">${skill.desc}</div>
+          <div class="skill-actions">
+            <a href="https://claude.com/claude" class="btn btn-primary" target="_blank" rel="noopener">Try with Claude</a>
+            <a href="https://github.com/agentnxt/agentskills/tree/main/${skill.name}" class="btn btn-secondary" target="_blank" rel="noopener">View Docs</a>
+          </div>
+        </div>
+      `).join('');
+    }
   </script>
 </body>
 </html>
