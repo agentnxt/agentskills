@@ -1,0 +1,14 @@
+{
+  "name": "skill-registry",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AGenNext skill registry with machine-readable manifests, validation, and generated catalog index.",
+  "scripts": {
+    "validate:registry": "node scripts/validate-registry.js",
+    "build:index": "node scripts/build-registry-index.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
