@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/AGenNext/skill-registry/schemas/skill.schema.json",
+  "title": "Skill Registry Manifest",
+  "description": "Machine-readable metadata for a skill published in AGenNext/skill-registry.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "name",
+    "version",
+    "description",
+    "status",
+    "license",
+    "entrypoints",
+    "runtime",
+    "permissions",
+    "maintainers"
+  ],
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "1.0.0" },
+    "id": {
+      "type": "string",
+      "description": "Stable lowercase registry id. Should match the skill folder name.",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,80}[a-z0-9]$"
+    },
+    "name": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "version": {
+      "type": "string",
+      "description": "Semantic version or date-based version for the registry package.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:[-+][0-9A-Za-z.-]+)?$|^\\d{4}\\.\\d{1,2}\\.\\d{1,2}(?:[-+][0-9A-Za-z.-]+)?$"
+    },
+    "description": { "type": "string", "minLength": 20, "maxLength": 800 },
+    "status": { "type": "string", "enum": ["experimental", "active", "maintenance", "deprecated"] },
+    "homepage": { "type": "string", "format": "uri" },
+    "repository": { "type": "string", "format": "uri" },
+    "license": { "type": "string", "minLength": 1 },
+    "tags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,40}$" },
+      "default": []
+    },
+    "categories": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "analysis",
+          "automation",
+          "coding",
+          "content",
+          "data",
+          "design",
+          "developer-tools",
+          "documentation",
+          "enterprise-saas",
+          "evaluation",
+          "product",
+          "research",
+          "security",
+          "workflow",
+          "writing"
+        ]
+      },
+      "default": []
+    },
+    "entrypoints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["skill"],
+      "properties": {
+        "skill": { "type": "string", "pattern": "^SKILL\\.md$|^[A-Za-z0-9._/-]+SKILL\\.md$" },
+        "readme": { "type": "string", "pattern": "^README\\.md$|^[A-Za-z0-9._/-]+README\\.md$" },
+        "install": { "type": "string" },
+        "examples": { "type": "string" },
+        "config": { "type": "string" }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": { "type": "string", "enum": ["claude-skill", "markdown", "node", "python", "mixed", "hosted", "other"] },
+        "minimumVersion": { "type": "string" },
+        "packageManager": { "type": "string", "enum": ["none", "npm", "pnpm", "yarn", "bun", "pip", "poetry", "uv", "other"] },
+        "platforms": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "enum": ["claude", "claude-code", "macos", "linux", "windows", "web", "other"] },
+          "default": []
+        }
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "description": "Other skill ids, APIs, MCP servers, or services this skill depends on.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "name"],
+        "properties": {
+          "type": { "type": "string", "enum": ["skill", "api", "mcp", "database", "service", "tool", "other"] },
+          "name": { "type": "string" },
+          "required": { "type": "boolean", "default": true },
+          "notes": { "type": "string" }
+        }
+      },
+      "default": []
+    },
+    "permissions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["network", "filesystem", "shell", "secrets"],
+      "properties": {
+        "network": { "type": "string", "enum": ["none", "optional", "required"] },
+        "filesystem": { "type": "string", "enum": ["none", "read", "read-write"] },
+        "shell": { "type": "string", "enum": ["none", "optional", "required"] },
+        "browser": { "type": "string", "enum": ["none", "optional", "required"], "default": "none" },
+        "secrets": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{1,80}$" }
+        },
+        "notes": { "type": "string", "maxLength": 1200 }
+      }
+    },
+    "outputs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "enum": ["markdown", "json", "csv", "html", "docx", "pptx", "xlsx", "notion", "database", "code", "other"] },
+      "default": []
+    },
+    "maintainers": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "github": { "type": "string", "pattern": "^[A-Za-z0-9-]{1,39}$" },
+          "email": { "type": "string", "format": "email" }
+        }
+      }
+    },
+    "security": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "reviewed": { "type": "boolean", "default": false },
+        "reviewNotes": { "type": "string", "maxLength": 1000 },
+        "promptInjectionNotes": { "type": "string", "maxLength": 1000 }
+      },
+      "default": {}
+    }
+  }
+}
