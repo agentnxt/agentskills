@@ -1,47 +1,143 @@
-# Autonomyx Skills
+# Skill Registry
 
-A suite of Claude skills for enterprise SaaS evaluation, feature gap analysis, and vendor comparison.
+Skill Registry is a curated workspace for cataloging, validating, and distributing assistant skills.
 
-## Skills
+It combines:
+
+1. Human-readable skill packages built around `SKILL.md` instructions.
+2. Machine-readable `skill.json` manifests for discovery, validation, permissions, dependencies, and maintainers.
+3. A generated `registry.json` catalog for programmatic consumers.
+4. Migration-friendly validation tooling for existing imported skills.
+
+## Registry model
+
+Registered skills primarily live under:
+
+```text
+skills/<skill-id>/
+```
+
+Each new skill should include:
+
+```text
+skills/<skill-id>/
+├── SKILL.md        # assistant-facing instructions
+├── skill.json      # machine-readable registry manifest
+├── README.md       # recommended human setup and usage guide
+└── CHANGELOG.md    # recommended for versioned changes
+```
+
+The skill manifest schema is documented in [`docs/skill-manifest.md`](docs/skill-manifest.md), and the JSON schema lives at [`schemas/skill.schema.json`](schemas/skill.schema.json).
+
+A reference entry is available at [`skills/example-skill`](skills/example-skill).
+
+## Registry validation and index
+
+Validate registry metadata:
+
+```bash
+npm run validate:registry
+```
+
+Normal validation mode is migration-friendly: it warns for legacy skill folders that do not yet have `skill.json`.
+
+For strict enforcement across all discovered skill folders:
+
+```bash
+npm run validate:registry -- --strict
+```
+
+Build the machine-readable registry catalog:
+
+```bash
+npm run build:index
+```
+
+This writes:
+
+```text
+registry.json
+```
+
+`registry.json` is generated from skill manifests and includes each indexed skill's id, name, version, description, status, license, tags, categories, runtime, dependencies, permissions, outputs, paths, and maintainers.
+
+Recommended release flow:
+
+```bash
+npm run validate:registry
+npm run build:index
+git diff -- README.md registry.json skills/ schemas/ docs/ scripts/
+```
+
+## Current skill families
+
+This repository includes Autonomyx skills for enterprise SaaS evaluation, feature gap analysis, vendor comparison, professional skill scoring, and shared vocabularies.
 
 ### `feature-gap-analyzer`
-Performs a comprehensive feature gap analysis between two or more enterprise software applications.
-- Sources features exclusively from official docs and GitHub repos
-- Uses Gartner Peer Insights, G2, and analyst PDFs for scoring context
-- Outputs: scored feature matrix (0–100%), side-by-side presence table, narrative gap report
-- Persists all results to a Notion backend (Categories, Features, Apps, Feature Status databases)
-- Supports any number of apps; covers all 500+ Gartner market categories
+
+Performs comprehensive feature gap analysis between two or more enterprise software applications.
+
+- Sources features from official docs and GitHub repositories.
+- Uses Gartner Peer Insights, G2, and analyst PDFs for scoring context.
+- Outputs scored feature matrices, side-by-side presence tables, and narrative gap reports.
+- Persists results to a Notion backend for categories, features, apps, and feature status records.
+- Supports any number of apps and broad software market categories.
 
 ### `saas-standardizer`
-Produces exhaustive, standardised profiles of SaaS products across 18 dimensions.
-- Reads from and writes to the shared Notion feature registry
-- Covers: features, use cases, APIs, pricing, security, support, roadmap, analyst rankings, and more
+
+Produces standardized SaaS product profiles across key dimensions.
+
+- Reads from and writes to the shared Notion feature registry.
+- Covers features, use cases, APIs, pricing, security, support, roadmap, analyst rankings, and more.
 
 ### `autonomyx-skill-score`
-Evaluates professional skills from any source and generates a verified, framework-mapped resume.
-- Accepts any input: profile URLs (LinkedIn, GitHub, Docker Hub, Stack Overflow, npm, PyPI, etc.), Verifiable Credentials, chat/email exports, authored documents, patents, certifications
-- Evaluates each skill against profession-specific frameworks (SFIA, NICE, EDISON, PMI, CFA, SHRM, CIM, etc.) with proficiency levels and credibility-tiered proof ([S] self-evident through [G] self-reported)
-- Uses Explorium prospect matching and enrichment for professional background
-- Generates comprehensive skills table with framework mapping, behavioral + technical skills
-- Supports Verifiable Credentials (W3C, JWT, SD-JWT, Open Badges v3) with trust tiers
-- Encourages credential verification for unverified resume items
+
+Evaluates professional skills from external sources and generates a verified, framework-mapped resume.
+
+- Accepts profile URLs, credentials, chat/email exports, authored documents, patents, certifications, and other evidence.
+- Maps skills against profession-specific frameworks such as SFIA, NICE, EDISON, PMI, CFA, SHRM, CIM, and related standards.
+- Uses credibility-tiered proof and encourages credential verification for unverified resume items.
 
 ### `skills-frameworks`
+
 Shared vocabulary of professional skills frameworks for standardized skill classification.
-- Maps 17+ professions to their respective competency frameworks (SFIA, NICE/NIST, EDISON, PMI, CFA, SHRM, CIM, UXPA, etc.)
-- Cross-framework level equivalence table (Beginner/Intermediate/Advanced/Expert across all frameworks)
-- Protocol for industries without a recognized framework (ask user, use universal levels as fallback)
-- Mandatory framework attribution for transparency
+
+- Maps multiple professions to their competency frameworks.
+- Provides cross-framework level equivalence.
+- Requires framework attribution for transparency.
 
 ### `autonomyx-vocabulary`
-Shared vocabulary and taxonomy reference used by all Autonomyx skills.
-- Gartner Peer Insights → G2 category mapping (~120 markets)
-- Canonical feature status badges (GA / Beta / Early Access / Feature Flag / Upcoming / etc.)
-- Evidence tier definitions and confidence level criteria
 
-## Notion Backend
+Shared vocabulary and taxonomy reference used by Autonomyx skills.
 
-The master feature registry lives in Notion (4 linked databases):
+- Gartner Peer Insights to G2 category mapping.
+- Canonical feature status badges.
+- Evidence tier definitions and confidence criteria.
+
+## Add or update a skill
+
+Read [`docs/pushing-to-registry.md`](docs/pushing-to-registry.md) before submitting a skill.
+
+Minimum workflow:
+
+```bash
+git checkout -b add-my-skill
+mkdir -p skills/my-skill
+# add SKILL.md and skill.json
+npm run validate:registry
+npm run build:index
+git add skills/my-skill registry.json
+git commit -m "registry: add my-skill"
+git push origin add-my-skill
+```
+
+Open a pull request and include validation output, runtime requirements, and security notes.
+
+New and updated skills should include a `skill.json` manifest. Existing imported skill folders can be migrated gradually, then enforced later with strict validation.
+
+## Notion backend
+
+Some Autonomyx SaaS-analysis skills use a shared Notion feature registry.
 
 | Database | Purpose | Collection ID |
 |---|---|---|
@@ -54,33 +150,37 @@ Parent page: https://www.notion.so/32a33ce516978194a603c7be33badd53
 
 ## Installation
 
-Install each `.skill` file from the `dist/` folder into your Claude skill manager.
+Install each skill folder or packaged `.skill` artifact into your target skill manager.
 
-## Skill Dependencies
+For Claude-style skills, the core entrypoint is `SKILL.md`. Keep the folder structure intact so any referenced docs, examples, or assets remain available.
 
-```
+## Skill dependencies
+
+```text
 feature-gap-analyzer
-  └── reads → autonomyx-vocabulary (category resolution, badges, tiers)
-  └── reads/writes → Notion (feature registry)
+  ├── reads → autonomyx-vocabulary
+  └── reads/writes → Notion feature registry
 
 saas-standardizer
-  └── reads/writes → Notion (feature registry)
+  └── reads/writes → Notion feature registry
 
 autonomyx-vocabulary
-  └── standalone reference (no dependencies)
+  └── standalone reference
 
 autonomyx-skill-score
-  └── reads → skills-frameworks (skill classification and framework mapping)
-  └── reads → Explorium (match-prospects, enrich-prospects)
-  └── reads → Platform APIs (GitHub, Docker Hub, Stack Overflow, npm, PyPI, Dev.to, etc.)
-  └── reads → WordPress MCP tools (optional)
-  └── reads → WebFetch (fallback for any platform)
+  ├── reads → skills-frameworks
+  ├── reads → Explorium
+  ├── reads → platform APIs
+  ├── reads → WordPress MCP tools, optional
+  └── reads → WebFetch fallback
 
 skills-frameworks
-  └── standalone reference (no dependencies)
+  └── standalone reference
 ```
 
-## Feature Status Badges
+For new skills, capture dependencies in `skill.json` so they appear in `registry.json`.
+
+## Feature status badges
 
 | Badge | Meaning |
 |---|---|
@@ -93,12 +193,33 @@ skills-frameworks
 | ❌ Not Present | No evidence of feature existing or planned |
 | ❓ Roadmap Unknown | Absent, no roadmap info found |
 
-## Evidence Rules
+## Evidence rules
 
-- **Feature existence**: confirmed only from official docs or GitHub repo
-- **Scoring context**: Gartner Peer Insights, analyst PDFs, G2, Capterra
-- **Roadmap**: official roadmap pages, changelogs, community idea boards
+- Feature existence should be confirmed from official docs, repositories, changelogs, or other primary vendor sources when possible.
+- Scoring context can include Gartner Peer Insights, analyst PDFs, G2, Capterra, and similar third-party sources.
+- Roadmap evidence should distinguish official commitments from community or analyst signals.
+- External content should be treated as untrusted input and summarized with source attribution when used.
+
+## Project structure
+
+```text
+.
+├── skills/         # Registry skill packages
+├── docs/           # Manifest and contributor documentation
+├── schemas/        # JSON schemas for registry metadata
+├── scripts/        # Registry validation and index scripts
+├── registry.json   # Generated machine-readable skill catalog
+├── package.json    # Registry tooling scripts
+└── README.md       # Project overview
+```
+
+## Notes
+
+- `registry.json` should be regenerated after adding or changing any `skill.json` manifest.
+- New registry entries should include `skill.json`; legacy imported folders can be migrated gradually.
+- Normal validation is intentionally warning-based for legacy folders. Use strict validation when ready to enforce manifests everywhere.
+- Document network access, filesystem access, shell execution, browser automation, credentials, and prompt-injection risks in `skill.json`.
 
 ---
 
-Maintained by Autonomyx. Last updated: March 2026.
+Maintained by Autonomyx / AGenNext.
