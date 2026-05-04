@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-05-04T00:00:00.000Z",
+  "skillCount": 1,
+  "skills": [
+    {
+      "id": "example-skill",
+      "name": "Example Skill",
+      "version": "0.1.0",
+      "description": "A minimal example skill package that demonstrates the required Skill Registry metadata structure.",
+      "status": "experimental",
+      "license": "MIT",
+      "tags": [
+        "example",
+        "template"
+      ],
+      "categories": [
+        "documentation"
+      ],
+      "runtime": {
+        "type": "claude-skill",
+        "packageManager": "none",
+        "platforms": [
+          "claude",
+          "claude-code"
+        ]
+      },
+      "dependencies": [],
+      "permissions": {
+        "network": "none",
+        "filesystem": "none",
+        "shell": "none",
+        "browser": "none",
+        "secrets": [],
+        "notes": "Example only. Real skills should document exact access requirements."
+      },
+      "outputs": [
+        "markdown"
+      ],
+      "homepage": "https://github.com/AGenNext/skill-registry/tree/main/skills/example-skill",
+      "repository": "https://github.com/AGenNext/skill-registry",
+      "path": "skills/example-skill",
+      "manifest": "skills/example-skill/skill.json",
+      "skill": "skills/example-skill/SKILL.md",
+      "readme": "skills/example-skill/README.md",
+      "maintainers": [
+        {
+          "name": "AGenNext",
+          "github": "AGenNext"
+        }
+      ]
+    }
+  ]
+}
